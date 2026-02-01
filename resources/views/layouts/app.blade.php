@@ -55,6 +55,8 @@
         }
         .sidebar.hidden {
             transform: translateX(-100%);
+        }
+        .sidebar:not(.hidden) {
             opacity: 1 !important;
         }
         .sidebar.hidden ~ .main-content {
@@ -241,6 +243,101 @@
             }
             .sidebar-overlay.show {
                 display: block;
+            }
+        }
+
+        /* Responsividade Mobile */
+        @media (max-width: 767px) {
+            .content-area {
+                padding: 15px 10px;
+            }
+            .topbar {
+                padding: 10px 15px;
+            }
+            .card-body {
+                padding: 12px;
+            }
+            .card-title {
+                font-size: 1.3rem;
+            }
+            .card-subtitle {
+                font-size: 0.75rem;
+            }
+            .table {
+                font-size: 0.85rem;
+            }
+            .table td, .table th {
+                padding: 8px 6px;
+            }
+            .btn-sm {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+            .modal-dialog {
+                margin: 10px;
+            }
+            .modal-body {
+                padding: 15px;
+            }
+            /* Cards de resumo em 2 colunas no mobile */
+            .row > [class*="col-md-3"] {
+                flex: 0 0 50%;
+                max-width: 50%;
+                padding: 5px;
+            }
+            /* Graficos em coluna unica no mobile */
+            .chart-card {
+                margin-bottom: 10px;
+            }
+            .row > .col-md-4 {
+                padding: 5px;
+            }
+            /* Tabelas com scroll horizontal */
+            .table-responsive {
+                font-size: 0.8rem;
+            }
+            /* Ajuste modal de multiplas despesas */
+            #modalMultiplasDespesas .col-5,
+            #modalMultiplasDespesas .col-3,
+            #modalMultiplasDespesas .col-1 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 8px;
+            }
+            #modalMultiplasDespesas .despesa-item {
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+            /* Botoes do topbar */
+            .topbar-right .btn {
+                padding: 6px 10px;
+            }
+            /* Progress bar */
+            .progress {
+                height: 6px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Cards em coluna unica em telas muito pequenas */
+            .row > [class*="col-md-3"] {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            .card-title {
+                font-size: 1.1rem;
+            }
+            .topbar-right .btn span {
+                display: none;
+            }
+            /* Esconder texto dos botoes, manter icones */
+            .card-body .btn-sm {
+                padding: 6px 10px;
+            }
+            .card-body .btn-sm i + span,
+            .card-body .btn-sm span:not(:only-child) {
+                display: none;
             }
         }
 
@@ -543,7 +640,14 @@
                 // Se estiver oculta, mostrar
                 if (sidebar.classList.contains('hidden')) {
                     sidebar.classList.remove('hidden');
+                    gsap.to(sidebar, {
+                        x: 0,
+                        opacity: 1,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
                     localStorage.setItem('sidebarHidden', 'false');
+                    updateToggleButton();
                 } else {
                     // Colapsar/expandir
                     sidebar.classList.toggle('collapsed');
@@ -554,10 +658,18 @@
 
         // Ocultar completamente a sidebar
         hideBtn.addEventListener('click', () => {
-            sidebar.classList.add('hidden');
-            sidebar.classList.remove('collapsed');
+            gsap.to(sidebar, {
+                x: '-100%',
+                duration: 0.3,
+                ease: 'power2.in',
+                onComplete: () => {
+                    sidebar.classList.add('hidden');
+                    sidebar.classList.remove('collapsed');
+                }
+            });
             localStorage.setItem('sidebarHidden', 'true');
             localStorage.setItem('sidebarCollapsed', 'false');
+            updateToggleButton();
         });
 
         overlay.addEventListener('click', () => {
@@ -599,11 +711,9 @@
 
         updateToggleButton();
 
-        // Atualizar botao quando ocultar
-        hideBtn.addEventListener('click', updateToggleButton);
-        toggleBtn.addEventListener('click', () => {
-            setTimeout(updateToggleButton, 50);
-        });
+        // Observer para mudanças na sidebar (atualiza botão automaticamente)
+        const sidebarObserver = new MutationObserver(updateToggleButton);
+        sidebarObserver.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
 
         // Animacao da sidebar e topbar (apenas se nao estiver oculta)
         if (!sidebar.classList.contains('hidden')) {
@@ -614,7 +724,8 @@
                 ease: 'power3.out'
             });
         } else {
-            sidebar.style.opacity = 1;
+            // Sidebar oculta - posicionar fora da tela
+            gsap.set(sidebar, { x: '-100%', opacity: 1 });
         }
 
         gsap.to('.topbar', {

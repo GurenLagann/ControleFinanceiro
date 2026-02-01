@@ -2,8 +2,8 @@
 
 @section('content')
     <!-- Cards de Resumo -->
-    <div class="row mb-4">
-        <div class="col-md-3">
+    <div class="row mb-4 g-2 g-md-3">
+        <div class="col-6 col-md-3">
             <div class="card card-receita h-100 glow-green">
                 <div class="card-body text-center">
                     <h6 class="card-subtitle mb-2 text-muted">
@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card card-despesa h-100 glow-red" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDespesasTotais">
                 <div class="card-body text-center">
                     <h6 class="card-subtitle mb-2 text-muted">
@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card card-saldo h-100 glow-blue">
                 <div class="card-body text-center">
                     <h6 class="card-subtitle mb-2 text-muted">
@@ -63,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card h-100 glow-purple" style="border-left: 4px solid #6f42c1;">
                 <div class="card-body text-center">
                     <h6 class="card-subtitle mb-2 text-muted">
@@ -82,41 +82,41 @@
     </div>
 
     <!-- Graficos -->
-    <div class="row mb-4">
-        <div class="col-md-3">
+    <div class="row mb-4 g-2 g-md-3">
+        <div class="col-6 col-md-3">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('pizza', 'Receitas vs Despesas')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-pie-chart"></i> Receitas vs Despesas <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-pie-chart"></i> <span class="d-none d-sm-inline">Receitas vs Despesas</span><span class="d-sm-none">Rec/Desp</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartPizza" height="160"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('despesasCategoria', 'Despesas por Categoria')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart"></i> Despesas/Categoria <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-bar-chart"></i> <span class="d-none d-sm-inline">Despesas/Categoria</span><span class="d-sm-none">Desp/Cat</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartDespesasCategoria" height="160"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('receitasCategoria', 'Receitas por Categoria')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart"></i> Receitas/Categoria <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-bar-chart"></i> <span class="d-none d-sm-inline">Receitas/Categoria</span><span class="d-sm-none">Rec/Cat</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartReceitasCategoria" height="160"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('evolucao', 'Evolucao Ultimos 7 Dias')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-graph-up"></i> Ultimos 7 Dias <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-graph-up"></i> <span class="d-none d-sm-inline">Ultimos 7 Dias</span><span class="d-sm-none">7 Dias</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartEvolucao" height="160"></canvas>
@@ -140,31 +140,31 @@
     </div>
 
     <!-- Graficos Adicionais -->
-    <div class="row mb-4">
-        <div class="col-md-4">
+    <div class="row mb-4 g-2 g-md-3">
+        <div class="col-6 col-md-4">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('comparativo', 'Comparativo Mensal')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart-line"></i> Comparativo Mensal <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-bar-chart-line"></i> <span class="d-none d-sm-inline">Comparativo Mensal</span><span class="d-sm-none">Comp. Mensal</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartComparativo" height="160"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-6 col-md-4">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('tendencia', 'Tendencia Anual')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-graph-up"></i> Tendencia 12 Meses <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-graph-up"></i> <span class="d-none d-sm-inline">Tendencia 12 Meses</span><span class="d-sm-none">12 Meses</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartTendencia" height="160"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-12 col-md-4">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('diasSemana', 'Gastos por Dia da Semana')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-calendar-week"></i> Gastos/Dia Semana <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-calendar-week"></i> <span class="d-none d-sm-inline">Gastos/Dia Semana</span><span class="d-sm-none">Gastos/Dia</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartDiasSemana" height="160"></canvas>
@@ -261,11 +261,11 @@
     @endif
 
     <!-- Itens Recorrentes -->
-    <div class="row mb-4">
-        <div class="col-md-6">
+    <div class="row mb-4 g-2 g-md-3">
+        <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header bg-success d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-arrow-repeat"></i> Receitas Recorrentes</span>
+                    <span><i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Receitas Recorrentes</span><span class="d-sm-none">Rec. Recorrentes</span></span>
                     <span class="badge bg-light text-success">{{ $receitasRecorrentes->count() }}</span>
                 </div>
                 <div class="card-body" style="max-height: 200px; overflow-y: auto;">
@@ -299,10 +299,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header bg-danger d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-arrow-repeat"></i> Despesas Recorrentes</span>
+                    <span><i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Despesas Recorrentes</span><span class="d-sm-none">Desp. Recorrentes</span></span>
                     <span class="badge bg-light text-danger">{{ $despesasRecorrentes->count() }}</span>
                 </div>
                 <div class="card-body" style="max-height: 200px; overflow-y: auto;">
@@ -339,11 +339,11 @@
     </div>
 
     <!-- Lancamentos Recentes -->
-    <div class="row">
-        <div class="col-md-6 mb-4">
+    <div class="row g-2 g-md-3">
+        <div class="col-12 col-md-6 mb-2 mb-md-4">
             <div class="card">
                 <div class="card-header bg-success d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-arrow-up-circle"></i> Receitas Recentes</span>
+                    <span><i class="bi bi-arrow-up-circle"></i> <span class="d-none d-sm-inline">Receitas Recentes</span><span class="d-sm-none">Rec. Recentes</span></span>
                 </div>
                 <div class="card-body" style="max-height: 220px; overflow-y: auto;">
                     @php $receitasSimples = $receitas->filter(fn($r) => !$r->recorrente)->take(10); @endphp
@@ -371,10 +371,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6 mb-4">
+        <div class="col-12 col-md-6 mb-2 mb-md-4">
             <div class="card">
                 <div class="card-header bg-danger d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-arrow-down-circle"></i> Despesas Recentes</span>
+                    <span><i class="bi bi-arrow-down-circle"></i> <span class="d-none d-sm-inline">Despesas Recentes</span><span class="d-sm-none">Desp. Recentes</span></span>
                 </div>
                 <div class="card-body" style="max-height: 220px; overflow-y: auto;">
                     @php $despesasSimples = $despesas->filter(fn($d) => !$d->recorrente && !$d->parcelado)->take(10); @endphp
@@ -478,7 +478,9 @@
                             <label class="form-label small">Categoria</label>
                             <input type="text" name="categoria" class="form-control" list="cat-rec" placeholder="Opcional">
                             <datalist id="cat-rec">
-                                <option value="Salario"><option value="Freelance"><option value="Investimentos"><option value="Bonus">
+                                @foreach($categoriasReceita as $cat)
+                                    <option value="{{ $cat }}">
+                                @endforeach
                             </datalist>
                         </div>
                         <div class="form-check form-switch">
@@ -536,7 +538,9 @@
                             <label class="form-label small">Categoria</label>
                             <input type="text" name="categoria" class="form-control" list="cat-desp" placeholder="Opcional">
                             <datalist id="cat-desp">
-                                <option value="Moradia"><option value="Alimentacao"><option value="Transporte"><option value="Saude"><option value="Lazer">
+                                @foreach($categoriasDespesa as $cat)
+                                    <option value="{{ $cat }}">
+                                @endforeach
                             </datalist>
                         </div>
                         

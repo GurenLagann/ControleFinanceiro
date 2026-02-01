@@ -179,27 +179,21 @@ class FinancaController extends Controller
             $mes = Carbon::now()->startOfMonth()->addMonths($i);
             $projecaoMeses[] = $mes->translatedFormat('M/Y');
             
-            // Receitas do mes
-            $receitasMes = $receitas->filter(function($item) use ($mes) {
-                return $item->data && $item->data->format('Y-m') === $mes->format('Y-m');
+            // Receitas do mes (reais + recorrentes para projeção)
+            $receitasReaisMes = $receitas->filter(function($item) use ($mes) {
+                return $item->data && $item->data->format('Y-m') === $mes->format('Y-m') && !$item->recorrente;
             })->sum('valor');
+
+            // Sempre incluir receitas recorrentes na projeção
+            $receitasMes = $receitasReaisMes + $receitasRecorrentes->sum('valor');
             
-            if ($i > 0) {
-                $receitasMes = $receitasRecorrentes->sum('valor');
-            }
-            
-            // Despesas do mes (incluindo parcelas)
-            $despesasMes = $despesas->filter(function($item) use ($mes) {
-                return $item->data && $item->data->format('Y-m') === $mes->format('Y-m');
+            // Despesas do mes (reais não recorrentes + parcelas + recorrentes para projeção)
+            $despesasReaisMes = $despesas->filter(function($item) use ($mes) {
+                return $item->data && $item->data->format('Y-m') === $mes->format('Y-m') && !$item->recorrente;
             })->sum('valor');
-            
-            if ($i > 0) {
-                // Recorrentes + parcelas futuras do mes
-                $despesasMes = $despesasRecorrentes->sum('valor');
-                $despesasMes += $despesas->filter(function($d) use ($mes) {
-                    return $d->parcelado && $d->data && $d->data->format('Y-m') === $mes->format('Y-m');
-                })->sum('valor');
-            }
+
+            // Sempre incluir despesas recorrentes na projeção
+            $despesasMes = $despesasReaisMes + $despesasRecorrentes->sum('valor');
             
             $projecaoReceitasMensal[] = $receitasMes;
             $projecaoDespesasMensal[] = $despesasMes;
@@ -249,6 +243,23 @@ class FinancaController extends Controller
             }
         }
 
+        // Categorias para autocomplete
+        $categoriasReceita = Receita::whereNotNull('categoria')
+            ->where('categoria', '!=', '')
+            ->pluck('categoria')
+            ->unique()
+            ->filter()
+            ->values()
+            ->toArray();
+
+        $categoriasDespesa = Despesa::whereNotNull('categoria')
+            ->where('categoria', '!=', '')
+            ->pluck('categoria')
+            ->unique()
+            ->filter()
+            ->values()
+            ->toArray();
+
         return view('financas.index', compact(
             'receitas',
             'despesas',
@@ -282,7 +293,9 @@ class FinancaController extends Controller
             'tendenciaDespesas',
             'tendenciaSaldo',
             'diasSemana',
-            'gastosPorDiaSemana'
+            'gastosPorDiaSemana',
+            'categoriasReceita',
+            'categoriasDespesa'
         ));
     }
 

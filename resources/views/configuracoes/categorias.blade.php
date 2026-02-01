@@ -151,7 +151,21 @@
                                 <label class="form-label small">Icone</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi" id="iconePreview"></i></span>
-                                    <input type="text" name="icone" id="categoriaIcone" class="form-control" placeholder="cart">
+                                    <input type="text" name="icone" id="categoriaIcone" class="form-control" placeholder="cart" readonly>
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#iconePicker">
+                                        <i class="bi bi-grid"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse mb-3" id="iconePicker">
+                            <div class="card card-body p-2" style="max-height: 200px; overflow-y: auto; background: rgba(20,20,35,0.9);">
+                                <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                    @foreach(['cart', 'cart-fill', 'bag', 'bag-fill', 'basket', 'basket-fill', 'house', 'house-fill', 'building', 'buildings', 'car-front', 'car-front-fill', 'fuel-pump', 'fuel-pump-fill', 'lightning', 'lightning-fill', 'droplet', 'droplet-fill', 'wifi', 'phone', 'phone-fill', 'credit-card', 'credit-card-fill', 'piggy-bank', 'piggy-bank-fill', 'cash', 'cash-stack', 'wallet', 'wallet-fill', 'gift', 'gift-fill', 'heart', 'heart-fill', 'star', 'star-fill', 'cup-hot', 'cup-hot-fill', 'egg-fried', 'airplane', 'airplane-fill', 'bus-front', 'bus-front-fill', 'train-front', 'train-front-fill', 'bicycle', 'hospital', 'hospital-fill', 'capsule', 'bandaid', 'bandaid-fill', 'book', 'book-fill', 'mortarboard', 'mortarboard-fill', 'music-note', 'music-note-beamed', 'film', 'controller', 'tools', 'wrench', 'hammer', 'scissors', 'brush', 'brush-fill', 'palette', 'palette-fill', 'tv', 'tv-fill', 'laptop', 'phone-vibrate', 'printer', 'printer-fill', 'headphones', 'camera', 'camera-fill', 'box', 'box-fill', 'archive', 'archive-fill', 'truck', 'truck-front-fill', 'receipt', 'receipt-cutoff', 'tags', 'tags-fill', 'percent', 'currency-dollar', 'graph-up', 'graph-down', 'bar-chart', 'pie-chart', 'clipboard', 'clipboard-check', 'calendar', 'calendar-event', 'clock', 'clock-fill', 'alarm', 'alarm-fill', 'bell', 'bell-fill', 'envelope', 'envelope-fill', 'chat', 'chat-fill', 'person', 'people', 'people-fill', 'trophy', 'trophy-fill', 'award', 'award-fill', 'shield', 'shield-fill', 'lock', 'lock-fill', 'key', 'key-fill', 'gear', 'gear-fill', 'sliders', 'filter', 'funnel', 'search', 'zoom-in', 'globe', 'globe2', 'pin-map', 'geo-alt', 'compass', 'signpost', 'flower1', 'tree', 'sun', 'moon', 'cloud', 'umbrella', 'snow', 'thermometer', 'fire', 'water', 'wind', 'rainbow'] as $icone)
+                                        <button type="button" class="btn btn-outline-secondary btn-sm icone-option" onclick="selecionarIcone('{{ $icone }}')" title="{{ $icone }}" style="width: 36px; height: 36px; padding: 0;">
+                                            <i class="bi bi-{{ $icone }}"></i>
+                                        </button>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -192,6 +206,23 @@
         document.getElementById('iconePreview').className = 'bi bi-' + icone;
     }
 
+    function selecionarIcone(icone) {
+        document.getElementById('categoriaIcone').value = icone;
+        document.getElementById('iconePreview').className = 'bi bi-' + icone;
+
+        // Destacar icone selecionado
+        document.querySelectorAll('.icone-option').forEach(btn => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-outline-secondary');
+        });
+        event.target.closest('.icone-option').classList.remove('btn-outline-secondary');
+        event.target.closest('.icone-option').classList.add('btn-primary');
+
+        // Fechar o picker
+        const picker = document.getElementById('iconePicker');
+        bootstrap.Collapse.getInstance(picker)?.hide();
+    }
+
     function editarCategoria(id, nome, cor, icone, tipo) {
         document.getElementById('modalCategoriaTitle').innerHTML = '<i class="bi bi-pencil"></i> Editar Categoria';
         document.getElementById('formCategoria').action = '/categorias/' + id;
@@ -203,6 +234,16 @@
         document.getElementById('categoriaIcone').value = icone || '';
         document.getElementById('iconePreview').className = 'bi bi-' + (icone || '');
         document.getElementById('categoriaTipo').value = tipo;
+
+        // Destacar icone atual
+        document.querySelectorAll('.icone-option').forEach(btn => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-outline-secondary');
+            if (icone && btn.title === icone) {
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-primary');
+            }
+        });
 
         new bootstrap.Modal(document.getElementById('modalCategoria')).show();
     }
@@ -216,6 +257,19 @@
         document.getElementById('categoriaCor').value = '#00ff88';
         document.getElementById('categoriaCorTexto').value = '#00ff88';
         document.getElementById('iconePreview').className = 'bi';
+        document.getElementById('categoriaIcone').value = '';
+
+        // Resetar selecao de icones
+        document.querySelectorAll('.icone-option').forEach(btn => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-outline-secondary');
+        });
+
+        // Fechar picker de icones
+        const picker = document.getElementById('iconePicker');
+        if (picker.classList.contains('show')) {
+            bootstrap.Collapse.getInstance(picker)?.hide();
+        }
     });
 </script>
 @endsection
