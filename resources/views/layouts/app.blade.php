@@ -377,8 +377,8 @@
         .table tbody tr:nth-child(even) { background: rgba(35,35,55,0.5); }
         .valor-positivo { color: #00ff88 !important; font-weight: 600; text-shadow: 0 0 20px rgba(0,255,136,0.3); }
         .valor-negativo { color: #ff4757 !important; font-weight: 600; text-shadow: 0 0 20px rgba(255,71,87,0.3); }
-        .btn-success { background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; }
-        .btn-success:hover { background: linear-gradient(135deg, #00cc6a, #00ff88); transform: scale(1.05); }
+        .btn-success { background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; color: #0d2818 !important; font-weight: 600; }
+        .btn-success:hover { background: linear-gradient(135deg, #00cc6a, #00ff88); transform: scale(1.05); color: #0d2818 !important; }
         .btn-danger { background: linear-gradient(135deg, #ff4757, #ff3344); border: none; }
         .btn-danger:hover { background: linear-gradient(135deg, #ff3344, #ff4757); transform: scale(1.05); }
         .btn-outline-success { border-color: #00ff88; color: #00ff88; }

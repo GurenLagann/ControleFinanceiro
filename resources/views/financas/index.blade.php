@@ -5,79 +5,90 @@
 @section('content')
     <!-- Cards de Resumo -->
     <div class="row mb-4 g-2 g-md-3">
+        <!-- Card Receitas -->
         <div class="col-6 col-md-3">
-            <div class="card card-receita h-100 glow-green">
-                <div class="card-body text-center">
+            <div class="card card-receita h-100 glow-green d-flex flex-column">
+                <div class="card-body text-center d-flex flex-column">
                     <h6 class="card-subtitle mb-2 text-muted">
                         <i class="bi bi-arrow-up-circle"></i> Total Receitas
                     </h6>
-                    <h3 class="card-title valor-positivo" data-value="{{ $totalReceitas }}">
+                    <h3 class="card-title valor-positivo mb-1" data-value="{{ $totalReceitas }}">
                         R$ {{ number_format($totalReceitas, 2, ',', '.') }}
                     </h3>
-                    <button class="btn btn-success btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#modalReceita">
-                        <i class="bi bi-plus-lg"></i> Nova Receita
-                    </button>
+                    <small class="text-muted">este mes</small>
+                    <div class="mt-auto pt-2">
+                        <button class="btn btn-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalReceita">
+                            <i class="bi bi-plus-lg"></i> Nova Receita
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Card Despesas -->
         <div class="col-6 col-md-3">
-            <div class="card card-despesa h-100 glow-red" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDespesasTotais">
-                <div class="card-body text-center">
+            <div class="card card-despesa h-100 glow-red d-flex flex-column" style="cursor: pointer;" onclick="abrirModalDespesas(event)">
+                <div class="card-body text-center d-flex flex-column">
                     <h6 class="card-subtitle mb-2 text-muted">
                         <i class="bi bi-arrow-down-circle"></i> Total Despesas <i class="bi bi-eye ms-1" title="Ver detalhes"></i>
                     </h6>
-                    <h4 class="card-title valor-negativo mb-0" data-value="{{ $totalDespesasMesAtual }}">
+                    <h3 class="card-title valor-negativo mb-1" data-value="{{ $totalDespesasMesAtual }}">
                         R$ {{ number_format($totalDespesasMesAtual, 2, ',', '.') }}
-                    </h4>
+                    </h3>
                     <small class="text-muted">este mes</small>
-                    <div class="mt-1 pt-1 border-top border-secondary">
-                        <small class="text-muted">Total geral: </small>
-                        <span class="valor-negativo">R$ {{ number_format($totalDespesas, 2, ',', '.') }}</span>
+                    <div class="mt-auto pt-2">
+                        <button class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalDespesa" onclick="event.stopPropagation();">
+                            <i class="bi bi-plus-lg"></i> Nova Despesa
+                        </button>
                     </div>
-                    <button class="btn btn-danger btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#modalDespesa" onclick="event.stopPropagation();">
-                        <i class="bi bi-plus-lg"></i> Nova Despesa
-                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- Card Saldo -->
         <div class="col-6 col-md-3">
-            <div class="card card-saldo h-100 glow-blue">
-                <div class="card-body text-center">
+            <div class="card card-saldo h-100 glow-blue d-flex flex-column">
+                <div class="card-body text-center d-flex flex-column">
                     <h6 class="card-subtitle mb-2 text-muted">
                         <i class="bi bi-wallet2"></i> Saldo Atual
                     </h6>
-                    <h4 class="card-title {{ $saldoMesAtual >= 0 ? 'valor-positivo' : 'valor-negativo' }} mb-0" data-value="{{ $saldoMesAtual }}">
+                    <h3 class="card-title {{ $saldoMesAtual >= 0 ? 'valor-positivo' : 'valor-negativo' }} mb-1" data-value="{{ $saldoMesAtual }}">
                         R$ {{ number_format($saldoMesAtual, 2, ',', '.') }}
-                    </h4>
+                    </h3>
                     <small class="text-muted">este mes</small>
-                    <div class="progress mt-2" style="height: 8px;">
+                    <div class="mt-auto pt-2">
                         @php
                             $totalMes = $totalReceitasMesAtual + $totalDespesasMesAtual;
                             $percentReceita = $totalMes > 0 ? ($totalReceitasMesAtual / $totalMes) * 100 : 50;
                         @endphp
-                        <div class="progress-bar bg-success progress-animated" style="width: 0%" data-width="{{ $percentReceita }}"></div>
-                        <div class="progress-bar bg-danger progress-animated" style="width: 0%" data-width="{{ 100 - $percentReceita }}"></div>
-                    </div>
-                    <div class="mt-1 pt-1 border-top border-secondary">
-                        <small class="text-muted">Total geral: </small>
+                        <div class="progress mb-2" style="height: 8px;">
+                            <div class="progress-bar bg-success progress-animated" style="width: 0%" data-width="{{ $percentReceita }}"></div>
+                            <div class="progress-bar bg-danger progress-animated" style="width: 0%" data-width="{{ 100 - $percentReceita }}"></div>
+                        </div>
+                        <small class="text-muted">Total: </small>
                         <span class="{{ $saldo >= 0 ? 'valor-positivo' : 'valor-negativo' }}">R$ {{ number_format($saldo, 2, ',', '.') }}</span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Card Previsao -->
         <div class="col-6 col-md-3">
-            <div class="card h-100 glow-purple" style="border-left: 4px solid #6f42c1;">
-                <div class="card-body text-center">
+            <div class="card h-100 glow-purple d-flex flex-column" style="border-left: 4px solid #6f42c1;">
+                <div class="card-body text-center d-flex flex-column">
                     <h6 class="card-subtitle mb-2 text-muted">
                         <i class="bi bi-calendar-check"></i> Previsao Mensal
                     </h6>
-                    <h3 class="card-title {{ $previsaoSaldo >= 0 ? 'valor-positivo' : 'valor-negativo' }}" data-value="{{ $previsaoSaldo }}">
+                    <h3 class="card-title {{ $previsaoSaldo >= 0 ? 'valor-positivo' : 'valor-negativo' }} mb-1" data-value="{{ $previsaoSaldo }}">
                         R$ {{ number_format($previsaoSaldo, 2, ',', '.') }}
                     </h3>
-                    <small class="text-muted">
-                        <span class="valor-positivo">+{{ number_format($previsaoReceitas, 2, ',', '.') }}</span> /
-                        <span class="valor-negativo">-{{ number_format($previsaoDespesas, 2, ',', '.') }}</span>
-                    </small>
+                    <small class="text-muted">fim do mes</small>
+                    <div class="mt-auto pt-2">
+                        <div class="d-flex justify-content-between small">
+                            <span class="valor-positivo"><i class="bi bi-arrow-up"></i> {{ number_format($previsaoReceitas, 2, ',', '.') }}</span>
+                            <span class="valor-negativo"><i class="bi bi-arrow-down"></i> {{ number_format($previsaoDespesas, 2, ',', '.') }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -414,35 +425,99 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-danger py-2">
-                    <h6 class="modal-title text-white"><i class="bi bi-calendar3"></i> Despesas Totais por Mes</h6>
+                    <h6 class="modal-title text-white"><i class="bi bi-calendar3"></i> Despesas - Historico e Projecao</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    @if(!empty($despesasPorMes))
-                        <div class="row">
-                            @foreach($despesasPorMes as $mes)
-                                <div class="col-md-4 col-sm-6 mb-3">
-                                    <div class="card bg-dark border-secondary h-100">
-                                        <div class="card-body py-2 text-center">
-                                            <small class="text-muted d-block">{{ $mes['mes'] }}</small>
-                                            <h5 class="valor-negativo mb-0">R$ {{ number_format($mes['total'], 2, ',', '.') }}</h5>
-                                            <small class="text-muted">{{ $mes['quantidade'] }} despesa(s)</small>
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabHistorico" type="button">
+                                <i class="bi bi-clock-history"></i> Historico
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabProjecao" type="button">
+                                <i class="bi bi-graph-up-arrow"></i> Projecao
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <!-- Tab Historico -->
+                        <div class="tab-pane fade show active" id="tabHistorico" role="tabpanel">
+                            @if(!empty($despesasPorMes))
+                                <div class="row">
+                                    @foreach($despesasPorMes as $mes)
+                                        <div class="col-md-4 col-sm-6 mb-3">
+                                            <div class="card bg-dark border-secondary h-100">
+                                                <div class="card-body py-2 text-center">
+                                                    <small class="text-muted d-block">{{ $mes['mes'] }}</small>
+                                                    <h5 class="valor-negativo mb-0">R$ {{ number_format($mes['total'], 2, ',', '.') }}</h5>
+                                                    <small class="text-muted">{{ $mes['quantidade'] }} despesa(s)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-muted text-center mb-0 py-3"><i class="bi bi-inbox"></i> Nenhuma despesa registrada</p>
+                            @endif
+                        </div>
+
+                        <!-- Tab Projecao -->
+                        <div class="tab-pane fade" id="tabProjecao" role="tabpanel">
+                            <div class="row">
+                                @for($i = 0; $i < count($projecaoMeses); $i++)
+                                    <div class="col-md-4 col-sm-6 mb-3">
+                                        <div class="card bg-dark h-100 {{ $i === 0 ? 'border-warning' : 'border-secondary' }}">
+                                            <div class="card-body py-2 text-center">
+                                                <small class="text-muted d-block">
+                                                    {{ $projecaoMeses[$i] }}
+                                                    @if($i === 0) <span class="badge bg-warning text-dark ms-1">Atual</span> @endif
+                                                </small>
+                                                <h5 class="valor-negativo mb-1">R$ {{ number_format($projecaoDespesasMensal[$i], 2, ',', '.') }}</h5>
+                                                <div class="small">
+                                                    <span class="valor-positivo"><i class="bi bi-arrow-up"></i> {{ number_format($projecaoReceitasMensal[$i], 2, ',', '.') }}</span>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <small class="{{ $projecaoSaldoMensal[$i] >= 0 ? 'valor-positivo' : 'valor-negativo' }}">
+                                                        Saldo: R$ {{ number_format($projecaoSaldoMensal[$i], 2, ',', '.') }}
+                                                    </small>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        <hr class="my-3 border-secondary">
-                        <div class="card bg-danger bg-opacity-25 border-danger">
-                            <div class="card-body py-3 text-center">
-                                <span class="text-muted">TOTAL GERAL DE DESPESAS</span>
-                                <h2 class="valor-negativo mb-0 fw-bold">R$ {{ number_format($totalDespesas, 2, ',', '.') }}</h2>
-                                <small class="text-muted">{{ $despesas->count() }} despesa(s) no total</small>
+                                @endfor
+                            </div>
+                            <div class="alert alert-info small mt-2 mb-0">
+                                <i class="bi bi-info-circle"></i> Projecao baseada em despesas recorrentes, parcelas futuras e receitas recorrentes.
                             </div>
                         </div>
-                    @else
-                        <p class="text-muted text-center mb-0 py-3"><i class="bi bi-inbox"></i> Nenhuma despesa registrada</p>
-                    @endif
+                    </div>
+
+                    <!-- Total Geral (sempre visivel) -->
+                    <hr class="my-3 border-secondary">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card bg-danger bg-opacity-25 border-danger h-100">
+                                <div class="card-body py-3 text-center">
+                                    <span class="text-muted small">TOTAL GERAL DESPESAS</span>
+                                    <h3 class="valor-negativo mb-0 fw-bold">R$ {{ number_format($totalDespesas, 2, ',', '.') }}</h3>
+                                    <small class="text-muted">{{ $despesas->count() }} despesa(s)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-warning bg-opacity-25 border-warning h-100">
+                                <div class="card-body py-3 text-center">
+                                    <span class="text-muted small">PREVISAO PROXIMO MES</span>
+                                    <h3 class="valor-negativo mb-0 fw-bold">R$ {{ number_format($previsaoDespesas, 2, ',', '.') }}</h3>
+                                    <small class="text-muted">recorrentes + parcelas</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer py-2">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
@@ -562,13 +637,15 @@
                             <div class="row">
                                 <div class="col-6">
                                     <label class="form-label small">Frequencia</label>
-                                    <select name="frequencia" class="form-select form-select-sm">
-                                        <option value="mensal">Mensal</option>
+                                    <select name="frequencia" id="frequenciaDespesa" class="form-select form-select-sm" onchange="atualizarCampoDia()">
+                                        <option value="semanal">Semanal</option>
+                                        <option value="mensal" selected>Mensal</option>
+                                        <option value="anual">Anual</option>
                                     </select>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label small">Dia</label>
-                                    <input type="number" name="dia_vencimento" class="form-control form-control-sm" min="1" max="31">
+                                    <label class="form-label small" id="labelDiaDespesa">Dia do Mês</label>
+                                    <input type="number" name="dia_vencimento" id="diaVencimentoDespesa" class="form-control form-control-sm" min="1" max="31">
                                 </div>
                             </div>
                         </div>
@@ -736,6 +813,13 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Abrir modal de despesas totais
+    function abrirModalDespesas(event) {
+        // Verifica se o clique foi no botão (não abre o modal)
+        if (event.target.closest('button')) return;
+        new bootstrap.Modal(document.getElementById('modalDespesasTotais')).show();
+    }
+
     function mostrarTipo(tipo) {
         document.getElementById('camposRecorrente').style.display = tipo === 'recorrente' ? 'block' : 'none';
         document.getElementById('camposParcelada').style.display = tipo === 'parcelada' ? 'block' : 'none';
@@ -757,6 +841,29 @@
         const parcelas = parseInt(document.getElementById('totalParcelas').value) || 1;
         const valorParcela = valor / parcelas;
         document.getElementById('valorParcela').textContent = 'R$ ' + valorParcela.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    function atualizarCampoDia() {
+        const frequencia = document.getElementById('frequenciaDespesa').value;
+        const label = document.getElementById('labelDiaDespesa');
+        const input = document.getElementById('diaVencimentoDespesa');
+
+        if (frequencia === 'semanal') {
+            label.textContent = 'Dia da Semana';
+            input.min = 1;
+            input.max = 7;
+            input.placeholder = '1=Dom, 7=Sáb';
+        } else if (frequencia === 'anual') {
+            label.textContent = 'Dia do Mês';
+            input.min = 1;
+            input.max = 31;
+            input.placeholder = '';
+        } else {
+            label.textContent = 'Dia do Mês';
+            input.min = 1;
+            input.max = 31;
+            input.placeholder = '';
+        }
     }
 
     // Funcoes para multiplas despesas

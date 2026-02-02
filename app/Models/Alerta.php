@@ -12,7 +12,7 @@ class Alerta extends Model
     protected $fillable = [
         'titulo',
         'mensagem',
-        'tipo', // 'vencimento', 'limite', 'meta', 'info'
+        'tipo', // 'vencimento', 'limite', 'meta', 'lembrete', 'info'
         'data_alerta',
         'referencia_tipo', // 'despesa', 'receita', 'meta'
         'referencia_id',

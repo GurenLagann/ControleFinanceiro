@@ -207,10 +207,12 @@ ControleFinanceiro/
 ### 9. Alertas Inteligentes
 
 - Geracao automatica de alertas
-- **Tipos de alertas**:
-  - `vencimento` - Parcelas proximas do vencimento
-  - `limite` - Limite de gastos atingido
-  - `meta` - Notificacoes sobre metas
+- **Criacao manual** de alertas personalizados
+- **Tipos de alertas** (cada um com modal especifico):
+  - `lembrete` - Alertas personalizados criados pelo usuario
+  - `vencimento` - Parcelas proximas do vencimento (com valor e data)
+  - `limite` - Limite de gastos atingido (com valor limite e atual)
+  - `meta` - Notificacoes sobre metas (com valor alvo e prazo)
   - `info` - Informacoes gerais
 - Marcar como lido individualmente ou todos de uma vez
 
@@ -229,7 +231,7 @@ ControleFinanceiro/
 
 ## API/Rotas
 
-**Total: 31 rotas**
+**Total: 32 rotas**
 
 ### Paginas
 
@@ -286,6 +288,7 @@ ControleFinanceiro/
 
 | Metodo | Rota | Descricao |
 |--------|------|-----------|
+| POST | `/alertas` | Criar alerta manualmente |
 | PATCH | `/alertas/{id}/lido` | Marcar como lido |
 | POST | `/alertas/marcar-todos-lidos` | Marcar todos como lidos |
 | DELETE | `/alertas/{id}` | Excluir alerta |
@@ -391,7 +394,7 @@ ControleFinanceiro/
 - _id: ObjectId (MongoDB)
 - titulo: string
 - mensagem: string
-- tipo: string (vencimento, limite, meta, info)
+- tipo: string (vencimento, limite, meta, lembrete, info)
 - data_alerta: date
 - referencia_tipo: string|null (despesa, receita, meta)
 - referencia_id: ObjectId|null
@@ -473,6 +476,7 @@ Gerencia categorias, metas, alertas e logs de auditoria.
 | Metodo | Descricao |
 |--------|-----------|
 | `alertas()` | Lista alertas com geracao automatica |
+| `storeAlerta()` | Cria alerta manualmente (lembrete, vencimento, limite, meta) |
 | `gerarAlertasAutomaticos()` | Cria alertas inteligentes |
 | `marcarAlertaLido()` | Marca alerta como lido |
 | `marcarTodosAlertasLidos()` | Marca todos como lidos |

@@ -184,6 +184,54 @@ class ConfiguracaoController extends Controller
         return view('configuracoes.alertas', compact('alertas', 'alertasNaoLidos'));
     }
 
+    public function storeAlerta(Request $request)
+    {
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'mensagem' => 'nullable|string|max:500',
+            'tipo' => 'required|string|in:vencimento,limite,meta,lembrete',
+            'data_alerta' => 'nullable|date',
+        ]);
+
+        // Construir mensagem baseada no tipo
+        $mensagem = $request->mensagem;
+
+        switch ($request->tipo) {
+            case 'vencimento':
+                $valor = $request->valor ? 'R$ ' . number_format($request->valor, 2, ',', '.') : '';
+                $dataFormatada = $request->data_alerta ? Carbon::parse($request->data_alerta)->format('d/m/Y') : '';
+                $mensagem = $mensagem ?: "Vencimento: {$dataFormatada}" . ($valor ? " - Valor: {$valor}" : '');
+                break;
+
+            case 'limite':
+                $limite = $request->valor_limite ? 'R$ ' . number_format($request->valor_limite, 2, ',', '.') : '';
+                $atual = $request->valor_atual ? 'R$ ' . number_format($request->valor_atual, 2, ',', '.') : '';
+                $mensagem = $mensagem ?: "Limite: {$limite}" . ($atual ? " | Atual: {$atual}" : '');
+                break;
+
+            case 'meta':
+                $alvo = $request->valor_alvo ? 'R$ ' . number_format($request->valor_alvo, 2, ',', '.') : '';
+                $dataFormatada = $request->data_alerta ? Carbon::parse($request->data_alerta)->format('d/m/Y') : '';
+                $mensagem = $mensagem ?: "Meta: {$alvo}" . ($dataFormatada ? " - Prazo: {$dataFormatada}" : '');
+                break;
+
+            default:
+                $mensagem = $mensagem ?: 'Lembrete criado';
+        }
+
+        Alerta::create([
+            'titulo' => $request->titulo,
+            'mensagem' => $mensagem,
+            'tipo' => $request->tipo,
+            'data_alerta' => $request->data_alerta ? Carbon::parse($request->data_alerta) : Carbon::now(),
+            'lido' => false,
+            'ativo' => true,
+        ]);
+
+        return redirect()->route('alertas.index')
+            ->with('success', 'Alerta criado com sucesso!');
+    }
+
     private function gerarAlertasAutomaticos()
     {
         $hoje = Carbon::now();

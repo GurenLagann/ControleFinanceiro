@@ -15,7 +15,7 @@
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-database"></i> Total</h6>
-                    <h3 class="mb-0">{{ number_format($estatisticas['total']) }}</h3>
+                    <h3 class="mb-0 text-white">{{ number_format($estatisticas['total']) }}</h3>
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-calendar-day"></i> Hoje</h6>
-                    <h3 class="mb-0">{{ number_format($estatisticas['hoje']) }}</h3>
+                    <h3 class="mb-0 text-white">{{ number_format($estatisticas['hoje']) }}</h3>
                 </div>
             </div>
         </div>

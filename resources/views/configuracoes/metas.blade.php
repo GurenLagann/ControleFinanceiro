@@ -21,7 +21,7 @@
             <div class="card glow-blue" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bullseye"></i> Total</h6>
-                    <h3 class="mb-0">{{ $metasAtivas->count() }}</h3>
+                    <h3 class="mb-0 text-white">{{ $metasAtivas->count() }}</h3>
                 </div>
             </div>
         </div>
@@ -82,16 +82,16 @@
                             @endif
                         </span>
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $meta->titulo }}</h5>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-white fw-bold">{{ $meta->titulo }}</h5>
                         @if($meta->descricao)
-                            <p class="card-text text-muted small">{{ $meta->descricao }}</p>
+                            <p class="card-text text-light small opacity-75">{{ $meta->descricao }}</p>
                         @endif
 
                         <div class="mb-3">
                             <div class="d-flex justify-content-between small mb-1">
-                                <span>Progresso</span>
-                                <span class="{{ $meta->progresso >= 100 ? 'valor-positivo' : '' }}">
+                                <span class="text-white">Progresso</span>
+                                <span class="fw-bold {{ $meta->progresso >= 100 ? 'valor-positivo' : 'text-white' }}">
                                     {{ number_format($meta->progresso, 1) }}%
                                 </span>
                             </div>
@@ -105,29 +105,31 @@
                             </div>
                         </div>
 
-                        <div class="row text-center small">
+                        <div class="row text-center small mb-3">
                             <div class="col-6">
-                                <span class="text-muted d-block">Atual</span>
-                                <strong class="{{ $meta->tipo === 'limite_gasto' && $meta->valor_atual > $meta->valor_alvo ? 'valor-negativo' : 'valor-positivo' }}">
+                                <span class="text-white-50 d-block">Atual</span>
+                                <strong class="fs-6 {{ $meta->tipo === 'limite_gasto' && $meta->valor_atual > $meta->valor_alvo ? 'valor-negativo' : 'valor-positivo' }}">
                                     R$ {{ number_format($meta->valor_atual, 2, ',', '.') }}
                                 </strong>
                             </div>
                             <div class="col-6">
-                                <span class="text-muted d-block">Meta</span>
-                                <strong>R$ {{ number_format($meta->valor_alvo, 2, ',', '.') }}</strong>
+                                <span class="text-white-50 d-block">Meta</span>
+                                <strong class="fs-6 text-white">R$ {{ number_format($meta->valor_alvo, 2, ',', '.') }}</strong>
                             </div>
                         </div>
 
-                        @if($meta->categoria)
-                            <div class="mt-2">
-                                <span class="badge bg-secondary"><i class="bi bi-tag"></i> {{ $meta->categoria }}</span>
-                            </div>
-                        @endif
+                        <div class="mt-auto">
+                            @if($meta->categoria)
+                                <div class="mb-2">
+                                    <span class="badge bg-secondary"><i class="bi bi-tag"></i> {{ $meta->categoria }}</span>
+                                </div>
+                            @endif
 
-                        <div class="mt-2 small text-muted">
-                            <i class="bi bi-calendar-range"></i>
-                            {{ $meta->data_inicio ? $meta->data_inicio->format('d/m/Y') : '-' }} -
-                            {{ $meta->data_fim ? $meta->data_fim->format('d/m/Y') : '-' }}
+                            <div class="small text-white-50">
+                                <i class="bi bi-calendar-range"></i>
+                                {{ $meta->data_inicio ? $meta->data_inicio->format('d/m/Y') : '-' }} -
+                                {{ $meta->data_fim ? $meta->data_fim->format('d/m/Y') : '-' }}
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer py-2 d-flex justify-content-end gap-1">

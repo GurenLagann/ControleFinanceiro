@@ -31,7 +31,7 @@
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-palette"></i> Categorias</h6>
-                    <h3 class="mb-0">{{ number_format($estatisticas['categorias']) }}</h3>
+                    <h3 class="mb-0 text-white">{{ number_format($estatisticas['categorias']) }}</h3>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bullseye"></i> Metas</h6>
-                    <h3 class="mb-0">{{ number_format($estatisticas['metas']) }}</h3>
+                    <h3 class="mb-0 text-white">{{ number_format($estatisticas['metas']) }}</h3>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #ffc107;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bell"></i> Alertas</h6>
-                    <h3 class="mb-0">{{ number_format($estatisticas['alertas']) }}</h3>
+                    <h3 class="mb-0 text-white">{{ number_format($estatisticas['alertas']) }}</h3>
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #17a2b8;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-database"></i> Total</h6>
-                    <h3 class="mb-0">{{ number_format($totalRegistros) }}</h3>
+                    <h3 class="mb-0 text-white">{{ number_format($totalRegistros) }}</h3>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
                 <div class="card-header bg-success py-2">
                     <span class="text-white"><i class="bi bi-cloud-download"></i> Exportar Backup</span>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     <p class="text-muted">
                         Exporte todos os seus dados financeiros em um arquivo JSON.
                         Este arquivo pode ser usado para restaurar seus dados posteriormente.
@@ -84,7 +84,7 @@
                         </ul>
                     </div>
 
-                    <a href="{{ route('backup.exportar') }}" class="btn btn-success w-100">
+                    <a href="{{ route('backup.exportar') }}" class="btn btn-success w-100 mt-auto">
                         <i class="bi bi-download"></i> Baixar Backup Completo
                     </a>
                 </div>
@@ -95,14 +95,14 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100" style="opacity: 1 !important;">
                 <div class="card-header bg-warning py-2">
-                    <span class="text-dark"><i class="bi bi-cloud-upload"></i> Restaurar Backup</span>
+                    <span class="text-white"><i class="bi bi-cloud-upload"></i> Restaurar Backup</span>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     <p class="text-muted">
                         Restaure seus dados a partir de um arquivo de backup JSON exportado anteriormente.
                     </p>
 
-                    <form action="{{ route('backup.importar') }}" method="POST" enctype="multipart/form-data" id="formRestore">
+                    <form action="{{ route('backup.importar') }}" method="POST" enctype="multipart/form-data" id="formRestore" class="d-flex flex-column flex-grow-1">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label small">Arquivo de Backup</label>
@@ -114,20 +114,20 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="modo" id="modoSubstituir" value="substituir" checked>
                                 <label class="form-check-label" for="modoSubstituir">
-                                    <strong>Substituir tudo</strong>
+                                    <strong class="text-white">Substituir tudo</strong>
                                     <small class="text-muted d-block">Apaga todos os dados atuais antes de importar</small>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="modo" id="modoMesclar" value="mesclar">
                                 <label class="form-check-label" for="modoMesclar">
-                                    <strong>Mesclar dados</strong>
+                                    <strong class="text-white">Mesclar dados</strong>
                                     <small class="text-muted d-block">Adiciona os registros sem apagar os existentes</small>
                                 </label>
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#modalConfirmar">
+                        <button type="button" class="btn btn-warning w-100 mt-auto" data-bs-toggle="modal" data-bs-target="#modalConfirmar">
                             <i class="bi bi-upload"></i> Restaurar Backup
                         </button>
                     </form>

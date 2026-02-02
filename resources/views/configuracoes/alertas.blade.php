@@ -5,6 +5,17 @@
 @endsection
 
 @section('page-actions')
+    <div class="dropdown d-inline">
+        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Novo Alerta</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalLembrete"><i class="bi bi-sticky text-secondary"></i> Lembrete</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalVencimento"><i class="bi bi-calendar-event text-danger"></i> Vencimento</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalLimite"><i class="bi bi-shield-exclamation text-warning"></i> Limite</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalMeta"><i class="bi bi-bullseye text-primary"></i> Meta</a></li>
+        </ul>
+    </div>
     @if($alertasNaoLidos > 0)
         <form action="{{ route('alertas.marcarTodosLidos') }}" method="POST" class="d-inline">
             @csrf
@@ -76,6 +87,8 @@
                                     <span class="badge bg-warning text-dark p-2"><i class="bi bi-shield-exclamation"></i></span>
                                 @elseif($alerta->tipo === 'meta')
                                     <span class="badge bg-primary p-2"><i class="bi bi-bullseye"></i></span>
+                                @elseif($alerta->tipo === 'lembrete')
+                                    <span class="badge bg-secondary p-2"><i class="bi bi-sticky"></i></span>
                                 @else
                                     <span class="badge bg-info p-2"><i class="bi bi-info-circle"></i></span>
                                 @endif
@@ -132,7 +145,162 @@
                     <li><strong>Vencimentos:</strong> Alertas automaticos para despesas recorrentes com vencimento nos proximos 7 dias</li>
                     <li><strong>Limites:</strong> Alertas quando uma meta de limite de gasto e ultrapassada</li>
                     <li><strong>Metas:</strong> Alertas quando uma meta esta proxima do prazo (menos de 7 dias)</li>
+                    <li><strong>Lembretes:</strong> Alertas personalizados criados por voce</li>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Lembrete -->
+    <div class="modal fade" id="modalLembrete" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header py-2" style="background: #6c757d;">
+                    <h6 class="modal-title text-white"><i class="bi bi-sticky-fill"></i> Novo Lembrete</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('alertas.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="tipo" value="lembrete">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small">Titulo *</label>
+                            <input type="text" name="titulo" class="form-control" required placeholder="Ex: Verificar extrato bancario">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Descricao *</label>
+                            <textarea name="mensagem" class="form-control" rows="3" required placeholder="Detalhes do lembrete..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Data do Lembrete</label>
+                            <input type="date" name="data_alerta" class="form-control" value="{{ date('Y-m-d') }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer py-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-secondary btn-sm"><i class="bi bi-check-lg"></i> Criar Lembrete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Vencimento -->
+    <div class="modal fade" id="modalVencimento" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header py-2" style="background: #dc3545;">
+                    <h6 class="modal-title text-white"><i class="bi bi-calendar-event-fill"></i> Alerta de Vencimento</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('alertas.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="tipo" value="vencimento">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small">Conta/Despesa *</label>
+                            <input type="text" name="titulo" class="form-control" required placeholder="Ex: Conta de Luz, Aluguel, IPTU">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label small">Valor (R$)</label>
+                                <input type="number" name="valor" class="form-control" step="0.01" placeholder="0,00">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label small">Data de Vencimento *</label>
+                                <input type="date" name="data_alerta" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Observacoes</label>
+                            <textarea name="mensagem" class="form-control" rows="2" placeholder="Informacoes adicionais..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer py-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-check-lg"></i> Criar Alerta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Limite -->
+    <div class="modal fade" id="modalLimite" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header py-2" style="background: #ffc107;">
+                    <h6 class="modal-title text-dark"><i class="bi bi-shield-exclamation"></i> Alerta de Limite</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('alertas.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="tipo" value="limite">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small">Categoria/Area *</label>
+                            <input type="text" name="titulo" class="form-control" required placeholder="Ex: Alimentacao, Transporte, Lazer">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label small">Limite (R$) *</label>
+                                <input type="number" name="valor_limite" class="form-control" step="0.01" required placeholder="0,00">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label small">Valor Atual (R$)</label>
+                                <input type="number" name="valor_atual" class="form-control" step="0.01" placeholder="0,00">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Mensagem de Alerta</label>
+                            <textarea name="mensagem" class="form-control" rows="2" placeholder="Ex: Atencao! Limite de gastos atingido"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer py-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning btn-sm text-dark"><i class="bi bi-check-lg"></i> Criar Alerta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Meta -->
+    <div class="modal fade" id="modalMeta" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header py-2" style="background: #0d6efd;">
+                    <h6 class="modal-title text-white"><i class="bi bi-bullseye"></i> Alerta de Meta</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('alertas.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="tipo" value="meta">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small">Nome da Meta *</label>
+                            <input type="text" name="titulo" class="form-control" required placeholder="Ex: Reserva de Emergencia, Viagem">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label small">Valor Alvo (R$)</label>
+                                <input type="number" name="valor_alvo" class="form-control" step="0.01" placeholder="0,00">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label small">Data Limite</label>
+                                <input type="date" name="data_alerta" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Descricao</label>
+                            <textarea name="mensagem" class="form-control" rows="2" placeholder="Detalhes sobre a meta..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer py-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-check-lg"></i> Criar Alerta</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

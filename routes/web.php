@@ -23,6 +23,7 @@ Route::delete('/metas/{id}', [ConfiguracaoController::class, 'destroyMeta'])->na
 
 // Alertas
 Route::get('/alertas', [ConfiguracaoController::class, 'alertas'])->name('alertas.index');
+Route::post('/alertas', [ConfiguracaoController::class, 'storeAlerta'])->name('alertas.store');
 Route::patch('/alertas/{id}/lido', [ConfiguracaoController::class, 'marcarAlertaLido'])->name('alertas.lido');
 Route::post('/alertas/marcar-todos-lidos', [ConfiguracaoController::class, 'marcarTodosAlertasLidos'])->name('alertas.marcarTodosLidos');
 Route::delete('/alertas/{id}', [ConfiguracaoController::class, 'destroyAlerta'])->name('alertas.destroy');
