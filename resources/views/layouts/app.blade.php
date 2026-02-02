@@ -559,6 +559,10 @@
                     <i class="bi bi-journal-text"></i>
                     <span class="nav-text">Logs de Auditoria</span>
                 </a>
+                <a href="{{ route('backup.index') }}" class="nav-link {{ request()->routeIs('backup.*') ? 'active' : '' }}">
+                    <i class="bi bi-cloud-arrow-down"></i>
+                    <span class="nav-text">Backup / Exportar</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -577,15 +581,19 @@
                     <h5 class="mb-0 d-none d-md-block">@yield('page-title', 'Dashboard')</h5>
                 </div>
                 <div class="topbar-right">
-                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReceita">
-                        <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Receita</span>
-                    </button>
-                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDespesa">
-                        <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Despesa</span>
-                    </button>
-                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalMultiplasDespesas" title="Varias Despesas">
-                        <i class="bi bi-list-ul"></i>
-                    </button>
+                    @hasSection('page-actions')
+                        @yield('page-actions')
+                    @else
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReceita">
+                            <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Receita</span>
+                        </button>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDespesa">
+                            <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Despesa</span>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalMultiplasDespesas" title="Varias Despesas">
+                            <i class="bi bi-list-ul"></i>
+                        </button>
+                    @endif
                 </div>
             </header>
 

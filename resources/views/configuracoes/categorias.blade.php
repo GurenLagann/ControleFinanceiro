@@ -1,22 +1,14 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="bi bi-tags"></i> Categorias Personalizadas</h4>
-                <div>
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalCategoria">
-                        <i class="bi bi-plus-lg"></i> Nova Categoria
-                    </button>
-                    <a href="{{ route('financas.index') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+@section('page-title', 'Categorias')
 
+@section('page-actions')
+    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalCategoria">
+        <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Categoria</span>
+    </button>
+@endsection
+
+@section('content')
     <div class="row">
         <div class="col-12">
             <div class="card" style="opacity: 1 !important;">

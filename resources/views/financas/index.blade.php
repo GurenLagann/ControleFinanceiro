@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page-title', 'Dashboard')
+
 @section('content')
     <!-- Cards de Resumo -->
     <div class="row mb-4 g-2 g-md-3">

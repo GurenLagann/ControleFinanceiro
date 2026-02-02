@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FinancaController;
 use App\Http\Controllers\ConfiguracaoController;
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FinancaController::class, 'index'])->name('financas.index');
@@ -48,3 +49,17 @@ Route::post('/despesas/grupo/{grupoId}/adiantar', [FinancaController::class, 'ad
 Route::delete('/despesas/{id}', [FinancaController::class, 'destroyDespesa'])->name('despesas.destroy');
 Route::delete('/despesas/grupo/{grupoId}', [FinancaController::class, 'destroyDespesaGrupo'])->name('despesas.destroyGrupo');
 Route::patch('/despesas/{id}/toggle', [FinancaController::class, 'toggleRecorrenteDespesa'])->name('despesas.toggle');
+
+// Exportacao PDF
+Route::get('/exportar/pdf/relatorio', [ExportController::class, 'relatorioPdf'])->name('exportar.pdf.relatorio');
+Route::get('/exportar/pdf/extrato', [ExportController::class, 'extratoPdf'])->name('exportar.pdf.extrato');
+
+// Exportacao CSV
+Route::get('/exportar/csv/receitas', [ExportController::class, 'receitasCsv'])->name('exportar.csv.receitas');
+Route::get('/exportar/csv/despesas', [ExportController::class, 'despesasCsv'])->name('exportar.csv.despesas');
+Route::get('/exportar/csv/transacoes', [ExportController::class, 'transacoesCsv'])->name('exportar.csv.transacoes');
+
+// Backup e Restauracao
+Route::get('/backup', [ExportController::class, 'backupIndex'])->name('backup.index');
+Route::get('/backup/exportar', [ExportController::class, 'exportarBackup'])->name('backup.exportar');
+Route::post('/backup/importar', [ExportController::class, 'importarBackup'])->name('backup.importar');

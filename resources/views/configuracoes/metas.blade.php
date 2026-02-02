@@ -1,22 +1,14 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="bi bi-bullseye"></i> Metas Financeiras</h4>
-                <div>
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalMeta">
-                        <i class="bi bi-plus-lg"></i> Nova Meta
-                    </button>
-                    <a href="{{ route('financas.index') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+@section('page-title', 'Metas')
 
+@section('page-actions')
+    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalMeta">
+        <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Meta</span>
+    </button>
+@endsection
+
+@section('content')
     <!-- Cards de Resumo -->
     <div class="row mb-4">
         @php

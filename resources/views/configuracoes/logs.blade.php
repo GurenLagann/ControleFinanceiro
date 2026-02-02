@@ -1,22 +1,14 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="bi bi-journal-text"></i> Logs de Auditoria</h4>
-                <div>
-                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalLimpar">
-                        <i class="bi bi-trash"></i> Limpar Antigos
-                    </button>
-                    <a href="{{ route('financas.index') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+@section('page-title', 'Logs de Auditoria')
 
+@section('page-actions')
+    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalLimpar">
+        <i class="bi bi-trash"></i> <span class="d-none d-sm-inline">Limpar</span>
+    </button>
+@endsection
+
+@section('content')
     <!-- Cards de Estatisticas -->
     <div class="row mb-4">
         <div class="col-md-2">

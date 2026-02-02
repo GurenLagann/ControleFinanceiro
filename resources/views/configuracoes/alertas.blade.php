@@ -1,32 +1,21 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">
-                    <i class="bi bi-bell"></i> Alertas
-                    @if($alertasNaoLidos > 0)
-                        <span class="badge bg-danger">{{ $alertasNaoLidos }}</span>
-                    @endif
-                </h4>
-                <div>
-                    @if($alertasNaoLidos > 0)
-                        <form action="{{ route('alertas.marcarTodosLidos') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-success btn-sm">
-                                <i class="bi bi-check-all"></i> Marcar Todos como Lidos
-                            </button>
-                        </form>
-                    @endif
-                    <a href="{{ route('financas.index') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+@section('page-title')
+    Alertas @if($alertasNaoLidos > 0)<span class="badge bg-danger">{{ $alertasNaoLidos }}</span>@endif
+@endsection
 
+@section('page-actions')
+    @if($alertasNaoLidos > 0)
+        <form action="{{ route('alertas.marcarTodosLidos') }}" method="POST" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-outline-success btn-sm">
+                <i class="bi bi-check-all"></i> <span class="d-none d-sm-inline">Marcar Lidos</span>
+            </button>
+        </form>
+    @endif
+@endsection
+
+@section('content')
     <!-- Cards de Resumo -->
     <div class="row mb-4">
         @php

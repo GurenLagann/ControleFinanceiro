@@ -1,17 +1,14 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="bi bi-list-ul"></i> Todas as Transacoes</h4>
-                <a href="{{ route('financas.index') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-arrow-left"></i> Voltar
-                </a>
-            </div>
-        </div>
-    </div>
+@section('page-title', 'Transacoes')
 
+@section('page-actions')
+    <a href="{{ route('financas.index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> <span class="d-none d-sm-inline">Dashboard</span>
+    </a>
+@endsection
+
+@section('content')
     <div class="row">
         <div class="col-12">
             <div class="card" style="opacity: 1 !important;">
