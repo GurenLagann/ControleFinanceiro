@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Receita;
 use App\Models\Despesa;
+use App\Models\Categoria;
 use App\Services\CacheService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -97,7 +98,11 @@ class FinancaController extends Controller
         $despesas = CacheService::getDespesas();
         $receitasRecorrentes = CacheService::getReceitasRecorrentes();
         $despesasRecorrentes = CacheService::getDespesasRecorrentes();
-        $despesasParceladas = CacheService::getDespesasParceladas();
+        $despesasParceladas = CacheService::getDespesasParceladas()
+            ->filter(function ($parcelas) {
+                // Mostrar apenas grupos que ainda têm parcelas futuras (não quitados)
+                return $parcelas->where('data', '>', now())->count() > 0;
+            });
 
         $totalReceitas = $receitas->sum('valor');
         $totalDespesas = $despesas->sum('valor');
@@ -243,21 +248,15 @@ class FinancaController extends Controller
             }
         }
 
-        // Categorias para autocomplete
-        $categoriasReceita = Receita::whereNotNull('categoria')
-            ->where('categoria', '!=', '')
-            ->pluck('categoria')
-            ->unique()
-            ->filter()
-            ->values()
+        // Categorias para autocomplete (do modelo Categoria)
+        $categoriasReceita = Categoria::ativas()
+            ->paraReceitas()
+            ->pluck('nome')
             ->toArray();
 
-        $categoriasDespesa = Despesa::whereNotNull('categoria')
-            ->where('categoria', '!=', '')
-            ->pluck('categoria')
-            ->unique()
-            ->filter()
-            ->values()
+        $categoriasDespesa = Categoria::ativas()
+            ->paraDespesas()
+            ->pluck('nome')
             ->toArray();
 
         return view('financas.index', compact(

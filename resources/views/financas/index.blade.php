@@ -705,7 +705,7 @@
                                     <input type="number" name="despesas[0][valor]" class="form-control form-control-sm" placeholder="Valor" step="0.01" min="0.01" required>
                                 </div>
                                 <div class="col-3">
-                                    <input type="text" name="despesas[0][categoria]" class="form-control form-control-sm" placeholder="Categoria">
+                                    <input type="text" name="despesas[0][categoria]" class="form-control form-control-sm" placeholder="Categoria" list="cat-desp">
                                 </div>
                                 <div class="col-1">
                                     <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerLinha(this)" disabled><i class="bi bi-x"></i></button>
@@ -797,7 +797,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label small">Categoria</label>
-                            <input type="text" name="categoria" id="editCategoria" class="form-control" placeholder="Opcional">
+                            <input type="text" name="categoria" id="editCategoria" class="form-control" placeholder="Opcional" list="cat-desp">
                         </div>
                     </div>
                     <div class="modal-footer py-2">
@@ -880,7 +880,7 @@
                 <input type="number" name="despesas[${linhaCount}][valor]" class="form-control form-control-sm" placeholder="Valor" step="0.01" min="0.01" required>
             </div>
             <div class="col-3">
-                <input type="text" name="despesas[${linhaCount}][categoria]" class="form-control form-control-sm" placeholder="Categoria">
+                <input type="text" name="despesas[${linhaCount}][categoria]" class="form-control form-control-sm" placeholder="Categoria" list="cat-desp">
             </div>
             <div class="col-1">
                 <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerLinha(this)"><i class="bi bi-x"></i></button>

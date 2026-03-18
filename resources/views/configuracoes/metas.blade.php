@@ -106,15 +106,21 @@
                         </div>
 
                         <div class="row text-center small mb-3">
-                            <div class="col-6">
-                                <span class="text-white-50 d-block">Atual</span>
-                                <strong class="fs-6 {{ $meta->tipo === 'limite_gasto' && $meta->valor_atual > $meta->valor_alvo ? 'valor-negativo' : 'valor-positivo' }}">
+                            <div class="col-4">
+                                <span class="text-white-50 d-block">Calculado</span>
+                                <strong class="fs-6 text-white" style="font-size:0.85rem!important;">
                                     R$ {{ number_format($meta->valor_atual, 2, ',', '.') }}
                                 </strong>
                             </div>
-                            <div class="col-6">
+                            <div class="col-4">
+                                <span class="text-white-50 d-block">Aportes</span>
+                                <strong class="fs-6 valor-positivo" style="font-size:0.85rem!important;">
+                                    R$ {{ number_format($meta->soma_contribuicoes, 2, ',', '.') }}
+                                </strong>
+                            </div>
+                            <div class="col-4">
                                 <span class="text-white-50 d-block">Meta</span>
-                                <strong class="fs-6 text-white">R$ {{ number_format($meta->valor_alvo, 2, ',', '.') }}</strong>
+                                <strong class="fs-6 text-white" style="font-size:0.85rem!important;">R$ {{ number_format($meta->valor_alvo, 2, ',', '.') }}</strong>
                             </div>
                         </div>
 
@@ -132,17 +138,28 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer py-2 d-flex justify-content-end gap-1">
-                        <button type="button" class="btn btn-outline-warning btn-sm"
-                            onclick="editarMeta('{{ $meta->_id }}', '{{ addslashes($meta->titulo) }}', '{{ addslashes($meta->descricao ?? '') }}', '{{ $meta->valor_alvo }}', '{{ $meta->data_inicio ? $meta->data_inicio->format('Y-m-d') : '' }}', '{{ $meta->data_fim ? $meta->data_fim->format('Y-m-d') : '' }}', '{{ addslashes($meta->categoria ?? '') }}', '{{ $meta->tipo }}')">
-                            <i class="bi bi-pencil"></i>
+                    <div class="card-footer py-2 d-flex justify-content-between align-items-center gap-1">
+                        <button type="button" class="btn btn-success btn-sm"
+                            onclick="abrirModalContribuir('{{ $meta->_id }}', '{{ addslashes($meta->titulo) }}', {{ $meta->valor_alvo }}, {{ $meta->valor_total }})">
+                            <i class="bi bi-plus-circle"></i> Adicionar Valor
                         </button>
-                        <form action="{{ route('metas.destroy', $meta->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir esta meta?')">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                        <div class="d-flex gap-1">
+                            <button type="button" class="btn btn-outline-info btn-sm"
+                                onclick="abrirModalAportes('{{ $meta->_id }}', '{{ addslashes($meta->titulo) }}', {{ json_encode($meta->contribuicoes ?? []) }})"
+                                title="Ver aportes">
+                                <i class="bi bi-list-ul"></i>
                             </button>
-                        </form>
+                            <button type="button" class="btn btn-outline-warning btn-sm"
+                                onclick="editarMeta('{{ $meta->_id }}', '{{ addslashes($meta->titulo) }}', '{{ addslashes($meta->descricao ?? '') }}', '{{ $meta->valor_alvo }}', '{{ $meta->data_inicio ? $meta->data_inicio->format('Y-m-d') : '' }}', '{{ $meta->data_fim ? $meta->data_fim->format('Y-m-d') : '' }}', '{{ addslashes($meta->categoria ?? '') }}', '{{ $meta->tipo }}')">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <form action="{{ route('metas.destroy', $meta->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir esta meta?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,6 +176,67 @@
                 </div>
             </div>
         @endforelse
+    </div>
+
+    <!-- Modal Adicionar Valor / Contribuicao -->
+    <div class="modal fade" id="modalContribuir" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header py-2" style="background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(15,15,26,0.9));">
+                    <h6 class="modal-title text-white"><i class="bi bi-plus-circle"></i> Adicionar Valor à Meta</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formContribuir" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <p class="text-muted small mb-3" id="labelMetaContribuir"></p>
+                        <div class="alert alert-info mb-3" id="infoFaltaMeta" style="display:none;">
+                            <i class="bi bi-bullseye"></i> Faltam: <strong id="textoFaltaMeta"></strong>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label small">Valor *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background:rgba(20,20,35,0.8);color:#aaa;border-color:rgba(255,255,255,0.08);">R$</span>
+                                    <input type="number" name="valor" id="valorContribuicao" class="form-control" placeholder="0,00" step="0.01" min="0.01" required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">Data *</label>
+                                <input type="date" name="data" class="form-control" value="{{ date('Y-m-d') }}" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small">Descrição (opcional)</label>
+                                <input type="text" name="descricao" class="form-control" placeholder="Ex: Aporte mensal, Bônus..." maxlength="255">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer py-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check-lg"></i> Adicionar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Aportes -->
+    <div class="modal fade" id="modalAportes" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header py-2" style="background:linear-gradient(135deg,rgba(55,66,250,0.25),rgba(15,15,26,0.9));">
+                    <h6 class="modal-title text-white"><i class="bi bi-list-ul"></i> Aportes da Meta</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="text-muted mb-3" id="labelMetaAportes"></h6>
+                    <div id="listaAportes"></div>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal Nova/Editar Meta -->
@@ -231,6 +309,61 @@
         document.getElementById('metaDataInicio').value = inicioMes.toISOString().split('T')[0];
         document.getElementById('metaDataFim').value = fimMes.toISOString().split('T')[0];
     });
+
+    function abrirModalContribuir(metaId, titulo, valorAlvo, valorAtual) {
+        document.getElementById('formContribuir').action = '/metas/' + metaId + '/contribuicoes';
+        document.getElementById('labelMetaContribuir').textContent = 'Meta: ' + titulo;
+
+        const falta = Math.max(0, valorAlvo - valorAtual);
+        if (falta > 0) {
+            document.getElementById('infoFaltaMeta').style.display = 'block';
+            document.getElementById('textoFaltaMeta').textContent = 'R$ ' + falta.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('valorContribuicao').value = falta.toFixed(2);
+        } else {
+            document.getElementById('infoFaltaMeta').style.display = 'none';
+            document.getElementById('valorContribuicao').value = '';
+        }
+
+        new bootstrap.Modal(document.getElementById('modalContribuir')).show();
+    }
+
+    function abrirModalAportes(metaId, titulo, aportes) {
+        document.getElementById('labelMetaAportes').textContent = titulo;
+
+        let html = '';
+        if (!aportes || aportes.length === 0) {
+            html = '<div class="text-center py-4 text-muted"><i class="bi bi-inbox" style="font-size:2rem;"></i><p class="mt-2">Nenhum aporte registrado.</p></div>';
+        } else {
+            const sorted = [...aportes].sort((a, b) => new Date(b.data) - new Date(a.data));
+            html = '<div class="table-responsive"><table class="table table-hover">';
+            html += '<thead><tr><th>Data</th><th>Valor</th><th>Descrição</th><th></th></tr></thead><tbody>';
+            sorted.forEach(c => {
+                const data = c.data ? new Date(c.data + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+                const valor = parseFloat(c.valor || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                html += `<tr>
+                    <td>${data}</td>
+                    <td class="valor-positivo">R$ ${valor}</td>
+                    <td>${c.descricao || '-'}</td>
+                    <td>
+                        <form action="/metas/${metaId}/contribuicoes/${c.id}" method="POST"
+                              onsubmit="return confirm('Remover este aporte?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Remover">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table></div>';
+            const total = aportes.reduce((s, c) => s + parseFloat(c.valor || 0), 0);
+            html += `<div class="text-end mt-2"><strong class="valor-positivo">Total em aportes: R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>`;
+        }
+
+        document.getElementById('listaAportes').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('modalAportes')).show();
+    }
 
     function editarMeta(id, titulo, descricao, valorAlvo, dataInicio, dataFim, categoria, tipo) {
         document.getElementById('modalMetaTitle').innerHTML = '<i class="bi bi-pencil"></i> Editar Meta';

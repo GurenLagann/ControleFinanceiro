@@ -534,6 +534,17 @@
                     <span class="nav-text">Transacoes</span>
                 </a>
 
+                <a href="{{ route('dividas.index') }}" class="nav-link {{ request()->routeIs('dividas.*') ? 'active' : '' }}">
+                    <i class="bi bi-credit-card"></i>
+                    <span class="nav-text">Dívidas</span>
+                    @php
+                        $dividasEmAtraso = \App\Models\Divida::emAtraso()->count();
+                    @endphp
+                    @if($dividasEmAtraso > 0)
+                        <span class="nav-badge">{{ $dividasEmAtraso }}</span>
+                    @endif
+                </a>
+
                 <div class="nav-section">Configuracoes</div>
                 <a href="{{ route('categorias.index') }}" class="nav-link {{ request()->routeIs('categorias.index') ? 'active' : '' }}">
                     <i class="bi bi-tags"></i>

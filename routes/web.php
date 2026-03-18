@@ -3,6 +3,7 @@
 use App\Http\Controllers\FinancaController;
 use App\Http\Controllers\ConfiguracaoController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\DividaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FinancaController::class, 'index'])->name('financas.index');
@@ -20,6 +21,8 @@ Route::get('/metas', [ConfiguracaoController::class, 'metas'])->name('metas.inde
 Route::post('/metas', [ConfiguracaoController::class, 'storeMeta'])->name('metas.store');
 Route::put('/metas/{id}', [ConfiguracaoController::class, 'updateMeta'])->name('metas.update');
 Route::delete('/metas/{id}', [ConfiguracaoController::class, 'destroyMeta'])->name('metas.destroy');
+Route::post('/metas/{id}/contribuicoes', [ConfiguracaoController::class, 'storeContribuicao'])->name('metas.contribuicoes.store');
+Route::delete('/metas/{id}/contribuicoes/{contribId}', [ConfiguracaoController::class, 'destroyContribuicao'])->name('metas.contribuicoes.destroy');
 
 // Alertas
 Route::get('/alertas', [ConfiguracaoController::class, 'alertas'])->name('alertas.index');
@@ -50,6 +53,14 @@ Route::post('/despesas/grupo/{grupoId}/adiantar', [FinancaController::class, 'ad
 Route::delete('/despesas/{id}', [FinancaController::class, 'destroyDespesa'])->name('despesas.destroy');
 Route::delete('/despesas/grupo/{grupoId}', [FinancaController::class, 'destroyDespesaGrupo'])->name('despesas.destroyGrupo');
 Route::patch('/despesas/{id}/toggle', [FinancaController::class, 'toggleRecorrenteDespesa'])->name('despesas.toggle');
+
+// Dividas
+Route::get('/dividas', [DividaController::class, 'index'])->name('dividas.index');
+Route::post('/dividas', [DividaController::class, 'store'])->name('dividas.store');
+Route::put('/dividas/{id}', [DividaController::class, 'update'])->name('dividas.update');
+Route::delete('/dividas/{id}', [DividaController::class, 'destroy'])->name('dividas.destroy');
+Route::post('/dividas/{id}/pagamentos', [DividaController::class, 'storePagamento'])->name('dividas.pagamentos.store');
+Route::delete('/dividas/{id}/pagamentos/{pagamentoId}', [DividaController::class, 'destroyPagamento'])->name('dividas.pagamentos.destroy');
 
 // Exportacao PDF
 Route::get('/exportar/pdf/relatorio', [ExportController::class, 'relatorioPdf'])->name('exportar.pdf.relatorio');

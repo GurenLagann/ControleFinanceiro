@@ -171,6 +171,45 @@ class ConfiguracaoController extends Controller
             ->with('success', 'Meta removida com sucesso!');
     }
 
+    public function storeContribuicao(Request $request, string $id)
+    {
+        $meta = Meta::findOrFail($id);
+
+        $validated = $request->validate([
+            'valor'    => 'required|numeric|min:0.01',
+            'data'     => 'required|date',
+            'descricao' => 'nullable|string|max:255',
+        ]);
+
+        $contribuicoes = $meta->contribuicoes ?? [];
+        $contribuicoes[] = [
+            'id'       => \Illuminate\Support\Str::uuid()->toString(),
+            'valor'    => (float) $validated['valor'],
+            'data'     => $validated['data'],
+            'descricao' => $validated['descricao'] ?? '',
+        ];
+
+        $meta->update(['contribuicoes' => $contribuicoes]);
+
+        return redirect()->route('metas.index')
+            ->with('success', 'Valor adicionado à meta com sucesso!');
+    }
+
+    public function destroyContribuicao(string $id, string $contribId)
+    {
+        $meta = Meta::findOrFail($id);
+
+        $novas = collect($meta->contribuicoes ?? [])
+            ->filter(fn($c) => ($c['id'] ?? '') !== $contribId)
+            ->values()
+            ->toArray();
+
+        $meta->update(['contribuicoes' => $novas]);
+
+        return redirect()->route('metas.index')
+            ->with('success', 'Contribuição removida com sucesso!');
+    }
+
     // ==================== ALERTAS ====================
 
     public function alertas()

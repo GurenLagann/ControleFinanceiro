@@ -21,6 +21,7 @@ class Meta extends Model
         'categoria',
         'tipo', // 'economia', 'limite_gasto', 'receita'
         'ativo',
+        'contribuicoes', // array embedded de aportes manuais
     ];
 
     protected $casts = [
@@ -36,10 +37,20 @@ class Meta extends Model
         'valor_atual' => 0,
     ];
 
+    public function getSomaContribuicoesAttribute(): float
+    {
+        return collect($this->contribuicoes ?? [])->sum('valor');
+    }
+
+    public function getValorTotalAttribute(): float
+    {
+        return $this->valor_atual + $this->soma_contribuicoes;
+    }
+
     public function getProgressoAttribute()
     {
         if ($this->valor_alvo <= 0) return 0;
-        return min(100, ($this->valor_atual / $this->valor_alvo) * 100);
+        return min(100, ($this->valor_total / $this->valor_alvo) * 100);
     }
 
     public function getDiasRestantesAttribute()
