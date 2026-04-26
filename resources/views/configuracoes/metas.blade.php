@@ -17,7 +17,7 @@
             $emAndamento = $metasAtivas->filter(fn($m) => $m->progresso < 100 && $m->dias_restantes > 0)->count();
             $vencidas = $metasAtivas->filter(fn($m) => $m->progresso < 100 && $m->dias_restantes <= 0)->count();
         @endphp
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card glow-blue" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bullseye"></i> Total</h6>
@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card glow-green" style="opacity: 1 !important; border-left: 4px solid #00ff88;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-check-circle"></i> Concluidas</h6>
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card glow-purple" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-hourglass-split"></i> Em Andamento</h6>
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card glow-red" style="opacity: 1 !important; border-left: 4px solid #ff4757;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-exclamation-triangle"></i> Vencidas</h6>
@@ -180,7 +180,7 @@
 
     <!-- Modal Adicionar Valor / Contribuicao -->
     <div class="modal fade" id="modalContribuir" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header py-2" style="background:linear-gradient(135deg,rgba(0,255,136,0.25),rgba(15,15,26,0.9));">
                     <h6 class="modal-title text-white"><i class="bi bi-plus-circle"></i> Adicionar Valor à Meta</h6>
@@ -222,7 +222,7 @@
 
     <!-- Modal Ver Aportes -->
     <div class="modal fade" id="modalAportes" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header py-2" style="background:linear-gradient(135deg,rgba(55,66,250,0.25),rgba(15,15,26,0.9));">
                     <h6 class="modal-title text-white"><i class="bi bi-list-ul"></i> Aportes da Meta</h6>
@@ -241,7 +241,7 @@
 
     <!-- Modal Nova/Editar Meta -->
     <div class="modal fade" id="modalMeta" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-primary py-2">
                     <h6 class="modal-title text-white" id="modalMetaTitle"><i class="bi bi-bullseye"></i> Nova Meta</h6>

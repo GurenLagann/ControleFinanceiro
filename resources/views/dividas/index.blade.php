@@ -239,7 +239,7 @@
 
 {{-- ===== MODAL NOVA DIVIDA ===== --}}
 <div class="modal fade" id="modalNovaDivida" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
         <div class="modal-content">
             <form action="{{ route('dividas.store') }}" method="POST">
                 @csrf
@@ -300,7 +300,7 @@
 
 {{-- ===== MODAL REGISTRAR PAGAMENTO ===== --}}
 <div class="modal fade" id="modalPagamento" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <form id="formPagamento" method="POST">
                 @csrf
@@ -348,7 +348,7 @@
 
 {{-- ===== MODAL VER PAGAMENTOS ===== --}}
 <div class="modal fade" id="modalVerPagamentos" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="bi bi-list-ul me-2" style="color:#3742fa;"></i>Histórico de Pagamentos</h5>
@@ -367,7 +367,7 @@
 
 {{-- ===== MODAL EDITAR DIVIDA ===== --}}
 <div class="modal fade" id="modalEditarDivida" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
         <div class="modal-content">
             <form id="formEditarDivida" method="POST">
                 @csrf

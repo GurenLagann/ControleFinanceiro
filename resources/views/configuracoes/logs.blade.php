@@ -11,7 +11,7 @@
 @section('content')
     <!-- Cards de Estatisticas -->
     <div class="row mb-4">
-        <div class="col-md-2">
+        <div class="col-4 col-md-2">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-database"></i> Total</h6>
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-4 col-md-2">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-calendar-day"></i> Hoje</h6>
@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-4 col-md-2">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #00ff88;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-plus-circle"></i> Criacao</h6>
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-4 col-md-2">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #ffc107;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-pencil"></i> Edicao</h6>
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-4 col-md-2">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #ff4757;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-trash"></i> Exclusao</h6>
@@ -59,7 +59,7 @@
             <div class="card" style="opacity: 1 !important;">
                 <div class="card-body py-2">
                     <form method="GET" class="row g-2 align-items-center">
-                        <div class="col-md-2">
+                        <div class="col-4 col-md-2">
                             <select name="model" class="form-select form-select-sm">
                                 <option value="">Todos os Modelos</option>
                                 <option value="Receita" {{ request('model') == 'Receita' ? 'selected' : '' }}>Receita</option>
@@ -68,7 +68,7 @@
                                 <option value="Categoria" {{ request('model') == 'Categoria' ? 'selected' : '' }}>Categoria</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-4 col-md-2">
                             <select name="action" class="form-select form-select-sm">
                                 <option value="">Todas as Acoes</option>
                                 <option value="create" {{ request('action') == 'create' ? 'selected' : '' }}>Criacao</option>
@@ -76,18 +76,18 @@
                                 <option value="delete" {{ request('action') == 'delete' ? 'selected' : '' }}>Exclusao</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-4 col-md-2">
                             <input type="date" name="data_inicio" class="form-control form-control-sm" placeholder="Data Inicio" value="{{ request('data_inicio') }}">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-4 col-md-2">
                             <input type="date" name="data_fim" class="form-control form-control-sm" placeholder="Data Fim" value="{{ request('data_fim') }}">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-4 col-md-2">
                             <button type="submit" class="btn btn-primary btn-sm w-100">
                                 <i class="bi bi-search"></i> Filtrar
                             </button>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-4 col-md-2">
                             <a href="{{ route('logs.index') }}" class="btn btn-outline-secondary btn-sm w-100">
                                 <i class="bi bi-x"></i> Limpar
                             </a>
@@ -182,7 +182,7 @@
 
     <!-- Modal Detalhes -->
     <div class="modal fade" id="modalDetalhes" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-fullscreen-md-down modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-info py-2">
                     <h6 class="modal-title text-white"><i class="bi bi-info-circle"></i> Detalhes do Log</h6>
@@ -230,7 +230,7 @@
 
     <!-- Modal Limpar Logs -->
     <div class="modal fade" id="modalLimpar" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-danger py-2">
                     <h6 class="modal-title text-white"><i class="bi bi-exclamation-triangle"></i> Limpar Logs Antigos</h6>

@@ -2,13 +2,27 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>{{ config('app.name', 'Controle Financeiro') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         * {
             transition: background-color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+        button, a, .btn, .nav-link, label {
+            touch-action: manipulation;
+        }
+        @media (hover: none) {
+            .card:hover {
+                transform: none !important;
+                box-shadow: none !important;
+            }
         }
         body {
             background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0d1421 100%);
@@ -239,10 +253,20 @@
                 right: 0;
                 bottom: 0;
                 background: rgba(0,0,0,0.5);
-                z-index: 999;
+                z-index: 1055;
             }
             .sidebar-overlay.show {
                 display: block;
+            }
+            .sidebar {
+                z-index: 1060 !important;
+            }
+            .bottom-nav {
+                display: flex;
+                flex-direction: column;
+            }
+            .content-area {
+                padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
             }
         }
 
@@ -250,6 +274,7 @@
         @media (max-width: 767px) {
             .content-area {
                 padding: 15px 10px;
+                padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
             }
             .topbar {
                 padding: 10px 15px;
@@ -339,6 +364,72 @@
             .card-body .btn-sm span:not(:only-child) {
                 display: none;
             }
+        }
+
+        /* iOS input zoom prevention */
+        @media (max-width: 991px) {
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            input[type="email"],
+            input[type="password"],
+            input[type="tel"],
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Bottom Navigation (mobile) */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(8,8,18,0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 1050;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .bottom-nav-inner {
+            display: flex;
+            align-items: stretch;
+            height: 56px;
+        }
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 6px 2px;
+            color: #555;
+            text-decoration: none;
+            font-size: 0.6rem;
+            letter-spacing: 0.02em;
+            gap: 3px;
+            transition: color 0.2s;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            min-height: 44px;
+        }
+        .bottom-nav-item i {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .bottom-nav-item span {
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .bottom-nav-item.active {
+            color: #00ff88;
+        }
+        .bottom-nav-item:active {
+            opacity: 0.6;
         }
 
         /* Cards e outros estilos existentes */
@@ -653,6 +744,10 @@
         // Toggle: colapsar ou mostrar sidebar oculta
         toggleBtn.addEventListener('click', () => {
             if (isMobile()) {
+                // Limpa qualquer transform inline deixado pelo GSAP antes de alternar
+                sidebar.style.transform = '';
+                sidebar.style.opacity = '';
+                sidebar.classList.remove('hidden');
                 sidebar.classList.toggle('show');
                 overlay.classList.toggle('show');
             } else {
@@ -677,18 +772,24 @@
 
         // Ocultar completamente a sidebar
         hideBtn.addEventListener('click', () => {
-            gsap.to(sidebar, {
-                x: '-100%',
-                duration: 0.3,
-                ease: 'power2.in',
-                onComplete: () => {
-                    sidebar.classList.add('hidden');
-                    sidebar.classList.remove('collapsed');
-                }
-            });
-            localStorage.setItem('sidebarHidden', 'true');
-            localStorage.setItem('sidebarCollapsed', 'false');
-            updateToggleButton();
+            if (isMobile()) {
+                // No mobile apenas fecha (sem persistir estado)
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            } else {
+                gsap.to(sidebar, {
+                    x: '-100%',
+                    duration: 0.3,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        sidebar.classList.add('hidden');
+                        sidebar.classList.remove('collapsed');
+                    }
+                });
+                localStorage.setItem('sidebarHidden', 'true');
+                localStorage.setItem('sidebarCollapsed', 'false');
+                updateToggleButton();
+            }
         });
 
         overlay.addEventListener('click', () => {
@@ -942,5 +1043,37 @@
     </script>
 
     @yield('scripts')
+
+    <!-- Bottom Navigation (mobile only) -->
+    @php $rn = request()->route() ? request()->route()->getName() : ''; @endphp
+    <nav class="bottom-nav" aria-label="Navegação principal">
+        <div class="bottom-nav-inner">
+            <a href="{{ route('financas.index') }}" class="bottom-nav-item {{ $rn === 'financas.index' ? 'active' : '' }}">
+                <i class="bi bi-house{{ $rn === 'financas.index' ? '-fill' : '' }}"></i>
+                <span>Início</span>
+            </a>
+            <a href="{{ route('financas.transacoes') }}" class="bottom-nav-item {{ $rn === 'financas.transacoes' ? 'active' : '' }}">
+                <i class="bi bi-list-ul"></i>
+                <span>Transações</span>
+            </a>
+            <a href="{{ route('dividas.index') }}" class="bottom-nav-item {{ \Illuminate\Support\Str::startsWith($rn, 'dividas') ? 'active' : '' }}">
+                <i class="bi bi-credit-card{{ \Illuminate\Support\Str::startsWith($rn, 'dividas') ? '-fill' : '' }}"></i>
+                <span>Dívidas</span>
+            </a>
+            <a href="{{ route('metas.index') }}" class="bottom-nav-item {{ in_array($rn, ['metas.index', 'categorias.index', 'alertas.index']) ? 'active' : '' }}">
+                <i class="bi bi-bullseye"></i>
+                <span>Config</span>
+            </a>
+            <button type="button" class="bottom-nav-item" id="bottomNavMenu" aria-label="Mais opções">
+                <i class="bi bi-grid-fill"></i>
+                <span>Mais</span>
+            </button>
+        </div>
+    </nav>
+    <script>
+        document.getElementById('bottomNavMenu').addEventListener('click', function() {
+            document.getElementById('toggleSidebar').click();
+        });
+    </script>
 </body>
 </html>

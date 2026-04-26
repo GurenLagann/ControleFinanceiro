@@ -35,7 +35,7 @@
             $limites = $alertasAtivos->where('tipo', 'limite')->count();
             $metasAlertas = $alertasAtivos->where('tipo', 'meta')->count();
         @endphp
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card glow-red" style="opacity: 1 !important; border-left: 4px solid #ff4757;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bell"></i> Nao Lidos</h6>
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card glow-purple" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-calendar-event"></i> Vencimentos</h6>
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #ffc107;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-shield-exclamation"></i> Limites</h6>
@@ -59,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card glow-blue" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bullseye"></i> Metas</h6>
@@ -153,7 +153,7 @@
 
     <!-- Modal Lembrete -->
     <div class="modal fade" id="modalLembrete" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header py-2" style="background: #6c757d;">
                     <h6 class="modal-title text-white"><i class="bi bi-sticky-fill"></i> Novo Lembrete</h6>
@@ -187,7 +187,7 @@
 
     <!-- Modal Vencimento -->
     <div class="modal fade" id="modalVencimento" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header py-2" style="background: #dc3545;">
                     <h6 class="modal-title text-white"><i class="bi bi-calendar-event-fill"></i> Alerta de Vencimento</h6>
@@ -227,7 +227,7 @@
 
     <!-- Modal Limite -->
     <div class="modal fade" id="modalLimite" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header py-2" style="background: #ffc107;">
                     <h6 class="modal-title text-dark"><i class="bi bi-shield-exclamation"></i> Alerta de Limite</h6>
@@ -267,7 +267,7 @@
 
     <!-- Modal Meta -->
     <div class="modal fade" id="modalMeta" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header py-2" style="background: #0d6efd;">
                     <h6 class="modal-title text-white"><i class="bi bi-bullseye"></i> Alerta de Meta</h6>

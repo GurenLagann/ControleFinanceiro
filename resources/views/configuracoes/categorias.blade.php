@@ -23,9 +23,9 @@
                                 <tr>
                                     <th>Cor</th>
                                     <th>Nome</th>
-                                    <th>Icone</th>
+                                    <th class="d-none d-sm-table-cell">Icone</th>
                                     <th>Tipo</th>
-                                    <th>Status</th>
+                                    <th class="d-none d-sm-table-cell">Status</th>
                                     <th class="text-center">Acoes</th>
                                 </tr>
                             </thead>
@@ -36,7 +36,7 @@
                                             <span class="d-inline-block rounded-circle" style="width: 24px; height: 24px; background-color: {{ $categoria->cor }}"></span>
                                         </td>
                                         <td>{{ $categoria->nome }}</td>
-                                        <td>
+                                        <td class="d-none d-sm-table-cell">
                                             @if($categoria->icone)
                                                 <i class="bi bi-{{ $categoria->icone }}"></i> {{ $categoria->icone }}
                                             @else
@@ -52,7 +52,7 @@
                                                 <span class="badge bg-info">Ambos</span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="d-none d-sm-table-cell">
                                             @if($categoria->ativo)
                                                 <span class="badge bg-success">Ativa</span>
                                             @else
@@ -117,7 +117,7 @@
 
     <!-- Modal Nova/Editar Categoria -->
     <div class="modal fade" id="modalCategoria" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-primary py-2">
                     <h6 class="modal-title text-white" id="modalCategoriaTitle"><i class="bi bi-tag"></i> Nova Categoria</h6>

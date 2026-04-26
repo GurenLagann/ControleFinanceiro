@@ -30,7 +30,7 @@
                                     <th style="cursor: pointer;" onclick="ordenarTabela(2)">
                                         Descricao <i class="bi bi-arrow-down-up"></i>
                                     </th>
-                                    <th style="cursor: pointer;" onclick="ordenarTabela(3)">
+                                    <th style="cursor: pointer;" class="d-none d-md-table-cell" onclick="ordenarTabela(3)">
                                         Categoria <i class="bi bi-arrow-down-up"></i>
                                     </th>
                                     <th style="cursor: pointer;" onclick="ordenarTabela(4)">
@@ -63,7 +63,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $transacao->descricao }}</td>
-                                        <td>{{ $transacao->categoria ?: '-' }}</td>
+                                        <td class="d-none d-md-table-cell">{{ $transacao->categoria ?: '-' }}</td>
                                         <td class="{{ $transacao->tipo === 'receita' ? 'valor-positivo' : 'valor-negativo' }}">
                                             R$ {{ number_format($transacao->valor, 2, ',', '.') }}
                                         </td>
@@ -119,7 +119,7 @@
 
     <!-- Modal Editar Transacao -->
     <div class="modal fade" id="modalEditarTransacao" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header py-2" id="modalEditarHeader">
                     <h6 class="modal-title"><i class="bi bi-pencil"></i> Editar Transacao</h6>
@@ -226,10 +226,11 @@
         if (!cardHeader) return;
 
         const searchDiv = document.createElement('div');
-        searchDiv.className = 'd-flex align-items-center gap-2';
+        searchDiv.className = 'd-flex align-items-center gap-2 flex-grow-1';
+        searchDiv.style.minWidth = '0';
         searchDiv.innerHTML = `
-            <input type="text" id="buscaTransacao" class="form-control form-control-sm" placeholder="Buscar..." style="width: 200px;">
-            <select id="filtroTipo" class="form-select form-select-sm" style="width: 120px;">
+            <input type="text" id="buscaTransacao" class="form-control form-control-sm flex-grow-1" placeholder="Buscar..." style="min-width: 0;">
+            <select id="filtroTipo" class="form-select form-select-sm flex-shrink-0" style="width: 110px;">
                 <option value="">Todos</option>
                 <option value="Receita">Receitas</option>
                 <option value="Despesa">Despesas</option>

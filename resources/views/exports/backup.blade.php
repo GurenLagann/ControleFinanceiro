@@ -186,7 +186,7 @@
 
     <!-- Modal Confirmar Restauracao -->
     <div class="modal fade" id="modalConfirmar" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-warning py-2">
                     <h6 class="modal-title text-dark"><i class="bi bi-exclamation-triangle"></i> Confirmar Restauracao</h6>

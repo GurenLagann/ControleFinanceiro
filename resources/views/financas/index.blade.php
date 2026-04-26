@@ -201,11 +201,11 @@
                             <thead>
                                 <tr>
                                     <th>Descricao</th>
-                                    <th>Valor Total</th>
-                                    <th>Progresso</th>
+                                    <th class="d-none d-md-table-cell">Valor Total</th>
+                                    <th class="d-none d-sm-table-cell">Progresso</th>
                                     <th>Parcela</th>
                                     <th>Proxima</th>
-                                    <th>Restante</th>
+                                    <th class="d-none d-md-table-cell">Restante</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -225,8 +225,8 @@
                                                 <br><small class="text-muted">{{ $primeira->categoria }}</small>
                                             @endif
                                         </td>
-                                        <td class="valor-negativo">R$ {{ number_format($primeira->valor_total, 2, ',', '.') }}</td>
-                                        <td style="min-width: 120px;">
+                                        <td class="valor-negativo d-none d-md-table-cell">R$ {{ number_format($primeira->valor_total, 2, ',', '.') }}</td>
+                                        <td style="min-width: 100px;" class="d-none d-sm-table-cell">
                                             <div class="progress" style="height: 18px;">
                                                 <div class="progress-bar bg-success" style="width: {{ $percent }}%">
                                                     <small>{{ $parcelasPagas }}/{{ $primeira->total_parcelas }}</small>
@@ -236,12 +236,12 @@
                                         <td class="valor-negativo">R$ {{ number_format($primeira->valor, 2, ',', '.') }}</td>
                                         <td>
                                             @if($proximaParcela)
-                                                {{ $proximaParcela->data->format('d/m/Y') }}
+                                                {{ $proximaParcela->data->format('d/m') }}
                                             @else
                                                 <span class="badge bg-success"><i class="bi bi-check"></i> Quitado</span>
                                             @endif
                                         </td>
-                                        <td class="valor-negativo">R$ {{ number_format($restante, 2, ',', '.') }}</td>
+                                        <td class="valor-negativo d-none d-md-table-cell">R$ {{ number_format($restante, 2, ',', '.') }}</td>
                                         <td class="text-end">
                                             @if($proximaParcela)
                                                 @php
@@ -422,7 +422,7 @@
 
     <!-- Modal Despesas Totais por Mes -->
     <div class="modal fade" id="modalDespesasTotais" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-danger py-2">
                     <h6 class="modal-title text-white"><i class="bi bi-calendar3"></i> Despesas - Historico e Projecao</h6>
@@ -528,7 +528,7 @@
 
     <!-- Modal Receita -->
     <div class="modal fade" id="modalReceita" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-success py-2">
                     <h6 class="modal-title text-white"><i class="bi bi-arrow-up-circle"></i> Nova Receita</h6>
@@ -588,7 +588,7 @@
 
     <!-- Modal Despesa -->
     <div class="modal fade" id="modalDespesa" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-danger py-2">
                     <h6 class="modal-title text-white"><i class="bi bi-arrow-down-circle"></i> Nova Despesa</h6>
@@ -683,7 +683,7 @@
 
     <!-- Modal Multiplas Despesas -->
     <div class="modal fade" id="modalMultiplasDespesas" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-danger py-2">
                     <h6 class="modal-title text-white"><i class="bi bi-list-ul"></i> Adicionar Multiplas Despesas</h6>
@@ -727,7 +727,7 @@
 
     <!-- Modal Grafico Ampliado -->
     <div class="modal fade" id="modalGrafico" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header py-2">
                     <h5 class="modal-title" id="tituloGrafico"><i class="bi bi-bar-chart"></i> Grafico</h5>
@@ -743,7 +743,7 @@
 
     <!-- Modal Adiantar Parcelas -->
     <div class="modal fade" id="modalAdiantar" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-dialog modal-dialog-centered modal-sm modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-info py-2">
                     <h6 class="modal-title text-white"><i class="bi bi-fast-forward"></i> Adiantar Parcelas</h6>
@@ -772,7 +772,7 @@
 
     <!-- Modal Editar Despesa -->
     <div class="modal fade" id="modalEditarDespesa" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-warning py-2">
                     <h6 class="modal-title"><i class="bi bi-pencil"></i> Editar Despesa</h6>
