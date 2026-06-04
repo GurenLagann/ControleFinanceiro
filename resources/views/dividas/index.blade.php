@@ -479,8 +479,8 @@ function abrirModalPagamentos(dividaId, descricao, pagamentos) {
                     <form action="/dividas/${dividaId}/pagamentos/${p.id}" method="POST" onsubmit="return confirm('Remover este pagamento? A despesa vinculada também será excluída.')">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Remover pagamento">
-                            <i class="bi bi-trash"></i>
+                        <button type="submit" class="btn btn-sm btn-outline-danger btn-icon" aria-label="Remover pagamento">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
                         </button>
                     </form>
                 </td>
