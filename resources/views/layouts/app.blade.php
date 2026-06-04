@@ -489,6 +489,7 @@
         .valor-positivo { color: #00ff88 !important; font-weight: 600; text-shadow: 0 0 20px rgba(0,255,136,0.3); }
         .valor-negativo { color: #ff4757 !important; font-weight: 600; text-shadow: 0 0 20px rgba(255,71,87,0.3); }
         .valor-atencao { color: #ffc107 !important; font-weight: 600; }
+        .border-atencao { border-left: 4px solid #ffc107 !important; }
         .btn-success { background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; color: #0d2818 !important; font-weight: 600; }
         .btn-success:hover { background: linear-gradient(135deg, #00cc6a, #00ff88); color: #0d2818 !important; }
         .btn-danger { background: linear-gradient(135deg, #ff4757, #ff3344); border: none; }

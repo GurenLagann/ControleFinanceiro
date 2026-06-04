@@ -50,10 +50,10 @@
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card" style="border-left: 4px solid #ffc107;">
+        <div class="card border-atencao">
             <div class="card-body py-3">
                 <div class="d-flex align-items-center gap-2 mb-1">
-                    <i class="bi bi-clock" style="color:#ffc107;"></i>
+                    <i class="bi bi-clock valor-atencao" aria-hidden="true"></i>
                     <small class="text-muted">Em Atraso</small>
                 </div>
                 <div class="card-title h4 mb-0 valor-atencao">
@@ -174,7 +174,7 @@
                             </small>
                         @endif
                         @if($divida->data_vencimento)
-                            <small class="{{ $divida->status === 'em_atraso' ? '' : 'text-muted' }}" style="{{ $divida->status === 'em_atraso' ? 'color:#ffc107;' : '' }}">
+                            <small class="{{ $divida->status === 'em_atraso' ? 'valor-atencao' : 'text-muted' }}">
                                 <i class="bi bi-calendar-x"></i>
                                 Vence: {{ \Carbon\Carbon::parse($divida->data_vencimento)->format('d/m/Y') }}
                             </small>
@@ -244,7 +244,7 @@
             <form action="{{ route('dividas.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-credit-card me-2" style="color:#ffc107;"></i>Nova Dívida</h5>
+                    <h5 class="modal-title"><i class="bi bi-credit-card me-2 valor-atencao" aria-hidden="true"></i>Nova Dívida</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -373,7 +373,7 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-pencil me-2" style="color:#ffc107;"></i>Editar Dívida</h5>
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2 valor-atencao" aria-hidden="true"></i>Editar Dívida</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
