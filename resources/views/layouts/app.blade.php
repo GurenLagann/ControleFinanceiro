@@ -19,7 +19,7 @@
         }
         .card, .btn, .nav-link, .form-control, .form-select,
         .sidebar, .main-content, .bottom-nav-item {
-            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
         }
         button, a, .btn, .nav-link, label {
             touch-action: manipulation;
@@ -217,7 +217,7 @@
             cursor: pointer;
             padding: 5px 10px;
             border-radius: 5px;
-            transition: all 0.2s;
+            transition: background-color 0.2s ease, color 0.2s ease;
             position: relative;
         }
         .btn-toggle-sidebar:hover {
@@ -236,6 +236,7 @@
             height: 6px;
             background: #00ff88;
             border-radius: 50%;
+            pointer-events: none;
         }
 
         /* Content Area */
@@ -483,9 +484,9 @@
         .valor-negativo { color: #ff4757 !important; font-weight: 600; text-shadow: 0 0 20px rgba(255,71,87,0.3); }
         .valor-atencao { color: #ffc107 !important; font-weight: 600; }
         .btn-success { background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; color: #0d2818 !important; font-weight: 600; }
-        .btn-success:hover { background: linear-gradient(135deg, #00cc6a, #00ff88); transform: scale(1.05); color: #0d2818 !important; }
+        .btn-success:hover { background: linear-gradient(135deg, #00cc6a, #00ff88); color: #0d2818 !important; }
         .btn-danger { background: linear-gradient(135deg, #ff4757, #ff3344); border: none; }
-        .btn-danger:hover { background: linear-gradient(135deg, #ff3344, #ff4757); transform: scale(1.05); }
+        .btn-danger:hover { background: linear-gradient(135deg, #ff3344, #ff4757); }
         .btn-outline-success { border-color: #00ff88; color: #00ff88; }
         .btn-outline-success:hover { background: #00ff88; color: #1a1a2e; }
         .btn-outline-danger { border-color: #ff4757; color: #ff4757; }
@@ -494,7 +495,6 @@
         .btn-outline-warning:hover { background: #ffc107; color: #1a1a2e; }
         .btn:hover {
             transform: scale(1.03);
-            transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
         }
         .btn:active {
             transform: scale(0.97) !important;
@@ -573,7 +573,7 @@
         }
         .pagination .page-item.disabled .page-link {
             background: rgba(20,20,35,0.5);
-            color: #666;
+            color: #999;
         }
 
         /* Animacoes iniciais */
