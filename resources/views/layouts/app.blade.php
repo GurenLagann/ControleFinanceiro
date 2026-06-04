@@ -108,7 +108,7 @@
             cursor: pointer;
             padding: 5px 8px;
             border-radius: 5px;
-            transition: all 0.2s;
+            transition: background-color 0.2s ease, color 0.2s ease;
             margin-left: auto;
         }
         .btn-hide-sidebar:hover {
@@ -140,7 +140,7 @@
             padding: 12px 20px;
             color: #aaa;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
             border-left: 3px solid transparent;
         }
         .sidebar-nav .nav-link:hover {
@@ -755,6 +755,8 @@
         // Registrar plugin ScrollTrigger
         gsap.registerPlugin(ScrollTrigger);
 
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         // Toggle Sidebar
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -860,68 +862,90 @@
         sidebarObserver.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
 
         // Animacao da sidebar e topbar (apenas se nao estiver oculta)
-        if (!sidebar.classList.contains('hidden')) {
-            gsap.to('.sidebar', {
-                opacity: 1,
-                x: 0,
-                duration: 0.6,
-                ease: 'power3.out'
+        if (prefersReducedMotion) {
+            // Mostrar imediatamente sem animacao
+            document.querySelectorAll('.js-loaded .card, .js-loaded .alert').forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'none';
             });
-        } else {
-            // Sidebar oculta - posicionar fora da tela
-            gsap.set(sidebar, { x: '-100%', opacity: 1 });
-        }
-
-        gsap.to('.topbar', {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            delay: 0.1,
-            ease: 'power3.out'
-        });
-
-        // Animacao dos alerts
-        gsap.to('.alert', {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            delay: 0.3,
-            ease: 'back.out(1.7)'
-        });
-
-        // Animacao dos cards principais (primeira linha)
-        gsap.to('.row:first-child .card', {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            stagger: 0.1,
-            delay: 0.2,
-            ease: 'power3.out',
-            onStart: function() {
-                document.querySelectorAll('.row:first-child .card').forEach(card => {
-                    card.style.transform = 'translateY(30px)';
-                });
+            if (!sidebar.classList.contains('hidden')) {
+                sidebar.style.opacity = '1';
+                sidebar.style.transform = 'none';
+            } else {
+                gsap.set(sidebar, { x: '-100%', opacity: 1 });
             }
-        });
+            document.querySelector('.topbar').style.opacity = '1';
+            document.querySelector('.topbar').style.transform = 'none';
+        } else {
+            if (!sidebar.classList.contains('hidden')) {
+                gsap.to('.sidebar', {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.6,
+                    ease: 'power3.out'
+                });
+            } else {
+                // Sidebar oculta - posicionar fora da tela
+                gsap.set(sidebar, { x: '-100%', opacity: 1 });
+            }
 
-        // Animacao dos demais cards com ScrollTrigger
-        gsap.utils.toArray('.row:not(:first-child) .card').forEach((card, i) => {
-            gsap.to(card, {
-                scrollTrigger: {
-                    trigger: card,
-                    start: 'top 85%',
-                    toggleActions: 'play none none none'
-                },
+            gsap.to('.topbar', {
                 opacity: 1,
                 y: 0,
                 duration: 0.6,
-                delay: i * 0.05,
+                delay: 0.1,
+                ease: 'power3.out'
+            });
+        }
+
+        // Animacao dos alerts
+        if (!prefersReducedMotion) {
+            gsap.to('.alert', {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                delay: 0.3,
+                ease: 'back.out(1.7)'
+            });
+        }
+
+        // Animacao dos cards principais (primeira linha)
+        if (!prefersReducedMotion) {
+            gsap.to('.row:first-child .card', {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                stagger: 0.1,
+                delay: 0.2,
                 ease: 'power3.out',
                 onStart: function() {
-                    card.style.transform = 'translateY(20px)';
+                    document.querySelectorAll('.row:first-child .card').forEach(card => {
+                        card.style.transform = 'translateY(30px)';
+                    });
                 }
             });
-        });
+        }
+
+        // Animacao dos demais cards com ScrollTrigger
+        if (!prefersReducedMotion) {
+            gsap.utils.toArray('.row:not(:first-child) .card').forEach((card, i) => {
+                gsap.to(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    delay: i * 0.05,
+                    ease: 'power3.out',
+                    onStart: function() {
+                        card.style.transform = 'translateY(20px)';
+                    }
+                });
+            });
+        }
 
         // Animacao de contagem nos valores
         function animateValue(element, start, end, duration) {
@@ -961,64 +985,34 @@
             }, 500);
         });
 
-        // Animacao hover nos cards
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                gsap.to(card, {
-                    scale: 1.02,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            });
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, {
-                    scale: 1,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            });
-        });
-
         // Animacao dos modais
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('show.bs.modal', function() {
-                const dialog = this.querySelector('.modal-dialog');
-                gsap.fromTo(dialog,
-                    { opacity: 0, scale: 0.8, y: -50 },
-                    { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: 'back.out(1.7)' }
-                );
+        if (!prefersReducedMotion) {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('show.bs.modal', function() {
+                    const dialog = this.querySelector('.modal-dialog');
+                    gsap.fromTo(dialog,
+                        { opacity: 0, scale: 0.8, y: -50 },
+                        { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: 'back.out(1.7)' }
+                    );
+                });
             });
-        });
-
-        // Animacao dos botoes
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('mouseenter', () => {
-                gsap.to(btn, { scale: 1.05, duration: 0.2 });
-            });
-            btn.addEventListener('mouseleave', () => {
-                gsap.to(btn, { scale: 1, duration: 0.2 });
-            });
-            btn.addEventListener('mousedown', () => {
-                gsap.to(btn, { scale: 0.95, duration: 0.1 });
-            });
-            btn.addEventListener('mouseup', () => {
-                gsap.to(btn, { scale: 1.05, duration: 0.1 });
-            });
-        });
+        }
 
         // Animacao das linhas da tabela
-        gsap.utils.toArray('tbody tr').forEach((row, i) => {
-            gsap.fromTo(row,
-                { opacity: 0, x: -20 },
-                {
-                    opacity: 1,
-                    x: 0,
-                    duration: 0.4,
-                    delay: 0.8 + (i * 0.03),
-                    ease: 'power2.out'
-                }
-            );
-        });
+        if (!prefersReducedMotion) {
+            gsap.utils.toArray('tbody tr').forEach((row, i) => {
+                gsap.fromTo(row,
+                    { opacity: 0, x: -20 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 0.4,
+                        delay: 0.8 + (i * 0.03),
+                        ease: 'power2.out'
+                    }
+                );
+            });
+        }
 
         // Efeito ripple nos botoes
         document.querySelectorAll('.btn').forEach(button => {
@@ -1052,18 +1046,20 @@
         });
 
         // Animacao dos links da sidebar
-        gsap.utils.toArray('.sidebar-nav .nav-link').forEach((link, i) => {
-            gsap.fromTo(link,
-                { opacity: 0, x: -20 },
-                {
-                    opacity: 1,
-                    x: 0,
-                    duration: 0.4,
-                    delay: 0.3 + (i * 0.05),
-                    ease: 'power2.out'
-                }
-            );
-        });
+        if (!prefersReducedMotion) {
+            gsap.utils.toArray('.sidebar-nav .nav-link').forEach((link, i) => {
+                gsap.fromTo(link,
+                    { opacity: 0, x: -20 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 0.4,
+                        delay: 0.3 + (i * 0.05),
+                        ease: 'power2.out'
+                    }
+                );
+            });
+        }
     </script>
 
     @yield('scripts')
