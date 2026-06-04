@@ -645,7 +645,7 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <i class="bi bi-wallet2"></i>
+                <i class="bi bi-wallet2" aria-hidden="true"></i>
                 <span>Financeiro</span>
                 <button class="btn-hide-sidebar ms-auto" id="hideSidebar" aria-label="Ocultar menu lateral">
                     <i class="bi bi-chevron-left" aria-hidden="true"></i>
@@ -655,16 +655,16 @@
             <nav class="sidebar-nav" aria-label="Menu principal">
                 <div class="nav-section">Principal</div>
                 <a href="{{ route('financas.index') }}" class="nav-link {{ request()->routeIs('financas.index') ? 'active' : '' }}">
-                    <i class="bi bi-house"></i>
+                    <i class="bi bi-house" aria-hidden="true"></i>
                     <span class="nav-text">Dashboard</span>
                 </a>
                 <a href="{{ route('financas.transacoes') }}" class="nav-link {{ request()->routeIs('financas.transacoes') ? 'active' : '' }}">
-                    <i class="bi bi-table"></i>
+                    <i class="bi bi-table" aria-hidden="true"></i>
                     <span class="nav-text">Transacoes</span>
                 </a>
 
                 <a href="{{ route('dividas.index') }}" class="nav-link {{ request()->routeIs('dividas.*') ? 'active' : '' }}">
-                    <i class="bi bi-credit-card"></i>
+                    <i class="bi bi-credit-card" aria-hidden="true"></i>
                     <span class="nav-text">Dívidas</span>
                     @php
                         $dividasEmAtraso = \App\Models\Divida::emAtraso()->count();
@@ -676,15 +676,15 @@
 
                 <div class="nav-section">Configuracoes</div>
                 <a href="{{ route('categorias.index') }}" class="nav-link {{ request()->routeIs('categorias.index') ? 'active' : '' }}">
-                    <i class="bi bi-tags"></i>
+                    <i class="bi bi-tags" aria-hidden="true"></i>
                     <span class="nav-text">Categorias</span>
                 </a>
                 <a href="{{ route('metas.index') }}" class="nav-link {{ request()->routeIs('metas.index') ? 'active' : '' }}">
-                    <i class="bi bi-bullseye"></i>
+                    <i class="bi bi-bullseye" aria-hidden="true"></i>
                     <span class="nav-text">Metas</span>
                 </a>
                 <a href="{{ route('alertas.index') }}" class="nav-link {{ request()->routeIs('alertas.index') ? 'active' : '' }}">
-                    <i class="bi bi-bell"></i>
+                    <i class="bi bi-bell" aria-hidden="true"></i>
                     <span class="nav-text">Alertas</span>
                     @php
                         $alertasCount = \App\Models\Alerta::naoLidos()->count();
@@ -696,11 +696,11 @@
 
                 <div class="nav-section">Sistema</div>
                 <a href="{{ route('logs.index') }}" class="nav-link {{ request()->routeIs('logs.index') ? 'active' : '' }}">
-                    <i class="bi bi-journal-text"></i>
+                    <i class="bi bi-journal-text" aria-hidden="true"></i>
                     <span class="nav-text">Logs de Auditoria</span>
                 </a>
                 <a href="{{ route('backup.index') }}" class="nav-link {{ request()->routeIs('backup.*') ? 'active' : '' }}">
-                    <i class="bi bi-cloud-arrow-down"></i>
+                    <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
                     <span class="nav-text">Backup / Exportar</span>
                 </a>
             </nav>
@@ -1042,35 +1042,37 @@
         }
 
         // Efeito ripple nos botoes
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                ripple.style.cssText = `
-                    position: absolute;
-                    background: rgba(255,255,255,0.3);
-                    border-radius: 50%;
-                    pointer-events: none;
-                    transform: scale(0);
-                    left: ${e.clientX - rect.left}px;
-                    top: ${e.clientY - rect.top}px;
-                    width: 100px;
-                    height: 100px;
-                    margin-left: -50px;
-                    margin-top: -50px;
-                `;
-                this.style.position = 'relative';
-                this.style.overflow = 'hidden';
-                this.appendChild(ripple);
-                gsap.to(ripple, {
-                    scale: 3,
-                    opacity: 0,
-                    duration: 0.6,
-                    ease: 'power2.out',
-                    onComplete: () => ripple.remove()
+        if (!prefersReducedMotion) {
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    ripple.style.cssText = `
+                        position: absolute;
+                        background: rgba(255,255,255,0.3);
+                        border-radius: 50%;
+                        pointer-events: none;
+                        transform: scale(0);
+                        left: ${e.clientX - rect.left}px;
+                        top: ${e.clientY - rect.top}px;
+                        width: 100px;
+                        height: 100px;
+                        margin-left: -50px;
+                        margin-top: -50px;
+                    `;
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    gsap.to(ripple, {
+                        scale: 3,
+                        opacity: 0,
+                        duration: 0.6,
+                        ease: 'power2.out',
+                        onComplete: () => ripple.remove()
+                    });
                 });
             });
-        });
+        }
 
         // Animacao dos links da sidebar
         if (!prefersReducedMotion) {

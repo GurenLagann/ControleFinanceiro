@@ -68,7 +68,7 @@
 @if($dividas->isEmpty())
     <div class="card">
         <div class="card-body text-center py-5">
-            <i class="bi bi-credit-card" style="font-size: 3rem; color:#666;"></i>
+            <i class="bi bi-credit-card text-muted" style="font-size: 3rem;" aria-hidden="true"></i>
             <p class="mt-3 text-muted">Nenhuma dívida cadastrada.</p>
             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalNovaDivida">
                 <i class="bi bi-plus-lg"></i> Cadastrar Dívida
@@ -200,10 +200,10 @@
                         @endif
                         <button class="btn btn-sm btn-outline-warning"
                                 onclick="abrirModalPagamentos('{{ $divida->_id }}', '{{ addslashes($divida->descricao) }}', {{ json_encode($pagamentos) }})"
-                                title="Ver Pagamentos">
-                            <i class="bi bi-list-ul"></i> Pagamentos
+                                aria-label="Ver pagamentos de {{ $divida->descricao }}">
+                            <i class="bi bi-list-ul" aria-hidden="true"></i> Pagamentos
                         </button>
-                        <button class="btn btn-sm btn-outline-secondary"
+                        <button class="btn btn-sm btn-outline-secondary btn-icon"
                                 onclick="abrirModalEditar(
                                     '{{ $divida->_id }}',
                                     '{{ addslashes($divida->descricao) }}',
@@ -214,13 +214,13 @@
                                     '{{ addslashes($divida->categoria ?? '') }}',
                                     '{{ addslashes($divida->observacoes ?? '') }}'
                                 )"
-                                title="Editar">
-                            <i class="bi bi-pencil"></i>
+                                aria-label="Editar dívida {{ $divida->descricao }}">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger"
+                        <button class="btn btn-sm btn-outline-danger btn-icon"
                                 onclick="confirmarExclusao('{{ $divida->_id }}', '{{ addslashes($divida->descricao) }}')"
-                                title="Excluir">
-                            <i class="bi bi-trash"></i>
+                                aria-label="Excluir dívida {{ $divida->descricao }}">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -250,31 +250,31 @@
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-12 col-md-8">
-                            <label class="form-label">Descrição *</label>
-                            <input type="text" name="descricao" class="form-control" placeholder="Ex: Financiamento do carro" required maxlength="255">
+                            <label class="form-label" for="divDescricao">Descrição *</label>
+                            <input type="text" id="divDescricao" name="descricao" class="form-control" placeholder="Ex: Financiamento do carro" required maxlength="255">
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label">Credor</label>
-                            <input type="text" name="credor" class="form-control" placeholder="Ex: Banco Itaú" maxlength="255">
+                            <label class="form-label" for="divCredor">Credor</label>
+                            <input type="text" id="divCredor" name="credor" class="form-control" placeholder="Ex: Banco Itaú" maxlength="255">
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label">Valor Total *</label>
+                            <label class="form-label" for="divValorTotal">Valor Total *</label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background:rgba(20,20,35,0.8);color:#aaa;border-color:rgba(255,255,255,0.08);">R$</span>
-                                <input type="number" name="valor_total" class="form-control" placeholder="0,00" step="0.01" min="0.01" required>
+                                <input type="number" id="divValorTotal" name="valor_total" class="form-control" placeholder="0,00" step="0.01" min="0.01" required>
                             </div>
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label">Data de Início *</label>
-                            <input type="date" name="data_inicio" class="form-control" value="{{ date('Y-m-d') }}" required>
+                            <label class="form-label" for="divDataInicio">Data de Início *</label>
+                            <input type="date" id="divDataInicio" name="data_inicio" class="form-control" value="{{ date('Y-m-d') }}" required>
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label">Data de Vencimento</label>
-                            <input type="date" name="data_vencimento" class="form-control">
+                            <label class="form-label" for="divDataVencimento">Data de Vencimento</label>
+                            <input type="date" id="divDataVencimento" name="data_vencimento" class="form-control">
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Categoria</label>
-                            <input type="text" name="categoria" class="form-control" list="listaCategoriasDivida" placeholder="Selecione ou digite" maxlength="100">
+                            <label class="form-label" for="divCategoria">Categoria</label>
+                            <input type="text" id="divCategoria" name="categoria" class="form-control" list="listaCategoriasDivida" placeholder="Selecione ou digite" maxlength="100">
                             <datalist id="listaCategoriasDivida">
                                 @foreach($categorias as $cat)
                                     <option value="{{ $cat->nome }}">
@@ -282,8 +282,8 @@
                             </datalist>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Observações</label>
-                            <input type="text" name="observacoes" class="form-control" placeholder="Notas adicionais..." maxlength="500">
+                            <label class="form-label" for="divObservacoes">Observações</label>
+                            <input type="text" id="divObservacoes" name="observacoes" class="form-control" placeholder="Notas adicionais..." maxlength="500">
                         </div>
                     </div>
                 </div>
@@ -305,7 +305,7 @@
             <form id="formPagamento" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-cash-coin me-2" style="color:#00ff88;"></i>Registrar Pagamento</h5>
+                    <h5 class="modal-title"><i class="bi bi-cash-coin me-2 valor-positivo" aria-hidden="true"></i>Registrar Pagamento</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -315,19 +315,19 @@
                     </div>
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Valor do Pagamento *</label>
+                            <label class="form-label" for="valorPagamento">Valor do Pagamento *</label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background:rgba(20,20,35,0.8);color:#aaa;border-color:rgba(255,255,255,0.08);">R$</span>
                                 <input type="number" name="valor" id="valorPagamento" class="form-control" placeholder="0,00" step="0.01" min="0.01" required>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Data do Pagamento *</label>
-                            <input type="date" name="data" class="form-control" value="{{ date('Y-m-d') }}" required>
+                            <label class="form-label" for="pagData">Data do Pagamento *</label>
+                            <input type="date" id="pagData" name="data" class="form-control" value="{{ date('Y-m-d') }}" required>
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Descrição (opcional)</label>
-                            <input type="text" name="descricao" class="form-control" placeholder="Ex: Parcela 3, Pagamento parcial..." maxlength="255">
+                            <label class="form-label" for="pagDescricao">Descrição (opcional)</label>
+                            <input type="text" id="pagDescricao" name="descricao" class="form-control" placeholder="Ex: Parcela 3, Pagamento parcial..." maxlength="255">
                         </div>
                     </div>
                     <div class="alert alert-success mt-3 mb-0">
@@ -351,7 +351,7 @@
     <div class="modal-dialog modal-lg modal-fullscreen-md-down modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-list-ul me-2" style="color:#3742fa;"></i>Histórico de Pagamentos</h5>
+                <h5 class="modal-title"><i class="bi bi-list-ul me-2" style="color:#3742fa;" aria-hidden="true"></i>Histórico de Pagamentos</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -379,30 +379,30 @@
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-12 col-md-8">
-                            <label class="form-label">Descrição *</label>
+                            <label class="form-label" for="editDescricao">Descrição *</label>
                             <input type="text" name="descricao" id="editDescricao" class="form-control" required maxlength="255">
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label">Credor</label>
+                            <label class="form-label" for="editCredor">Credor</label>
                             <input type="text" name="credor" id="editCredor" class="form-control" maxlength="255">
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label">Valor Total *</label>
+                            <label class="form-label" for="editValorTotal">Valor Total *</label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background:rgba(20,20,35,0.8);color:#aaa;border-color:rgba(255,255,255,0.08);">R$</span>
                                 <input type="number" name="valor_total" id="editValorTotal" class="form-control" step="0.01" min="0.01" required>
                             </div>
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label">Data de Início *</label>
+                            <label class="form-label" for="editDataInicio">Data de Início *</label>
                             <input type="date" name="data_inicio" id="editDataInicio" class="form-control" required>
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label">Data de Vencimento</label>
+                            <label class="form-label" for="editDataVencimento">Data de Vencimento</label>
                             <input type="date" name="data_vencimento" id="editDataVencimento" class="form-control">
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Categoria</label>
+                            <label class="form-label" for="editCategoria">Categoria</label>
                             <input type="text" name="categoria" id="editCategoria" class="form-control" list="listaCategoriasDividaEdit" maxlength="100">
                             <datalist id="listaCategoriasDividaEdit">
                                 @foreach($categorias as $cat)
@@ -411,7 +411,7 @@
                             </datalist>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Observações</label>
+                            <label class="form-label" for="editObservacoes">Observações</label>
                             <input type="text" name="observacoes" id="editObservacoes" class="form-control" maxlength="500">
                         </div>
                     </div>

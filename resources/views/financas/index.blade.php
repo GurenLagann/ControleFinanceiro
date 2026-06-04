@@ -841,7 +841,8 @@
         document.getElementById('inputParcelado').value = tipo === 'parcelada' ? '1' : '0';
         
         // Animar campos
-        if (typeof gsap !== 'undefined') {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (typeof gsap !== 'undefined' && !prefersReducedMotion) {
             const el = document.getElementById(tipo === 'recorrente' ? 'camposRecorrente' : 'camposParcelada');
             if (tipo !== 'unica') {
                 gsap.fromTo(el, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 });
@@ -1239,9 +1240,10 @@
 
     // Animar barras de progresso
     setTimeout(() => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         document.querySelectorAll('.progress-animated').forEach(bar => {
             const width = bar.dataset.width;
-            if (typeof gsap !== 'undefined') {
+            if (typeof gsap !== 'undefined' && !prefersReducedMotion) {
                 gsap.to(bar, { width: width + '%', duration: 1, ease: 'power2.out' });
             } else {
                 bar.style.width = width + '%';
