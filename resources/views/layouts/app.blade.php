@@ -9,11 +9,17 @@
     <title>{{ config('app.name', 'Controle Financeiro') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            transition: background-color 0.3s ease;
+        *, *::before, *::after {
             -webkit-tap-highlight-color: transparent;
             box-sizing: border-box;
+        }
+        .card, .btn, .nav-link, .form-control, .form-select,
+        .sidebar, .main-content, .bottom-nav-item {
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
         }
         button, a, .btn, .nav-link, label {
             touch-action: manipulation;
@@ -25,6 +31,7 @@
             }
         }
         body {
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
             background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0d1421 100%);
             min-height: 100vh;
             color: #e4e4e4;
@@ -96,7 +103,7 @@
         .btn-hide-sidebar {
             background: transparent;
             border: none;
-            color: #666;
+            color: #999;
             cursor: pointer;
             padding: 5px 8px;
             border-radius: 5px;
@@ -121,7 +128,7 @@
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #666;
+            color: #999;
         }
         .sidebar.collapsed .nav-section {
             display: none;
@@ -211,6 +218,7 @@
             padding: 5px 10px;
             border-radius: 5px;
             transition: all 0.2s;
+            position: relative;
         }
         .btn-toggle-sidebar:hover {
             background: rgba(255,255,255,0.1);
@@ -218,11 +226,16 @@
         }
         .btn-toggle-sidebar.highlight {
             color: #00ff88;
-            animation: pulse-highlight 2s infinite;
         }
-        @keyframes pulse-highlight {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .btn-toggle-sidebar.highlight::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
         }
 
         /* Content Area */
@@ -468,6 +481,7 @@
         .table tbody tr:nth-child(even) { background: rgba(35,35,55,0.5); }
         .valor-positivo { color: #00ff88 !important; font-weight: 600; text-shadow: 0 0 20px rgba(0,255,136,0.3); }
         .valor-negativo { color: #ff4757 !important; font-weight: 600; text-shadow: 0 0 20px rgba(255,71,87,0.3); }
+        .valor-atencao { color: #ffc107 !important; font-weight: 600; }
         .btn-success { background: linear-gradient(135deg, #00ff88, #00cc6a); border: none; color: #0d2818 !important; font-weight: 600; }
         .btn-success:hover { background: linear-gradient(135deg, #00cc6a, #00ff88); transform: scale(1.05); color: #0d2818 !important; }
         .btn-danger { background: linear-gradient(135deg, #ff4757, #ff3344); border: none; }
@@ -478,6 +492,14 @@
         .btn-outline-danger:hover { background: #ff4757; color: #fff; }
         .btn-outline-warning { border-color: #ffc107; color: #ffc107; }
         .btn-outline-warning:hover { background: #ffc107; color: #1a1a2e; }
+        .btn:hover {
+            transform: scale(1.03);
+            transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+        }
+        .btn:active {
+            transform: scale(0.97) !important;
+            transition: transform 0.08s ease !important;
+        }
         .progress { background: rgba(20,20,35,0.8); border-radius: 10px; overflow: hidden; }
         .progress-bar.bg-success { background: linear-gradient(90deg, #00ff88, #00cc6a) !important; }
         .progress-bar.bg-danger { background: linear-gradient(90deg, #ff4757, #ff3344) !important; }
@@ -514,7 +536,7 @@
         .badge.bg-light { background: rgba(30,30,50,0.8) !important; }
         .badge.bg-dark { background: rgba(10,10,20,0.8) !important; }
         .badge.bg-success { background: rgba(0,255,136,0.2) !important; color: #00ff88; }
-        .text-muted { color: #888 !important; }
+        .text-muted { color: #999 !important; }
         .bg-light { background: rgba(20,20,35,0.8) !important; }
         .sticky-top.bg-white { background: rgba(15,15,26,0.95) !important; }
         .table-secondary { background: rgba(20,20,35,0.5) !important; }
