@@ -56,7 +56,7 @@
                     <i class="bi bi-clock" style="color:#ffc107;"></i>
                     <small class="text-muted">Em Atraso</small>
                 </div>
-                <div class="card-title h4 mb-0" style="color:#ffc107;">
+                <div class="card-title h4 mb-0 valor-atencao">
                     R$ {{ number_format($totalEmAtraso, 2, ',', '.') }}
                 </div>
             </div>

@@ -249,17 +249,21 @@
                                                 @endphp
                                                 <form action="{{ route('despesas.avancarParcela', $proximaParcela->_id) }}" method="POST" class="d-inline" title="Pagar 1 parcela">
                                                     @csrf @method('PATCH')
-                                                    <button type="submit" class="btn btn-outline-success btn-sm"><i class="bi bi-check-lg"></i></button>
+                                                    <button type="submit" class="btn btn-outline-success btn-sm btn-icon" aria-label="Pagar próxima parcela">
+                                                        <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                                    </button>
                                                 </form>
                                                 @if($parcelasRestantes > 1)
-                                                    <button type="button" class="btn btn-outline-info btn-sm" onclick="abrirAdiantar('{{ $grupoId }}', {{ $parcelasRestantes }}, {{ $primeira->valor }})" title="Adiantar parcelas">
-                                                        <i class="bi bi-fast-forward"></i>
+                                                    <button type="button" class="btn btn-outline-info btn-sm btn-icon" onclick="abrirAdiantar('{{ $grupoId }}', {{ $parcelasRestantes }}, {{ $primeira->valor }})" aria-label="Adiantar parcelas">
+                                                        <i class="bi bi-fast-forward" aria-hidden="true"></i>
                                                     </button>
                                                 @endif
                                             @endif
                                             <form action="{{ route('despesas.destroyGrupo', $grupoId) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir TODAS as parcelas?')">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir todas as parcelas">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
@@ -281,7 +285,7 @@
                     <span><i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Receitas Recorrentes</span><span class="d-sm-none">Rec. Recorrentes</span></span>
                     <span class="badge bg-light text-success">{{ $receitasRecorrentes->count() }}</span>
                 </div>
-                <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                <div class="card-body card-body-scroll" style="max-height: 200px; overflow-y: auto;">
                     @if($receitasRecorrentes->count() > 0)
                         <table class="table table-sm table-hover mb-0">
                             <tbody>
@@ -293,13 +297,15 @@
                                         <td class="text-end">
                                             <form action="{{ route('receitas.toggle', $receita->_id) }}" method="POST" class="d-inline">
                                                 @csrf @method('PATCH')
-                                                <button type="submit" class="btn btn-outline-{{ $receita->ativo ? 'warning' : 'success' }} btn-sm py-0">
-                                                    <i class="bi bi-{{ $receita->ativo ? 'pause' : 'play' }}"></i>
+                                                <button type="submit" class="btn btn-outline-{{ $receita->ativo ? 'warning' : 'success' }} btn-sm btn-icon" aria-label="{{ $receita->ativo ? 'Pausar receita recorrente' : 'Ativar receita recorrente' }}">
+                                                    <i class="bi bi-{{ $receita->ativo ? 'pause' : 'play' }}" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                             <form action="{{ route('receitas.destroy', $receita->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0"><i class="bi bi-trash"></i></button>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir receita recorrente">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
@@ -318,7 +324,7 @@
                     <span><i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Despesas Recorrentes</span><span class="d-sm-none">Desp. Recorrentes</span></span>
                     <span class="badge bg-light text-danger">{{ $despesasRecorrentes->count() }}</span>
                 </div>
-                <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                <div class="card-body card-body-scroll" style="max-height: 200px; overflow-y: auto;">
                     @if($despesasRecorrentes->count() > 0)
                         <table class="table table-sm table-hover mb-0">
                             <tbody>
@@ -330,13 +336,15 @@
                                         <td class="text-end">
                                             <form action="{{ route('despesas.toggle', $despesa->_id) }}" method="POST" class="d-inline">
                                                 @csrf @method('PATCH')
-                                                <button type="submit" class="btn btn-outline-{{ $despesa->ativo ? 'warning' : 'success' }} btn-sm py-0">
-                                                    <i class="bi bi-{{ $despesa->ativo ? 'pause' : 'play' }}"></i>
+                                                <button type="submit" class="btn btn-outline-{{ $despesa->ativo ? 'warning' : 'success' }} btn-sm btn-icon" aria-label="{{ $despesa->ativo ? 'Pausar despesa recorrente' : 'Ativar despesa recorrente' }}">
+                                                    <i class="bi bi-{{ $despesa->ativo ? 'pause' : 'play' }}" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                             <form action="{{ route('despesas.destroy', $despesa->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0"><i class="bi bi-trash"></i></button>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir despesa recorrente">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
@@ -358,7 +366,7 @@
                 <div class="card-header bg-success d-flex justify-content-between align-items-center py-2">
                     <span><i class="bi bi-arrow-up-circle"></i> <span class="d-none d-sm-inline">Receitas Recentes</span><span class="d-sm-none">Rec. Recentes</span></span>
                 </div>
-                <div class="card-body" style="max-height: 220px; overflow-y: auto;">
+                <div class="card-body card-body-scroll" style="max-height: 220px; overflow-y: auto;">
                     @php $receitasSimples = $receitas->filter(fn($r) => !$r->recorrente)->take(10); @endphp
                     @if($receitasSimples->count() > 0)
                         <table class="table table-sm table-hover mb-0">
@@ -371,7 +379,9 @@
                                         <td class="text-end">
                                             <form action="{{ route('receitas.destroy', $receita->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-1"><i class="bi bi-trash"></i></button>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir receita">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
@@ -389,7 +399,7 @@
                 <div class="card-header bg-danger d-flex justify-content-between align-items-center py-2">
                     <span><i class="bi bi-arrow-down-circle"></i> <span class="d-none d-sm-inline">Despesas Recentes</span><span class="d-sm-none">Desp. Recentes</span></span>
                 </div>
-                <div class="card-body" style="max-height: 220px; overflow-y: auto;">
+                <div class="card-body card-body-scroll" style="max-height: 220px; overflow-y: auto;">
                     @php $despesasSimples = $despesas->filter(fn($d) => !$d->recorrente && !$d->parcelado)->take(10); @endphp
                     @if($despesasSimples->count() > 0)
                         <table class="table table-sm table-hover mb-0">
@@ -400,12 +410,14 @@
                                         <td class="valor-negativo">R$ {{ number_format($despesa->valor, 2, ',', '.') }}</td>
                                         <td><small class="text-muted">{{ $despesa->data ? $despesa->data->format('d/m') : '-' }}</small></td>
                                         <td class="text-end">
-                                            <button type="button" class="btn btn-outline-warning btn-sm py-0 px-1" onclick="editarDespesa('{{ $despesa->_id }}', '{{ $despesa->descricao }}', '{{ $despesa->valor }}', '{{ $despesa->data ? $despesa->data->format('Y-m-d') : '' }}', '{{ $despesa->categoria }}')">
-                                                <i class="bi bi-pencil"></i>
+                                            <button type="button" class="btn btn-outline-warning btn-sm btn-icon" onclick="editarDespesa('{{ $despesa->_id }}', '{{ $despesa->descricao }}', '{{ $despesa->valor }}', '{{ $despesa->data ? $despesa->data->format('Y-m-d') : '' }}', '{{ $despesa->categoria }}')" aria-label="Editar despesa">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </button>
                                             <form action="{{ route('despesas.destroy', $despesa->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-1"><i class="bi bi-trash"></i></button>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir despesa">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
@@ -695,8 +707,8 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label small">Data para todas as despesas</label>
-                            <input type="date" name="data" class="form-control form-control-sm" value="{{ date('Y-m-d') }}" style="max-width: 200px;">
+                            <label class="form-label small" for="multiData">Data para todas as despesas</label>
+                            <input type="date" id="multiData" name="data" class="form-control form-control-sm" value="{{ date('Y-m-d') }}" style="max-width: 200px;">
                         </div>
                         <div id="listaDespesas">
                             <div class="row mb-2 despesa-item">

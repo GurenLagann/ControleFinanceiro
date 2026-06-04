@@ -357,6 +357,11 @@
             .progress {
                 height: 6px !important;
             }
+            /* Remove scroll aninhado em listas recorrentes */
+            .card-body-scroll {
+                max-height: none !important;
+                overflow-y: visible !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -500,6 +505,14 @@
         .btn:active {
             transform: scale(0.97) !important;
             transition: transform 0.08s ease !important;
+        }
+        .btn-icon {
+            min-width: 32px;
+            min-height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px !important;
         }
         .progress { background: rgba(20,20,35,0.8); border-radius: 10px; overflow: hidden; }
         .progress-bar.bg-success { background: linear-gradient(90deg, #00ff88, #00cc6a) !important; }
