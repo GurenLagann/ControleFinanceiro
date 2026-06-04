@@ -633,12 +633,12 @@
             <div class="sidebar-header">
                 <i class="bi bi-wallet2"></i>
                 <span>Financeiro</span>
-                <button class="btn-hide-sidebar ms-auto" id="hideSidebar" title="Ocultar Menu">
-                    <i class="bi bi-chevron-left"></i>
+                <button class="btn-hide-sidebar ms-auto" id="hideSidebar" aria-label="Ocultar menu lateral">
+                    <i class="bi bi-chevron-left" aria-hidden="true"></i>
                 </button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="sidebar-nav" aria-label="Menu principal">
                 <div class="nav-section">Principal</div>
                 <a href="{{ route('financas.index') }}" class="nav-link {{ request()->routeIs('financas.index') ? 'active' : '' }}">
                     <i class="bi bi-house"></i>
@@ -701,8 +701,8 @@
             <!-- Top Bar -->
             <header class="topbar">
                 <div class="topbar-left">
-                    <button class="btn-toggle-sidebar" id="toggleSidebar" title="Toggle Sidebar">
-                        <i class="bi bi-list"></i>
+                    <button class="btn-toggle-sidebar" id="toggleSidebar" aria-label="Abrir menu lateral">
+                        <i class="bi bi-list" aria-hidden="true"></i>
                     </button>
                     <h5 class="mb-0 d-none d-md-block">@yield('page-title', 'Dashboard')</h5>
                 </div>
@@ -710,14 +710,14 @@
                     @hasSection('page-actions')
                         @yield('page-actions')
                     @else
-                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReceita">
-                            <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Receita</span>
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReceita" aria-label="Nova receita">
+                            <i class="bi bi-plus-lg" aria-hidden="true"></i> <span class="d-none d-sm-inline">Receita</span>
                         </button>
-                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDespesa">
-                            <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Despesa</span>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDespesa" aria-label="Nova despesa">
+                            <i class="bi bi-plus-lg" aria-hidden="true"></i> <span class="d-none d-sm-inline">Despesa</span>
                         </button>
-                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalMultiplasDespesas" title="Varias Despesas">
-                            <i class="bi bi-list-ul"></i>
+                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalMultiplasDespesas" aria-label="Adicionar múltiplas despesas">
+                            <i class="bi bi-list-ul" aria-hidden="true"></i>
                         </button>
                     @endif
                 </div>
@@ -838,10 +838,10 @@
         function updateToggleButton() {
             if (sidebar.classList.contains('hidden')) {
                 toggleBtn.classList.add('highlight');
-                toggleBtn.title = 'Mostrar Menu';
+                toggleBtn.setAttribute('aria-label', 'Mostrar menu lateral');
             } else {
                 toggleBtn.classList.remove('highlight');
-                toggleBtn.title = 'Toggle Sidebar';
+                toggleBtn.setAttribute('aria-label', 'Abrir menu lateral');
             }
         }
 
@@ -1073,23 +1073,23 @@
     <nav class="bottom-nav" aria-label="Navegação principal">
         <div class="bottom-nav-inner">
             <a href="{{ route('financas.index') }}" class="bottom-nav-item {{ $rn === 'financas.index' ? 'active' : '' }}">
-                <i class="bi bi-house{{ $rn === 'financas.index' ? '-fill' : '' }}"></i>
+                <i class="bi bi-house{{ $rn === 'financas.index' ? '-fill' : '' }}" aria-hidden="true"></i>
                 <span>Início</span>
             </a>
             <a href="{{ route('financas.transacoes') }}" class="bottom-nav-item {{ $rn === 'financas.transacoes' ? 'active' : '' }}">
-                <i class="bi bi-list-ul"></i>
+                <i class="bi bi-list-ul" aria-hidden="true"></i>
                 <span>Transações</span>
             </a>
             <a href="{{ route('dividas.index') }}" class="bottom-nav-item {{ \Illuminate\Support\Str::startsWith($rn, 'dividas') ? 'active' : '' }}">
-                <i class="bi bi-credit-card{{ \Illuminate\Support\Str::startsWith($rn, 'dividas') ? '-fill' : '' }}"></i>
+                <i class="bi bi-credit-card{{ \Illuminate\Support\Str::startsWith($rn, 'dividas') ? '-fill' : '' }}" aria-hidden="true"></i>
                 <span>Dívidas</span>
             </a>
             <a href="{{ route('metas.index') }}" class="bottom-nav-item {{ in_array($rn, ['metas.index', 'categorias.index', 'alertas.index']) ? 'active' : '' }}">
-                <i class="bi bi-bullseye"></i>
+                <i class="bi bi-bullseye" aria-hidden="true"></i>
                 <span>Config</span>
             </a>
-            <button type="button" class="bottom-nav-item" id="bottomNavMenu" aria-label="Mais opções">
-                <i class="bi bi-grid-fill"></i>
+            <button type="button" class="bottom-nav-item" id="bottomNavMenu" aria-label="Abrir menu completo">
+                <i class="bi bi-grid-fill" aria-hidden="true"></i>
                 <span>Mais</span>
             </button>
         </div>
