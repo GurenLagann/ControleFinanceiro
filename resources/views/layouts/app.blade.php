@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f1a">
+    <script>document.documentElement.classList.add('js-loaded');</script>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>{{ config('app.name', 'Controle Financeiro') }}</title>
@@ -576,10 +577,11 @@
             color: #999;
         }
 
-        /* Animacoes iniciais */
-        .card, .alert { opacity: 0; }
-        .sidebar { opacity: 0; transform: translateX(-20px); }
-        .topbar { opacity: 0; transform: translateY(-20px); }
+        /* Animacoes iniciais — somente quando JS carregou */
+        .js-loaded .card,
+        .js-loaded .alert { opacity: 0; }
+        .js-loaded .sidebar { opacity: 0; transform: translateX(-20px); }
+        .js-loaded .topbar { opacity: 0; transform: translateY(-20px); }
 
         /* Efeito glow nos cards */
         .glow-green { box-shadow: 0 0 30px rgba(0,255,136,0.1); }
