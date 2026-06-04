@@ -102,7 +102,7 @@
                     <small><i class="bi bi-pie-chart"></i> <span class="d-none d-sm-inline">Receitas vs Despesas</span><span class="d-sm-none">Rec/Desp</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartPizza" height="160"></canvas>
+                    <canvas id="chartPizza" height="160" role="img" aria-label="Gráfico de rosca: distribuição entre receitas e despesas do mês atual"></canvas>
                 </div>
             </div>
         </div>
@@ -112,7 +112,7 @@
                     <small><i class="bi bi-bar-chart"></i> <span class="d-none d-sm-inline">Despesas/Categoria</span><span class="d-sm-none">Desp/Cat</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartDespesasCategoria" height="160"></canvas>
+                    <canvas id="chartDespesasCategoria" height="160" role="img" aria-label="Gráfico de barras: despesas agrupadas por categoria"></canvas>
                 </div>
             </div>
         </div>
@@ -122,7 +122,7 @@
                     <small><i class="bi bi-bar-chart"></i> <span class="d-none d-sm-inline">Receitas/Categoria</span><span class="d-sm-none">Rec/Cat</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartReceitasCategoria" height="160"></canvas>
+                    <canvas id="chartReceitasCategoria" height="160" role="img" aria-label="Gráfico de barras: receitas agrupadas por categoria"></canvas>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@
                     <small><i class="bi bi-graph-up"></i> <span class="d-none d-sm-inline">Ultimos 7 Dias</span><span class="d-sm-none">7 Dias</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartEvolucao" height="160"></canvas>
+                    <canvas id="chartEvolucao" height="160" role="img" aria-label="Gráfico de linha: evolução de receitas e despesas nos últimos 7 dias"></canvas>
                 </div>
             </div>
         </div>
@@ -146,7 +146,7 @@
                     <small><i class="bi bi-graph-up-arrow"></i> Projecao 6 Meses (recorrentes + parcelas) <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartProjecao" height="70"></canvas>
+                    <canvas id="chartProjecao" height="70" role="img" aria-label="Gráfico de barras: projeção financeira para os próximos 6 meses"></canvas>
                 </div>
             </div>
         </div>
@@ -160,7 +160,7 @@
                     <small><i class="bi bi-bar-chart-line"></i> <span class="d-none d-sm-inline">Comparativo Mensal</span><span class="d-sm-none">Comp. Mensal</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartComparativo" height="160"></canvas>
+                    <canvas id="chartComparativo" height="160" role="img" aria-label="Gráfico de barras: comparativo entre mês atual e mês anterior"></canvas>
                 </div>
             </div>
         </div>
@@ -170,7 +170,7 @@
                     <small><i class="bi bi-graph-up"></i> <span class="d-none d-sm-inline">Tendencia 12 Meses</span><span class="d-sm-none">12 Meses</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartTendencia" height="160"></canvas>
+                    <canvas id="chartTendencia" height="160" role="img" aria-label="Gráfico de linha: tendência financeira dos últimos 12 meses"></canvas>
                 </div>
             </div>
         </div>
@@ -180,7 +180,7 @@
                     <small><i class="bi bi-calendar-week"></i> <span class="d-none d-sm-inline">Gastos/Dia Semana</span><span class="d-sm-none">Gastos/Dia</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartDiasSemana" height="160"></canvas>
+                    <canvas id="chartDiasSemana" height="160" role="img" aria-label="Gráfico de barras: gastos distribuídos por dia da semana"></canvas>
                 </div>
             </div>
         </div>
@@ -538,22 +538,22 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label small">Descricao *</label>
-                            <input type="text" name="descricao" class="form-control" placeholder="Ex: Salario" required>
+                            <label class="form-label small" for="recDescricao">Descricao *</label>
+                            <input type="text" id="recDescricao" name="descricao" class="form-control" placeholder="Ex: Salario" required>
                         </div>
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <label class="form-label small">Valor (R$) *</label>
-                                <input type="number" name="valor" class="form-control" step="0.01" min="0.01" required>
+                                <label class="form-label small" for="recValor">Valor (R$) *</label>
+                                <input type="number" id="recValor" name="valor" class="form-control" step="0.01" min="0.01" required>
                             </div>
                             <div class="col-6 mb-3">
-                                <label class="form-label small">Data *</label>
-                                <input type="date" name="data" class="form-control" value="{{ date('Y-m-d') }}" required>
+                                <label class="form-label small" for="recData">Data *</label>
+                                <input type="date" id="recData" name="data" class="form-control" value="{{ date('Y-m-d') }}" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small">Categoria</label>
-                            <input type="text" name="categoria" class="form-control" list="cat-rec" placeholder="Opcional">
+                            <label class="form-label small" for="recCategoria">Categoria</label>
+                            <input type="text" id="recCategoria" name="categoria" class="form-control" list="cat-rec" placeholder="Opcional">
                             <datalist id="cat-rec">
                                 @foreach($categoriasReceita as $cat)
                                     <option value="{{ $cat }}">
@@ -567,12 +567,14 @@
                         <div id="recRecFields" style="display:none" class="mt-2 p-2 rounded" style="background: rgba(255,255,255,0.05);">
                             <div class="row">
                                 <div class="col-6">
-                                    <select name="frequencia" class="form-select form-select-sm">
+                                    <label class="form-label small" for="recFrequencia">Frequência</label>
+                                    <select id="recFrequencia" name="frequencia" class="form-select form-select-sm">
                                         <option value="mensal">Mensal</option>
                                     </select>
                                 </div>
                                 <div class="col-6">
-                                    <input type="number" name="dia_vencimento" class="form-control form-control-sm" placeholder="Dia" min="1" max="31">
+                                    <label class="form-label small" for="recDiaVenc">Dia</label>
+                                    <input type="number" id="recDiaVenc" name="dia_vencimento" class="form-control form-control-sm" placeholder="Dia" min="1" max="31">
                                 </div>
                             </div>
                         </div>
@@ -598,22 +600,22 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label small">Descricao *</label>
-                            <input type="text" name="descricao" class="form-control" placeholder="Ex: Aluguel" required>
+                            <label class="form-label small" for="despDescricao">Descricao *</label>
+                            <input type="text" id="despDescricao" name="descricao" class="form-control" placeholder="Ex: Aluguel" required>
                         </div>
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <label class="form-label small">Valor (R$) *</label>
+                                <label class="form-label small" for="despValor">Valor (R$) *</label>
                                 <input type="number" name="valor" id="despValor" class="form-control" step="0.01" min="0.01" required oninput="calcularParcela()">
                             </div>
                             <div class="col-6 mb-3">
-                                <label class="form-label small">Data *</label>
-                                <input type="date" name="data" class="form-control" value="{{ date('Y-m-d') }}" required>
+                                <label class="form-label small" for="despData">Data *</label>
+                                <input type="date" id="despData" name="data" class="form-control" value="{{ date('Y-m-d') }}" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small">Categoria</label>
-                            <input type="text" name="categoria" class="form-control" list="cat-desp" placeholder="Opcional">
+                            <label class="form-label small" for="despCategoria">Categoria</label>
+                            <input type="text" id="despCategoria" name="categoria" class="form-control" list="cat-desp" placeholder="Opcional">
                             <datalist id="cat-desp">
                                 @foreach($categoriasDespesa as $cat)
                                     <option value="{{ $cat }}">
@@ -636,7 +638,7 @@
                         <div id="camposRecorrente" style="display:none" class="p-2 rounded mb-2" style="background: rgba(255,255,255,0.05);">
                             <div class="row">
                                 <div class="col-6">
-                                    <label class="form-label small">Frequencia</label>
+                                    <label class="form-label small" for="frequenciaDespesa">Frequencia</label>
                                     <select name="frequencia" id="frequenciaDespesa" class="form-select form-select-sm" onchange="atualizarCampoDia()">
                                         <option value="semanal">Semanal</option>
                                         <option value="mensal" selected>Mensal</option>
@@ -644,7 +646,7 @@
                                     </select>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label small" id="labelDiaDespesa">Dia do Mês</label>
+                                    <label class="form-label small" id="labelDiaDespesa" for="diaVencimentoDespesa">Dia do Mês</label>
                                     <input type="number" name="dia_vencimento" id="diaVencimentoDespesa" class="form-control form-control-sm" min="1" max="31">
                                 </div>
                             </div>
@@ -653,7 +655,7 @@
                         <div id="camposParcelada" style="display:none" class="p-2 rounded mb-2" style="background: rgba(255,255,255,0.05);">
                             <div class="row align-items-center">
                                 <div class="col-5">
-                                    <label class="form-label small">Parcelas</label>
+                                    <label class="form-label small" for="totalParcelas">Parcelas</label>
                                     <select name="total_parcelas" id="totalParcelas" class="form-select form-select-sm" onchange="calcularParcela()">
                                         @for($i = 2; $i <= 12; $i++)
                                             <option value="{{ $i }}">{{ $i }}x</option>
@@ -735,7 +737,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3" id="detalhesGrafico"></div>
-                    <canvas id="chartAmpliado" height="350"></canvas>
+                    <canvas id="chartAmpliado" height="350" role="img" aria-label="Gráfico ampliado em detalhe"></canvas>
                 </div>
             </div>
         </div>
@@ -753,7 +755,7 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label small">Quantas parcelas adiantar?</label>
+                            <label class="form-label small" for="qtdAdiantar">Quantas parcelas adiantar?</label>
                             <input type="number" name="quantidade" id="qtdAdiantar" class="form-control" min="1" value="1" onchange="calcularAdiantamento()">
                             <small class="text-muted">Máximo: <span id="maxParcelas">0</span> parcelas</small>
                         </div>
@@ -782,21 +784,21 @@
                     @csrf @method('PUT')
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label small">Descricao *</label>
+                            <label class="form-label small" for="editDescricao">Descricao *</label>
                             <input type="text" name="descricao" id="editDescricao" class="form-control" required>
                         </div>
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <label class="form-label small">Valor (R$) *</label>
+                                <label class="form-label small" for="editValor">Valor (R$) *</label>
                                 <input type="number" name="valor" id="editValor" class="form-control" step="0.01" min="0.01" required>
                             </div>
                             <div class="col-6 mb-3">
-                                <label class="form-label small">Data *</label>
+                                <label class="form-label small" for="editData">Data *</label>
                                 <input type="date" name="data" id="editData" class="form-control" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small">Categoria</label>
+                            <label class="form-label small" for="editCategoria">Categoria</label>
                             <input type="text" name="categoria" id="editCategoria" class="form-control" placeholder="Opcional" list="cat-desp">
                         </div>
                     </div>
