@@ -780,12 +780,17 @@
                 // Se estiver oculta, mostrar
                 if (sidebar.classList.contains('hidden')) {
                     sidebar.classList.remove('hidden');
-                    gsap.to(sidebar, {
-                        x: 0,
-                        opacity: 1,
-                        duration: 0.3,
-                        ease: 'power2.out'
-                    });
+                    if (!prefersReducedMotion) {
+                        gsap.to(sidebar, {
+                            x: 0,
+                            opacity: 1,
+                            duration: 0.3,
+                            ease: 'power2.out'
+                        });
+                    } else {
+                        sidebar.style.opacity = '1';
+                        sidebar.style.transform = 'none';
+                    }
                     localStorage.setItem('sidebarHidden', 'false');
                     updateToggleButton();
                 } else {
@@ -803,15 +808,22 @@
                 sidebar.classList.remove('show');
                 overlay.classList.remove('show');
             } else {
-                gsap.to(sidebar, {
-                    x: '-100%',
-                    duration: 0.3,
-                    ease: 'power2.in',
-                    onComplete: () => {
-                        sidebar.classList.add('hidden');
-                        sidebar.classList.remove('collapsed');
-                    }
-                });
+                if (!prefersReducedMotion) {
+                    gsap.to(sidebar, {
+                        x: '-100%',
+                        duration: 0.3,
+                        ease: 'power2.in',
+                        onComplete: () => {
+                            sidebar.classList.add('hidden');
+                            sidebar.classList.remove('collapsed');
+                        }
+                    });
+                } else {
+                    sidebar.style.opacity = '0';
+                    sidebar.style.transform = 'translateX(-100%)';
+                    sidebar.classList.add('hidden');
+                    sidebar.classList.remove('collapsed');
+                }
                 localStorage.setItem('sidebarHidden', 'true');
                 localStorage.setItem('sidebarCollapsed', 'false');
                 updateToggleButton();
@@ -972,6 +984,7 @@
 
         // Animar valores ao carregar
         document.addEventListener('DOMContentLoaded', function() {
+            if (prefersReducedMotion) return;
             setTimeout(() => {
                 document.querySelectorAll('.card-title').forEach(el => {
                     const text = el.textContent.trim();
