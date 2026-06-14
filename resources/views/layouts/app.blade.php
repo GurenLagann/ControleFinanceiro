@@ -22,7 +22,7 @@
         .sidebar, .main-content, .bottom-nav-item {
             transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
         }
-        button, a, .btn, .nav-link, label {
+        button, a, .btn, .nav-link, label, .categoria-pill {
             touch-action: manipulation;
         }
         @media (hover: none) {
@@ -243,6 +243,7 @@
         /* Content Area */
         .content-area {
             padding: 25px;
+            overscroll-behavior: contain;
         }
 
         /* Mobile */
@@ -278,7 +279,6 @@
             }
             .bottom-nav {
                 display: flex;
-                flex-direction: column;
             }
             .content-area {
                 padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
@@ -383,6 +383,14 @@
             .card-body .btn-sm i + span,
             .card-body .btn-sm span:not(:only-child) {
                 display: none;
+            }
+            /* Pills de categoria mais compactas em telas pequenas */
+            .categoria-pill {
+                padding: 5px 7px !important;
+                font-size: 10px !important;
+            }
+            .categoria-pill i:first-child {
+                font-size: 12px !important;
             }
         }
 
@@ -501,7 +509,7 @@
         .btn-outline-warning { border-color: #ffc107; color: #ffc107; }
         .btn-outline-warning:hover { background: #ffc107; color: #1a1a2e; }
         .btn:hover {
-            transform: scale(1.03);
+            filter: brightness(1.1);
         }
         .btn:active {
             transform: scale(0.97) !important;
@@ -594,8 +602,11 @@
         /* Animacoes iniciais — somente quando JS carregou */
         .js-loaded .card,
         .js-loaded .alert { opacity: 0; }
-        .js-loaded .sidebar { opacity: 0; transform: translateX(-20px); }
         .js-loaded .topbar { opacity: 0; transform: translateY(-20px); }
+        /* Sidebar: animação de entrada só no desktop; mobile usa CSS + .show */
+        @media (min-width: 992px) {
+            .js-loaded .sidebar { opacity: 0; }
+        }
 
         /* Efeito glow nos cards */
         .glow-green { box-shadow: 0 0 30px rgba(0,255,136,0.1); }
@@ -894,25 +905,23 @@
                 el.style.opacity = '1';
                 el.style.transform = 'none';
             });
-            if (!sidebar.classList.contains('hidden')) {
+            // Desktop: remover opacity inicial; mobile: CSS já está correto, não mexer
+            if (!isMobile()) {
                 sidebar.style.opacity = '1';
-                sidebar.style.transform = 'none';
-            } else {
-                gsap.set(sidebar, { x: '-100%', opacity: 1 });
             }
             document.querySelector('.topbar').style.opacity = '1';
             document.querySelector('.topbar').style.transform = 'none';
         } else {
-            if (!sidebar.classList.contains('hidden')) {
-                gsap.to('.sidebar', {
-                    opacity: 1,
-                    x: 0,
-                    duration: 0.6,
-                    ease: 'power3.out'
-                });
-            } else {
-                // Sidebar oculta - posicionar fora da tela
-                gsap.set(sidebar, { x: '-100%', opacity: 1 });
+            // Mobile: sem animação na sidebar — CSS controla posição e visibilidade
+            if (!isMobile()) {
+                if (!sidebar.classList.contains('hidden')) {
+                    // Desktop: slide-in + fade com fromTo explícito
+                    gsap.fromTo(sidebar,
+                        { x: -20, opacity: 0 },
+                        { x: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+                    );
+                }
+                // Se hidden: sidebar está fora da tela (CSS), não precisa de GSAP
             }
 
             gsap.to('.topbar', {

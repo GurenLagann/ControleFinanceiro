@@ -190,32 +190,32 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-6">
+                        <div class="col-12 col-sm-6 mb-2 mb-sm-0">
                             <label class="form-label small text-muted">Modelo</label>
                             <p id="detalheModelo" class="mb-0"></p>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 col-sm-6">
                             <label class="form-label small text-muted">Acao</label>
                             <p id="detalheAcao" class="mb-0"></p>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-6">
+                        <div class="col-12 col-sm-6 mb-2 mb-sm-0">
                             <label class="form-label small text-muted">Data/Hora</label>
                             <p id="detalheData" class="mb-0"></p>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 col-sm-6">
                             <label class="form-label small text-muted">IP</label>
                             <p id="detalheIP" class="mb-0"></p>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12 col-md-6 mb-3 mb-md-0">
                             <label class="form-label small text-muted">Valores Antigos</label>
                             <pre id="detalheOld" class="bg-dark text-light p-2 rounded small" style="max-height: 300px; overflow: auto;"></pre>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 col-md-6">
                             <label class="form-label small text-muted">Valores Novos</label>
                             <pre id="detalheNew" class="bg-dark text-light p-2 rounded small" style="max-height: 300px; overflow: auto;"></pre>
                         </div>

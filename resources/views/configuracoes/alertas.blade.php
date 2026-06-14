@@ -202,11 +202,11 @@
                             <input type="text" name="titulo" class="form-control" required placeholder="Ex: Conta de Luz, Aluguel, IPTU">
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Valor (R$)</label>
                                 <input type="number" name="valor" class="form-control" step="0.01" placeholder="0,00">
                             </div>
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Data de Vencimento *</label>
                                 <input type="date" name="data_alerta" class="form-control" required>
                             </div>
@@ -242,11 +242,11 @@
                             <input type="text" name="titulo" class="form-control" required placeholder="Ex: Alimentacao, Transporte, Lazer">
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Limite (R$) *</label>
                                 <input type="number" name="valor_limite" class="form-control" step="0.01" required placeholder="0,00">
                             </div>
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Valor Atual (R$)</label>
                                 <input type="number" name="valor_atual" class="form-control" step="0.01" placeholder="0,00">
                             </div>
@@ -282,11 +282,11 @@
                             <input type="text" name="titulo" class="form-control" required placeholder="Ex: Reserva de Emergencia, Viagem">
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Valor Alvo (R$)</label>
                                 <input type="number" name="valor_alvo" class="form-control" step="0.01" placeholder="0,00">
                             </div>
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Data Limite</label>
                                 <input type="date" name="data_alerta" class="form-control">
                             </div>

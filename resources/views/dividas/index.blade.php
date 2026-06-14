@@ -261,7 +261,7 @@
                             <label class="form-label" for="divValorTotal">Valor Total *</label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background:rgba(20,20,35,0.8);color:#aaa;border-color:rgba(255,255,255,0.08);">R$</span>
-                                <input type="number" id="divValorTotal" name="valor_total" class="form-control" placeholder="0,00" step="0.01" min="0.01" required>
+                                <input type="number" id="divValorTotal" name="valor_total" class="form-control" placeholder="0,00" step="0.01" min="0.01" inputmode="decimal" required>
                             </div>
                         </div>
                         <div class="col-12 col-md-4">
@@ -318,7 +318,7 @@
                             <label class="form-label" for="valorPagamento">Valor do Pagamento *</label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background:rgba(20,20,35,0.8);color:#aaa;border-color:rgba(255,255,255,0.08);">R$</span>
-                                <input type="number" name="valor" id="valorPagamento" class="form-control" placeholder="0,00" step="0.01" min="0.01" required>
+                                <input type="number" name="valor" id="valorPagamento" class="form-control" placeholder="0,00" step="0.01" min="0.01" inputmode="decimal" required>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
@@ -390,7 +390,7 @@
                             <label class="form-label" for="editValorTotal">Valor Total *</label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background:rgba(20,20,35,0.8);color:#aaa;border-color:rgba(255,255,255,0.08);">R$</span>
-                                <input type="number" name="valor_total" id="editValorTotal" class="form-control" step="0.01" min="0.01" required>
+                                <input type="number" name="valor_total" id="editValorTotal" class="form-control" step="0.01" min="0.01" inputmode="decimal" required>
                             </div>
                         </div>
                         <div class="col-12 col-md-4">

@@ -12,8 +12,14 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.controlefinanceiro.rule=Host(`controlefinanceiro.localhost`)"
+      - "traefik.http.services.controlefinanceiro.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik-net"
     networks:
       - financas_network
+      - traefik-net
 
   php:
     build:
@@ -63,6 +69,8 @@ services:
 networks:
   financas_network:
     driver: bridge
+  traefik-net:
+    external: true
 
 volumes:
   mongodb_data:

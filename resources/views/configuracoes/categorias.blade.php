@@ -132,14 +132,14 @@
                             <input type="text" name="nome" id="categoriaNome" class="form-control" required placeholder="Ex: Alimentacao">
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Cor *</label>
                                 <div class="input-group">
                                     <input type="color" name="cor" id="categoriaCor" class="form-control form-control-color" value="#00ff88" required>
                                     <input type="text" id="categoriaCorTexto" class="form-control" value="#00ff88" readonly>
                                 </div>
                             </div>
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Icone</label>
                                 <div class="input-group">
                                     <span class="input-group-text" style="min-width: 42px; justify-content: center; background: rgba(40,40,60,0.9);"><i class="bi" id="iconePreview" style="font-size: 1.2rem; color: #fff;"></i></span>

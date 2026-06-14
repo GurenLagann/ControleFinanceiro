@@ -11,7 +11,7 @@
 @section('content')
     <!-- Cards de Estatisticas -->
     <div class="row mb-4">
-        <div class="col-md-2">
+        <div class="col-6 col-md-2 mb-3 mb-md-0">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #00ff88;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-arrow-up-circle"></i> Receitas</h6>
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-md-2 mb-3 mb-md-0">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #ff4757;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-arrow-down-circle"></i> Despesas</h6>
@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-md-2 mb-3 mb-md-0">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-palette"></i> Categorias</h6>
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-md-2 mb-3 mb-md-0">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bullseye"></i> Metas</h6>
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-md-2 mb-3 mb-md-0">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #ffc107;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bell"></i> Alertas</h6>
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-6 col-md-2 mb-3 mb-md-0">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #17a2b8;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-database"></i> Total</h6>
@@ -63,7 +63,7 @@
 
     <div class="row">
         <!-- Exportar Backup -->
-        <div class="col-md-6 mb-4">
+        <div class="col-12 col-md-6 mb-4">
             <div class="card h-100" style="opacity: 1 !important;">
                 <div class="card-header bg-success py-2">
                     <span class="text-white"><i class="bi bi-cloud-download"></i> Exportar Backup</span>
@@ -92,7 +92,7 @@
         </div>
 
         <!-- Importar Backup -->
-        <div class="col-md-6 mb-4">
+        <div class="col-12 col-md-6 mb-4">
             <div class="card h-100" style="opacity: 1 !important;">
                 <div class="card-header bg-warning py-2">
                     <span class="text-white"><i class="bi bi-cloud-upload"></i> Restaurar Backup</span>
@@ -148,17 +148,17 @@
                         Exporte seus dados em formato CSV para abrir em planilhas como Excel, Google Sheets ou LibreOffice.
                     </p>
                     <div class="row">
-                        <div class="col-md-4 mb-2">
+                        <div class="col-12 col-md-4 mb-2">
                             <a href="{{ route('exportar.csv.receitas') }}" class="btn btn-outline-success w-100">
                                 <i class="bi bi-file-earmark-text"></i> Receitas (CSV)
                             </a>
                         </div>
-                        <div class="col-md-4 mb-2">
+                        <div class="col-12 col-md-4 mb-2">
                             <a href="{{ route('exportar.csv.despesas') }}" class="btn btn-outline-danger w-100">
                                 <i class="bi bi-file-earmark-text"></i> Despesas (CSV)
                             </a>
                         </div>
-                        <div class="col-md-4 mb-2">
+                        <div class="col-12 col-md-4 mb-2">
                             <a href="{{ route('exportar.csv.transacoes') }}" class="btn btn-outline-primary w-100">
                                 <i class="bi bi-file-earmark-text"></i> Todas Transacoes (CSV)
                             </a>

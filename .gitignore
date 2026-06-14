@@ -25,3 +25,6 @@ Thumbs.db
 
 /docs
 /.claude
+
+CLAUDE.md
+docker-compose.yml

@@ -194,14 +194,14 @@
                             <i class="bi bi-bullseye"></i> Faltam: <strong id="textoFaltaMeta"></strong>
                         </div>
                         <div class="row g-3">
-                            <div class="col-6">
+                            <div class="col-12 col-sm-6">
                                 <label class="form-label small">Valor *</label>
                                 <div class="input-group">
                                     <span class="input-group-text" style="background:rgba(20,20,35,0.8);color:#aaa;border-color:rgba(255,255,255,0.08);">R$</span>
                                     <input type="number" name="valor" id="valorContribuicao" class="form-control" placeholder="0,00" step="0.01" min="0.01" required>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-12 col-sm-6">
                                 <label class="form-label small">Data *</label>
                                 <input type="date" name="data" class="form-control" value="{{ date('Y-m-d') }}" required>
                             </div>
@@ -260,7 +260,7 @@
                             <textarea name="descricao" id="metaDescricao" class="form-control" rows="2" placeholder="Opcional"></textarea>
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Tipo *</label>
                                 <select name="tipo" id="metaTipo" class="form-select" required>
                                     <option value="economia">Economia (Poupar)</option>
@@ -268,17 +268,17 @@
                                     <option value="receita">Meta de Receita</option>
                                 </select>
                             </div>
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Valor Alvo (R$) *</label>
                                 <input type="number" name="valor_alvo" id="metaValorAlvo" class="form-control" step="0.01" min="0.01" required>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Data Inicio *</label>
                                 <input type="date" name="data_inicio" id="metaDataInicio" class="form-control" required>
                             </div>
-                            <div class="col-6 mb-3">
+                            <div class="col-12 col-sm-6 mb-3">
                                 <label class="form-label small">Data Fim *</label>
                                 <input type="date" name="data_fim" id="metaDataFim" class="form-control" required>
                             </div>

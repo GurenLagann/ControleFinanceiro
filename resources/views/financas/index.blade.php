@@ -94,45 +94,49 @@
         </div>
     </div>
 
-    <!-- Graficos -->
+    <!-- Graficos principais: Pizza + Evolucao -->
     <div class="row mb-4 g-2 g-md-3">
-        <div class="col-6 col-md-3">
-            <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('pizza', 'Receitas vs Despesas')">
+        <div class="col-12 col-md-4">
+            <div class="card chart-card h-100" style="cursor: pointer;" onclick="ampliarGrafico('pizza', 'Receitas vs Despesas')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-pie-chart"></i> <span class="d-none d-sm-inline">Receitas vs Despesas</span><span class="d-sm-none">Rec/Desp</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-pie-chart"></i> Receitas vs Despesas <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
-                <div class="card-body p-2">
-                    <canvas id="chartPizza" height="160" role="img" aria-label="Gráfico de rosca: distribuição entre receitas e despesas do mês atual"></canvas>
+                <div class="card-body p-2 d-flex align-items-center justify-content-center">
+                    <canvas id="chartPizza" height="200" role="img" aria-label="Gráfico de rosca: distribuição entre receitas e despesas do mês atual"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-md-8">
+            <div class="card chart-card h-100" style="cursor: pointer;" onclick="ampliarGrafico('evolucao', 'Evolucao Ultimos 7 Dias')">
+                <div class="card-header bg-light py-2">
+                    <small><i class="bi bi-graph-up"></i> Evolução – Últimos 7 Dias <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                </div>
+                <div class="card-body p-2">
+                    <canvas id="chartEvolucao" height="120" role="img" aria-label="Gráfico de linha: evolução de receitas e despesas nos últimos 7 dias"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graficos por Categoria -->
+    <div class="row mb-4 g-2 g-md-3">
+        <div class="col-12 col-md-6">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('despesasCategoria', 'Despesas por Categoria')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart"></i> <span class="d-none d-sm-inline">Despesas/Categoria</span><span class="d-sm-none">Desp/Cat</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-bar-chart"></i> Despesas por Categoria <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartDespesasCategoria" height="160" role="img" aria-label="Gráfico de barras: despesas agrupadas por categoria"></canvas>
+                    <canvas id="chartDespesasCategoria" height="140" role="img" aria-label="Gráfico de barras: despesas agrupadas por categoria"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-md-6">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('receitasCategoria', 'Receitas por Categoria')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart"></i> <span class="d-none d-sm-inline">Receitas/Categoria</span><span class="d-sm-none">Rec/Cat</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-bar-chart"></i> Receitas por Categoria <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
-                    <canvas id="chartReceitasCategoria" height="160" role="img" aria-label="Gráfico de barras: receitas agrupadas por categoria"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('evolucao', 'Evolucao Ultimos 7 Dias')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-graph-up"></i> <span class="d-none d-sm-inline">Ultimos 7 Dias</span><span class="d-sm-none">7 Dias</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
-                </div>
-                <div class="card-body p-2">
-                    <canvas id="chartEvolucao" height="160" role="img" aria-label="Gráfico de linha: evolução de receitas e despesas nos últimos 7 dias"></canvas>
+                    <canvas id="chartReceitasCategoria" height="140" role="img" aria-label="Gráfico de barras: receitas agrupadas por categoria"></canvas>
                 </div>
             </div>
         </div>
@@ -143,7 +147,7 @@
         <div class="col-12">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('projecao', 'Projecao 6 Meses')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-graph-up-arrow"></i> Projecao 6 Meses (recorrentes + parcelas) <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-graph-up-arrow"></i> Projeção 6 Meses (recorrentes + parcelas) <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartProjecao" height="70" role="img" aria-label="Gráfico de barras: projeção financeira para os próximos 6 meses"></canvas>
@@ -152,22 +156,22 @@
         </div>
     </div>
 
-    <!-- Graficos Adicionais -->
+    <!-- Graficos Secundarios -->
     <div class="row mb-4 g-2 g-md-3">
-        <div class="col-6 col-md-4">
+        <div class="col-12 col-md-4">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('comparativo', 'Comparativo Mensal')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart-line"></i> <span class="d-none d-sm-inline">Comparativo Mensal</span><span class="d-sm-none">Comp. Mensal</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-bar-chart-line"></i> Comparativo Mensal <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartComparativo" height="160" role="img" aria-label="Gráfico de barras: comparativo entre mês atual e mês anterior"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-4">
+        <div class="col-12 col-md-4">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('tendencia', 'Tendencia Anual')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-graph-up"></i> <span class="d-none d-sm-inline">Tendencia 12 Meses</span><span class="d-sm-none">12 Meses</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-graph-up"></i> Tendência 12 Meses <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartTendencia" height="160" role="img" aria-label="Gráfico de linha: tendência financeira dos últimos 12 meses"></canvas>
@@ -177,7 +181,7 @@
         <div class="col-12 col-md-4">
             <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('diasSemana', 'Gastos por Dia da Semana')">
                 <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-calendar-week"></i> <span class="d-none d-sm-inline">Gastos/Dia Semana</span><span class="d-sm-none">Gastos/Dia</span> <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                    <small><i class="bi bi-calendar-week"></i> Gastos por Dia da Semana <i class="bi bi-arrows-fullscreen float-end"></i></small>
                 </div>
                 <div class="card-body p-2">
                     <canvas id="chartDiasSemana" height="160" role="img" aria-label="Gráfico de barras: gastos distribuídos por dia da semana"></canvas>
@@ -556,7 +560,7 @@
                         <div class="row">
                             <div class="col-6 mb-3">
                                 <label class="form-label small" for="recValor">Valor (R$) *</label>
-                                <input type="number" id="recValor" name="valor" class="form-control" step="0.01" min="0.01" required>
+                                <input type="number" id="recValor" name="valor" class="form-control" step="0.01" min="0.01" inputmode="decimal" required>
                             </div>
                             <div class="col-6 mb-3">
                                 <label class="form-label small" for="recData">Data *</label>
@@ -564,13 +568,8 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small" for="recCategoria">Categoria</label>
-                            <input type="text" id="recCategoria" name="categoria" class="form-control" list="cat-rec" placeholder="Opcional">
-                            <datalist id="cat-rec">
-                                @foreach($categoriasReceita as $cat)
-                                    <option value="{{ $cat }}">
-                                @endforeach
-                            </datalist>
+                            <label class="form-label small">Categoria</label>
+                            @include('partials._categoria-pills', ['categorias' => $categoriasReceita, 'inputId' => 'recCategoria'])
                         </div>
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" name="recorrente" id="recRecorrente" onchange="document.getElementById('recRecFields').style.display=this.checked?'block':'none'">
@@ -618,7 +617,7 @@
                         <div class="row">
                             <div class="col-6 mb-3">
                                 <label class="form-label small" for="despValor">Valor (R$) *</label>
-                                <input type="number" name="valor" id="despValor" class="form-control" step="0.01" min="0.01" required oninput="calcularParcela()">
+                                <input type="number" name="valor" id="despValor" class="form-control" step="0.01" min="0.01" inputmode="decimal" required oninput="calcularParcela()">
                             </div>
                             <div class="col-6 mb-3">
                                 <label class="form-label small" for="despData">Data *</label>
@@ -626,13 +625,8 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small" for="despCategoria">Categoria</label>
-                            <input type="text" id="despCategoria" name="categoria" class="form-control" list="cat-desp" placeholder="Opcional">
-                            <datalist id="cat-desp">
-                                @foreach($categoriasDespesa as $cat)
-                                    <option value="{{ $cat }}">
-                                @endforeach
-                            </datalist>
+                            <label class="form-label small">Categoria</label>
+                            @include('partials._categoria-pills', ['categorias' => $categoriasDespesa, 'inputId' => 'despCategoria'])
                         </div>
                         
                         <div class="btn-group w-100 mb-3" role="group">
@@ -666,7 +660,7 @@
 
                         <div id="camposParcelada" style="display:none" class="p-2 rounded mb-2" style="background: rgba(255,255,255,0.05);">
                             <div class="row align-items-center">
-                                <div class="col-5">
+                                <div class="col-6">
                                     <label class="form-label small" for="totalParcelas">Parcelas</label>
                                     <select name="total_parcelas" id="totalParcelas" class="form-select form-select-sm" onchange="calcularParcela()">
                                         @for($i = 2; $i <= 12; $i++)
@@ -678,7 +672,7 @@
                                         <option value="48">48x</option>
                                     </select>
                                 </div>
-                                <div class="col-7">
+                                <div class="col-6">
                                     <div class="alert alert-info py-1 px-2 mb-0 small">
                                         <i class="bi bi-calculator"></i> <strong id="valorParcela">R$ 0,00</strong>/mes
                                     </div>
@@ -719,7 +713,12 @@
                                     <input type="number" name="despesas[0][valor]" class="form-control form-control-sm" placeholder="Valor" step="0.01" min="0.01" required>
                                 </div>
                                 <div class="col-3">
-                                    <input type="text" name="despesas[0][categoria]" class="form-control form-control-sm" placeholder="Categoria" list="cat-desp">
+                                    <select name="despesas[0][categoria]" class="form-select form-select-sm multi-cat-select">
+                                        <option value="">Categoria</option>
+                                        @foreach($categoriasDespesa as $cat)
+                                            <option value="{{ $cat->nome }}">{{ $cat->nome }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="col-1">
                                     <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerLinha(this)" disabled><i class="bi bi-x"></i></button>
@@ -802,7 +801,7 @@
                         <div class="row">
                             <div class="col-6 mb-3">
                                 <label class="form-label small" for="editValor">Valor (R$) *</label>
-                                <input type="number" name="valor" id="editValor" class="form-control" step="0.01" min="0.01" required>
+                                <input type="number" name="valor" id="editValor" class="form-control" step="0.01" min="0.01" inputmode="decimal" required>
                             </div>
                             <div class="col-6 mb-3">
                                 <label class="form-label small" for="editData">Data *</label>
@@ -810,8 +809,8 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small" for="editCategoria">Categoria</label>
-                            <input type="text" name="categoria" id="editCategoria" class="form-control" placeholder="Opcional" list="cat-desp">
+                            <label class="form-label small">Categoria</label>
+                            @include('partials._categoria-pills', ['categorias' => $categoriasDespesa, 'inputId' => 'editCategoria'])
                         </div>
                     </div>
                     <div class="modal-footer py-2">
@@ -882,8 +881,11 @@
     }
 
     // Funcoes para multiplas despesas
+    const _catDespOpts = @json($categoriasDespesa->map(fn($c) => $c->nome));
+
     let linhaCount = 1;
     function adicionarLinha() {
+        const optsHtml = _catDespOpts.map(n => `<option value="${n}">${n}</option>`).join('');
         const container = document.getElementById('listaDespesas');
         const novaLinha = document.createElement('div');
         novaLinha.className = 'row mb-2 despesa-item';
@@ -895,7 +897,9 @@
                 <input type="number" name="despesas[${linhaCount}][valor]" class="form-control form-control-sm" placeholder="Valor" step="0.01" min="0.01" required>
             </div>
             <div class="col-3">
-                <input type="text" name="despesas[${linhaCount}][categoria]" class="form-control form-control-sm" placeholder="Categoria" list="cat-desp">
+                <select name="despesas[${linhaCount}][categoria]" class="form-select form-select-sm multi-cat-select">
+                    <option value="">Categoria</option>${optsHtml}
+                </select>
             </div>
             <div class="col-1">
                 <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerLinha(this)"><i class="bi bi-x"></i></button>
@@ -926,7 +930,14 @@
         document.getElementById('editValor').value = valor;
         document.getElementById('editData').value = data;
         document.getElementById('editCategoria').value = categoria || '';
-        new bootstrap.Modal(document.getElementById('modalEditarDespesa')).show();
+
+        const modal = new bootstrap.Modal(document.getElementById('modalEditarDespesa'));
+        modal.show();
+
+        document.getElementById('modalEditarDespesa').addEventListener('shown.bs.modal', function handler() {
+            preSelectCategoriaPill('#modalEditarDespesa .categoria-pills-grid', categoria || '');
+            this.removeEventListener('shown.bs.modal', handler);
+        });
     }
 
     // Funcoes para adiantar parcelas
@@ -973,7 +984,7 @@
                 const percentReceitas = totalGeral > 0 ? ((totalReceitas / totalGeral) * 100).toFixed(1) : 0;
                 const percentDespesas = totalGeral > 0 ? ((totalDespesas / totalGeral) * 100).toFixed(1) : 0;
                 detalhes = `
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4 mb-2">
                         <div class="card bg-success bg-opacity-10 border-success">
                             <div class="card-body py-2 text-center">
                                 <small class="text-muted">Total Receitas</small>
@@ -982,7 +993,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4 mb-2">
                         <div class="card bg-danger bg-opacity-10 border-danger">
                             <div class="card-body py-2 text-center">
                                 <small class="text-muted">Total Despesas</small>
@@ -991,7 +1002,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4 mb-2">
                         <div class="card bg-info bg-opacity-10 border-info">
                             <div class="card-body py-2 text-center">
                                 <small class="text-muted">Saldo</small>
@@ -1136,7 +1147,7 @@
                 const diffReceitas = compAtual.receitas - compAnterior.receitas;
                 const diffDespesas = compAtual.despesas - compAnterior.despesas;
                 detalhes = `
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6 mb-2">
                         <div class="card bg-dark border-secondary">
                             <div class="card-body py-2 text-center">
                                 <small class="text-muted">${compLabels[0]}</small>
@@ -1147,7 +1158,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6 mb-2">
                         <div class="card bg-dark border-secondary">
                             <div class="card-body py-2 text-center">
                                 <small class="text-muted">${compLabels[1]} (atual)</small>
@@ -1252,8 +1263,9 @@
     }, 800);
 
     // Config Chart.js para tema escuro
-    Chart.defaults.color = '#888';
-    Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+    Chart.defaults.color = 'rgba(255,255,255,0.5)';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+    Chart.defaults.font.family = "'IBM Plex Sans', system-ui, sans-serif";
 
     const totalReceitas = {{ $totalReceitas }};
     const totalDespesas = {{ $totalDespesas }};
@@ -1268,76 +1280,141 @@
     const projecaoSaldoMensal = @json($projecaoSaldoMensal ?? []);
 
     const coresNeon = ['#00ff88', '#ff4757', '#3742fa', '#ffa502', '#a55eea', '#1dd1a1', '#ff6b81', '#5f27cd'];
+    const catDespColors = @json($categoriasDespesa->pluck('cor', 'nome'));
+    const catRecColors  = @json($categoriasReceita->pluck('cor', 'nome'));
+
+    const _noAnim = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const _tooltip = {
+        backgroundColor: 'rgba(10,10,20,0.95)',
+        borderColor: 'rgba(255,255,255,0.12)',
+        borderWidth: 1,
+        titleColor: '#fff',
+        bodyColor: 'rgba(255,255,255,0.7)',
+        padding: 10,
+        cornerRadius: 8,
+        boxWidth: 10,
+        boxHeight: 10,
+        callbacks: {
+            label: ctx => {
+                const v = ctx.parsed.y ?? ctx.parsed;
+                return typeof v === 'number'
+                    ? ' R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                    : ' ' + v;
+            }
+        }
+    };
+
+    const _yScale = (extra = {}) => Object.assign({
+        beginAtZero: true,
+        grid: { color: 'rgba(255,255,255,0.05)' },
+        border: { color: 'transparent' },
+        ticks: {
+            color: 'rgba(255,255,255,0.4)',
+            callback: v => 'R$ ' + (Math.abs(v) >= 1000
+                ? (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + 'k'
+                : v.toLocaleString('pt-BR'))
+        }
+    }, extra);
+
+    const _xScale = () => ({
+        grid: { display: false },
+        border: { color: 'transparent' },
+        ticks: { color: 'rgba(255,255,255,0.4)' }
+    });
+
+    const _legend = (pos = 'bottom') => ({
+        position: pos,
+        labels: { color: 'rgba(255,255,255,0.7)', boxWidth: 10, boxHeight: 10, padding: 14, usePointStyle: true }
+    });
 
     // Inicializar graficos com delay para animacao
     setTimeout(() => {
         new Chart(document.getElementById('chartPizza'), {
             type: 'doughnut',
-            data: { 
-                labels: ['Receitas', 'Despesas'], 
-                datasets: [{ 
-                    data: [totalReceitas, totalDespesas], 
+            data: {
+                labels: ['Receitas', 'Despesas'],
+                datasets: [{
+                    data: [totalReceitas, totalDespesas],
                     backgroundColor: ['#00ff88', '#ff4757'],
                     borderWidth: 0,
-                    hoverOffset: 10
-                }] 
+                    hoverOffset: 8
+                }]
             },
-            options: { 
+            options: {
                 responsive: true,
-                animation: { animateScale: true, animateRotate: true },
-                plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 10 } } }
+                cutout: '72%',
+                animation: { animateScale: !_noAnim, animateRotate: !_noAnim, duration: _noAnim ? 0 : 800 },
+                plugins: {
+                    legend: _legend(),
+                    tooltip: Object.assign({}, _tooltip, {
+                        callbacks: {
+                            label: ctx => ' R$ ' + ctx.parsed.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                        }
+                    })
+                }
             }
         });
 
+        const despLabels = Object.keys(despesasPorCategoria).length ? Object.keys(despesasPorCategoria) : ['--'];
+        const despValues = Object.values(despesasPorCategoria).length ? Object.values(despesasPorCategoria) : [0];
         new Chart(document.getElementById('chartDespesasCategoria'), {
             type: 'bar',
-            data: { 
-                labels: Object.keys(despesasPorCategoria).length ? Object.keys(despesasPorCategoria) : ['--'], 
-                datasets: [{ 
-                    data: Object.values(despesasPorCategoria).length ? Object.values(despesasPorCategoria) : [0], 
-                    backgroundColor: coresNeon,
-                    borderRadius: 5,
+            data: {
+                labels: despLabels,
+                datasets: [{
+                    data: despValues,
+                    backgroundColor: despLabels.map((k, i) => (catDespColors[k] || coresNeon[i % coresNeon.length]) + 'cc'),
+                    borderRadius: 6,
                     borderSkipped: false
-                }] 
+                }]
             },
-            options: { 
+            options: {
                 responsive: true,
-                animation: { duration: 1000 },
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
+                animation: { duration: _noAnim ? 0 : 900 },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip: _tooltip },
+                scales: { y: _yScale(), x: _xScale() }
             }
         });
 
+        const recLabels = Object.keys(receitasPorCategoria).length ? Object.keys(receitasPorCategoria) : ['--'];
+        const recValues = Object.values(receitasPorCategoria).length ? Object.values(receitasPorCategoria) : [0];
         new Chart(document.getElementById('chartReceitasCategoria'), {
             type: 'bar',
-            data: { 
-                labels: Object.keys(receitasPorCategoria).length ? Object.keys(receitasPorCategoria) : ['--'], 
-                datasets: [{ 
-                    data: Object.values(receitasPorCategoria).length ? Object.values(receitasPorCategoria) : [0], 
-                    backgroundColor: coresNeon,
-                    borderRadius: 5
-                }] 
+            data: {
+                labels: recLabels,
+                datasets: [{
+                    data: recValues,
+                    backgroundColor: recLabels.map((k, i) => (catRecColors[k] || coresNeon[i % coresNeon.length]) + 'cc'),
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
             },
-            options: { 
+            options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
+                animation: { duration: _noAnim ? 0 : 900 },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip: _tooltip },
+                scales: { y: _yScale(), x: _xScale() }
             }
         });
 
         new Chart(document.getElementById('chartEvolucao'), {
             type: 'line',
-            data: { 
+            data: {
                 labels: evolucaoDias,
                 datasets: [
-                    { label: 'Receitas', data: evolucaoReceitas, borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#00ff88' },
-                    { label: 'Despesas', data: evolucaoDespesas, borderColor: '#ff4757', backgroundColor: 'rgba(255,71,87,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#ff4757' }
+                    { label: 'Receitas', data: evolucaoReceitas, borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.12)', fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: '#00ff88', pointHoverRadius: 6, pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2 },
+                    { label: 'Despesas', data: evolucaoDespesas, borderColor: '#ff4757', backgroundColor: 'rgba(255,71,87,0.12)', fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: '#ff4757', pointHoverRadius: 6, pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2 }
                 ]
             },
-            options: { 
+            options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
+                animation: { duration: _noAnim ? 0 : 1000 },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: _legend(), tooltip: _tooltip },
+                scales: { y: _yScale(), x: _xScale() }
             }
         });
 
@@ -1346,15 +1423,17 @@
             data: {
                 labels: projecaoMeses,
                 datasets: [
-                    { label: 'Receitas', data: projecaoReceitasMensal, backgroundColor: 'rgba(0,255,136,0.6)', borderRadius: 5 },
-                    { label: 'Despesas', data: projecaoDespesasMensal, backgroundColor: 'rgba(255,71,87,0.6)', borderRadius: 5 },
-                    { label: 'Saldo', data: projecaoSaldoMensal, type: 'line', borderColor: '#3742fa', borderWidth: 3, tension: 0.4, fill: false, pointRadius: 4, pointBackgroundColor: '#3742fa' }
+                    { label: 'Receitas', data: projecaoReceitasMensal, backgroundColor: 'rgba(0,255,136,0.55)', borderRadius: 6, borderSkipped: false },
+                    { label: 'Despesas', data: projecaoDespesasMensal, backgroundColor: 'rgba(255,71,87,0.55)', borderRadius: 6, borderSkipped: false },
+                    { label: 'Saldo', data: projecaoSaldoMensal, type: 'line', borderColor: '#3742fa', borderWidth: 2.5, tension: 0.4, fill: false, pointRadius: 4, pointBackgroundColor: '#3742fa', pointHoverRadius: 6 }
                 ]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } },
-                scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
+                animation: { duration: _noAnim ? 0 : 900 },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: _legend(), tooltip: _tooltip },
+                scales: { y: _yScale(), x: _xScale() }
             }
         });
 
@@ -1368,14 +1447,16 @@
             data: {
                 labels: comparativoLabels,
                 datasets: [
-                    { label: 'Receitas', data: [comparativoMesAnterior.receitas, comparativoMesAtual.receitas], backgroundColor: ['rgba(0,255,136,0.4)', 'rgba(0,255,136,0.8)'], borderRadius: 5 },
-                    { label: 'Despesas', data: [comparativoMesAnterior.despesas, comparativoMesAtual.despesas], backgroundColor: ['rgba(255,71,87,0.4)', 'rgba(255,71,87,0.8)'], borderRadius: 5 }
+                    { label: 'Receitas', data: [comparativoMesAnterior.receitas, comparativoMesAtual.receitas], backgroundColor: ['rgba(0,255,136,0.35)', 'rgba(0,255,136,0.8)'], borderRadius: 6, borderSkipped: false },
+                    { label: 'Despesas', data: [comparativoMesAnterior.despesas, comparativoMesAtual.despesas], backgroundColor: ['rgba(255,71,87,0.35)', 'rgba(255,71,87,0.8)'], borderRadius: 6, borderSkipped: false }
                 ]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
+                animation: { duration: _noAnim ? 0 : 900 },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: _legend(), tooltip: _tooltip },
+                scales: { y: _yScale(), x: _xScale() }
             }
         });
 
@@ -1390,21 +1471,25 @@
             data: {
                 labels: tendenciaMeses,
                 datasets: [
-                    { label: 'Receitas', data: tendenciaReceitas, borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 2 },
-                    { label: 'Despesas', data: tendenciaDespesas, borderColor: '#ff4757', backgroundColor: 'rgba(255,71,87,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 2 },
-                    { label: 'Saldo', data: tendenciaSaldo, borderColor: '#3742fa', borderWidth: 2, tension: 0.4, fill: false, pointRadius: 2, borderDash: [5, 5] }
+                    { label: 'Receitas', data: tendenciaReceitas, borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.1)', fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 2, pointHoverRadius: 5 },
+                    { label: 'Despesas', data: tendenciaDespesas, borderColor: '#ff4757', backgroundColor: 'rgba(255,71,87,0.1)', fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 2, pointHoverRadius: 5 },
+                    { label: 'Saldo', data: tendenciaSaldo, borderColor: '#3742fa', borderWidth: 2, tension: 0.4, fill: false, pointRadius: 2, pointHoverRadius: 5, borderDash: [5, 5] }
                 ]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
+                animation: { duration: _noAnim ? 0 : 1000 },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: _legend(), tooltip: _tooltip },
+                scales: { y: _yScale({ beginAtZero: false }), x: _xScale() }
             }
         });
 
         // Grafico Gastos por Dia da Semana
         const diasSemana = @json($diasSemana);
         const gastosPorDiaSemana = @json($gastosPorDiaSemana);
+        const _maxGasto = Math.max(...gastosPorDiaSemana, 0);
+        const _fimSemana = [true, false, false, false, false, false, true];
 
         new Chart(document.getElementById('chartDiasSemana'), {
             type: 'bar',
@@ -1413,24 +1498,100 @@
                 datasets: [{
                     label: 'Gastos',
                     data: gastosPorDiaSemana,
-                    backgroundColor: [
-                        'rgba(255,71,87,0.6)',
-                        'rgba(55,66,250,0.6)',
-                        'rgba(55,66,250,0.6)',
-                        'rgba(55,66,250,0.6)',
-                        'rgba(55,66,250,0.6)',
-                        'rgba(55,66,250,0.6)',
-                        'rgba(255,71,87,0.6)'
-                    ],
-                    borderRadius: 5
+                    backgroundColor: gastosPorDiaSemana.map((v, i) =>
+                        v === _maxGasto && _maxGasto > 0 ? 'rgba(255,215,0,0.85)'
+                        : _fimSemana[i] ? 'rgba(255,71,87,0.65)'
+                        : 'rgba(55,66,250,0.65)'
+                    ),
+                    borderRadius: 6,
+                    borderSkipped: false
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
+                animation: { duration: _noAnim ? 0 : 900 },
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip: _tooltip },
+                scales: { y: _yScale(), x: _xScale() }
             }
         });
     }, 600);
+
+    // ===== CATEGORIA PILLS =====
+
+    document.addEventListener('click', function (e) {
+        const pill = e.target.closest('.categoria-pill');
+        if (!pill) return;
+
+        const grid = pill.closest('.categoria-pills-grid');
+        const targetId = pill.dataset.target;
+        const hiddenInput = document.getElementById(targetId);
+        const isSelected = pill.getAttribute('aria-pressed') === 'true';
+
+        grid.querySelectorAll('.categoria-pill').forEach(function (p) {
+            const cor = p.dataset.cor;
+            p.setAttribute('aria-pressed', 'false');
+            p.style.background = cor + '26';
+            p.style.border = '1px solid ' + cor + '66';
+            p.style.boxShadow = '';
+            p.querySelector('.categoria-check').style.display = 'none';
+        });
+
+        if (!isSelected) {
+            const cor = pill.dataset.cor;
+            pill.setAttribute('aria-pressed', 'true');
+            pill.style.background = cor + '33';
+            pill.style.border = '1px solid ' + cor;
+            pill.style.boxShadow = '0 0 8px ' + cor + '80';
+            pill.querySelector('.categoria-check').style.display = 'block';
+            hiddenInput.value = pill.dataset.nome;
+        } else {
+            hiddenInput.value = '';
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('categoria-pill')) {
+            e.preventDefault();
+            e.target.click();
+        }
+    });
+
+    function preSelectCategoriaPill(gridSelector, nome) {
+        if (!nome) return;
+        const grid = document.querySelector(gridSelector);
+        if (!grid) return;
+        const pill = Array.from(grid.querySelectorAll('.categoria-pill'))
+            .find(function (p) { return p.dataset.nome === nome; });
+        if (pill) pill.click();
+    }
+
+    function resetCategoriaPills(gridSelector) {
+        const grid = document.querySelector(gridSelector);
+        if (!grid) return;
+        const firstPill = grid.querySelector('.categoria-pill');
+        if (firstPill) {
+            const hiddenInput = document.getElementById(firstPill.dataset.target);
+            if (hiddenInput) hiddenInput.value = '';
+        }
+        grid.querySelectorAll('.categoria-pill').forEach(function (p) {
+            const cor = p.dataset.cor;
+            p.setAttribute('aria-pressed', 'false');
+            p.style.background = cor + '26';
+            p.style.border = '1px solid ' + cor + '66';
+            p.style.boxShadow = '';
+            p.querySelector('.categoria-check').style.display = 'none';
+        });
+    }
+
+    document.getElementById('modalReceita').addEventListener('hidden.bs.modal', function () {
+        resetCategoriaPills('#modalReceita .categoria-pills-grid');
+    });
+    document.getElementById('modalDespesa').addEventListener('hidden.bs.modal', function () {
+        resetCategoriaPills('#modalDespesa .categoria-pills-grid');
+    });
+    document.getElementById('modalEditarDespesa').addEventListener('hidden.bs.modal', function () {
+        resetCategoriaPills('#modalEditarDespesa .categoria-pills-grid');
+    });
 </script>
 @endsection

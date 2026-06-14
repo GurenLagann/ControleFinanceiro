@@ -22,43 +22,96 @@ class FinancaController extends Controller
 
         foreach ($receitas as $receita) {
             $transacoes->push((object) [
-                '_id' => $receita->_id,
-                'tipo' => 'receita',
-                'descricao' => $receita->descricao,
-                'valor' => $receita->valor,
-                'data' => $receita->data,
-                'categoria' => $receita->categoria,
-                'recorrente' => $receita->recorrente ?? false,
-                'parcelado' => false,
+                '_id'           => $receita->_id,
+                'tipo'          => 'receita',
+                'descricao'     => $receita->descricao,
+                'valor'         => $receita->valor,
+                'data'          => $receita->data,
+                'categoria'     => $receita->categoria,
+                'recorrente'    => $receita->recorrente ?? false,
+                'parcelado'     => false,
                 'parcela_atual' => null,
-                'total_parcelas' => null,
+                'total_parcelas'=> null,
             ]);
         }
 
         foreach ($despesas as $despesa) {
             $transacoes->push((object) [
-                '_id' => $despesa->_id,
-                'tipo' => 'despesa',
-                'descricao' => $despesa->descricao,
-                'valor' => $despesa->valor,
-                'data' => $despesa->data,
-                'categoria' => $despesa->categoria,
-                'recorrente' => $despesa->recorrente ?? false,
-                'parcelado' => $despesa->parcelado ?? false,
+                '_id'           => $despesa->_id,
+                'tipo'          => 'despesa',
+                'descricao'     => $despesa->descricao,
+                'valor'         => $despesa->valor,
+                'data'          => $despesa->data,
+                'categoria'     => $despesa->categoria,
+                'recorrente'    => $despesa->recorrente ?? false,
+                'parcelado'     => $despesa->parcelado ?? false,
                 'parcela_atual' => $despesa->parcela_atual,
-                'total_parcelas' => $despesa->total_parcelas,
+                'total_parcelas'=> $despesa->total_parcelas,
             ]);
         }
 
-        $transacoes = $transacoes->sortByDesc(function($item) {
+        $transacoes = $transacoes->sortByDesc(function ($item) {
             if (!$item->data) return 0;
-            return $item->data instanceof \Carbon\Carbon ? $item->data->timestamp : strtotime($item->data);
+            return $item->data instanceof Carbon ? $item->data->timestamp : strtotime($item->data);
         })->values();
 
-        // Paginacao
-        $perPage = 20;
-        $page = $request->input('page', 1);
-        $total = $transacoes->count();
+        // Filtros
+        $busca          = trim($request->input('busca', ''));
+        $filtroTipo     = $request->input('tipo', '');
+        $filtroCategoria= $request->input('categoria', '');
+        $dataInicio     = $request->input('data_inicio', '');
+        $dataFim        = $request->input('data_fim', '');
+
+        if ($busca !== '') {
+            $buscaLower = mb_strtolower($busca);
+            $transacoes = $transacoes->filter(fn ($t) =>
+                str_contains(mb_strtolower($t->descricao ?? ''), $buscaLower) ||
+                str_contains(mb_strtolower($t->categoria ?? ''), $buscaLower)
+            )->values();
+        }
+
+        if ($filtroTipo !== '') {
+            $transacoes = $transacoes->filter(fn ($t) => $t->tipo === $filtroTipo)->values();
+        }
+
+        if ($filtroCategoria !== '') {
+            $transacoes = $transacoes->filter(fn ($t) =>
+                mb_strtolower($t->categoria ?? '') === mb_strtolower($filtroCategoria)
+            )->values();
+        }
+
+        if ($dataInicio !== '') {
+            $inicio = Carbon::parse($dataInicio)->startOfDay();
+            $transacoes = $transacoes->filter(function ($t) use ($inicio) {
+                if (!$t->data) return false;
+                $d = $t->data instanceof Carbon ? $t->data : Carbon::parse($t->data);
+                return $d->gte($inicio);
+            })->values();
+        }
+
+        if ($dataFim !== '') {
+            $fim = Carbon::parse($dataFim)->endOfDay();
+            $transacoes = $transacoes->filter(function ($t) use ($fim) {
+                if (!$t->data) return false;
+                $d = $t->data instanceof Carbon ? $t->data : Carbon::parse($t->data);
+                return $d->lte($fim);
+            })->values();
+        }
+
+        // Totais filtrados para o sumário
+        $totalReceitasFiltrado  = $transacoes->where('tipo', 'receita')->sum('valor');
+        $totalDespesasFiltrado  = $transacoes->where('tipo', 'despesa')->sum('valor');
+        $saldoFiltrado          = $totalReceitasFiltrado - $totalDespesasFiltrado;
+
+        // Categorias para o select de filtro
+        $categorias = Categoria::ativas()->orderBy('nome')->get(['nome', 'cor']);
+
+        // Paginação
+        $perPage = (int) $request->input('per_page', 20);
+        if (!in_array($perPage, [10, 20, 50, 100])) $perPage = 20;
+        $page    = $request->input('page', 1);
+        $total   = $transacoes->count();
+
         $transacoesPaginadas = new LengthAwarePaginator(
             $transacoes->forPage($page, $perPage),
             $total,
@@ -68,8 +121,13 @@ class FinancaController extends Controller
         );
 
         return view('financas.transacoes', [
-            'transacoes' => $transacoesPaginadas,
-            'totalTransacoes' => $total,
+            'transacoes'            => $transacoesPaginadas,
+            'totalTransacoes'       => $total,
+            'totalReceitasFiltrado' => $totalReceitasFiltrado,
+            'totalDespesasFiltrado' => $totalDespesasFiltrado,
+            'saldoFiltrado'         => $saldoFiltrado,
+            'categorias'            => $categorias,
+            'filtros'               => compact('busca', 'filtroTipo', 'filtroCategoria', 'dataInicio', 'dataFim', 'perPage'),
         ]);
     }
 
@@ -229,8 +287,27 @@ class FinancaController extends Controller
             $mes = Carbon::now()->startOfMonth()->subMonths($i);
             $tendenciaMeses[] = $mes->translatedFormat('M/y');
 
-            $recMes = $receitas->filter(fn($r) => $r->data && $r->data->format('Y-m') === $mes->format('Y-m'))->sum('valor');
-            $desMes = $despesas->filter(fn($d) => $d->data && $d->data->format('Y-m') === $mes->format('Y-m'))->sum('valor');
+            // Transações pontuais (não recorrentes) lançadas neste mês
+            $recMes = $receitas->filter(fn($r) =>
+                $r->data && !$r->recorrente &&
+                $r->data->format('Y-m') === $mes->format('Y-m')
+            )->sum('valor');
+
+            // Receitas recorrentes ativas desde antes ou neste mês
+            $recMes += $receitasRecorrentes->filter(fn($r) =>
+                $r->data && $r->data->startOfMonth()->lte($mes)
+            )->sum('valor');
+
+            // Despesas pontuais (não recorrentes, não parceladas) lançadas neste mês
+            $desMes = $despesas->filter(fn($d) =>
+                $d->data && !$d->recorrente &&
+                $d->data->format('Y-m') === $mes->format('Y-m')
+            )->sum('valor');
+
+            // Despesas recorrentes ativas desde antes ou neste mês
+            $desMes += $despesasRecorrentes->filter(fn($d) =>
+                $d->data && $d->data->startOfMonth()->lte($mes)
+            )->sum('valor');
 
             $tendenciaReceitas[] = $recMes;
             $tendenciaDespesas[] = $desMes;
@@ -251,13 +328,13 @@ class FinancaController extends Controller
         // Categorias para autocomplete (do modelo Categoria)
         $categoriasReceita = Categoria::ativas()
             ->paraReceitas()
-            ->pluck('nome')
-            ->toArray();
+            ->orderBy('nome')
+            ->get(['nome', 'cor', 'icone']);
 
         $categoriasDespesa = Categoria::ativas()
             ->paraDespesas()
-            ->pluck('nome')
-            ->toArray();
+            ->orderBy('nome')
+            ->get(['nome', 'cor', 'icone']);
 
         return view('financas.index', compact(
             'receitas',
@@ -305,7 +382,7 @@ class FinancaController extends Controller
             'valor' => 'required|numeric|min:0.01',
             'data' => 'required|date',
             'categoria' => 'nullable|string|max:100',
-            'recorrente' => 'nullable|boolean',
+            'recorrente' => 'nullable',
             'frequencia' => 'nullable|string|in:mensal,semanal,quinzenal,anual',
             'dia_vencimento' => 'nullable|integer|min:1|max:31',
         ]);
@@ -331,10 +408,10 @@ class FinancaController extends Controller
             'valor' => 'required|numeric|min:0.01',
             'data' => 'required|date',
             'categoria' => 'nullable|string|max:100',
-            'recorrente' => 'nullable|boolean',
+            'recorrente' => 'nullable',
             'frequencia' => 'nullable|string|in:mensal,semanal,quinzenal,anual',
             'dia_vencimento' => 'nullable|integer|min:1|max:31',
-            'parcelado' => 'nullable|boolean',
+            'parcelado' => 'nullable',
             'total_parcelas' => 'nullable|integer|min:2|max:48',
         ]);
 
