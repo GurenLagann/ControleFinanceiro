@@ -14,7 +14,8 @@ services:
       - php
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.controlefinanceiro.rule=Host(`controlefinanceiro.localhost`)"
+      - "traefik.http.routers.controlefinanceiro.rule=Host(`financeiro.local`)"
+      - "traefik.http.routers.controlefinanceiro.entrypoints=web"
       - "traefik.http.services.controlefinanceiro.loadbalancer.server.port=80"
       - "traefik.docker.network=traefik-net"
     networks:
