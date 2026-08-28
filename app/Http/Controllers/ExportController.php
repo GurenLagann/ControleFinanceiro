@@ -9,6 +9,7 @@ use App\Models\Meta;
 use App\Models\Alerta;
 use App\Services\BackupService;
 use App\Services\CacheService;
+use App\Services\FluxoCaixaService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -80,6 +81,70 @@ class ExportController extends Controller
         $pdf->setPaper('a4', 'portrait');
 
         return $pdf->download("extrato-{$dataInicio}-{$dataFim}.pdf");
+    }
+
+    /**
+     * Pagina do relatorio de fluxo de caixa mensal
+     */
+    public function fluxoCaixaIndex(Request $request)
+    {
+        $ano = (int) $request->input('ano', now()->year);
+        $receitas = CacheService::getReceitas();
+        $despesas = CacheService::getDespesas();
+
+        $fluxoCaixa = FluxoCaixaService::calcular($receitas, $despesas, $ano);
+
+        $anosDisponiveis = $receitas->concat($despesas)
+            ->pluck('data')
+            ->filter()
+            ->map(fn($data) => $data->year)
+            ->push(now()->year)
+            ->unique()
+            ->sortDesc()
+            ->values();
+
+        return view('relatorios.fluxo-caixa', [
+            'fluxoCaixa' => $fluxoCaixa,
+            'anoFluxo' => $ano,
+            'anosDisponiveis' => $anosDisponiveis,
+        ]);
+    }
+
+    /**
+     * Relatorio PDF do fluxo de caixa mensal de um ano
+     */
+    public function fluxoCaixaPdf(Request $request)
+    {
+        $ano = (int) $request->input('ano', now()->year);
+        $fluxo = FluxoCaixaService::calcular(CacheService::getReceitas(), CacheService::getDespesas(), $ano);
+
+        $pdf = Pdf::loadView('exports.fluxo-caixa-pdf', ['ano' => $ano, 'fluxo' => $fluxo]);
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download("fluxo-caixa-{$ano}.pdf");
+    }
+
+    /**
+     * CSV do fluxo de caixa mensal de um ano
+     */
+    public function fluxoCaixaCsv(Request $request)
+    {
+        $ano = (int) $request->input('ano', now()->year);
+        $fluxo = FluxoCaixaService::calcular(CacheService::getReceitas(), CacheService::getDespesas(), $ano);
+
+        $csv = "Mes;Receitas;Despesas;Saldo;Saldo Acumulado\n";
+
+        foreach ($fluxo['labels'] as $i => $label) {
+            $receitas = number_format($fluxo['receitas'][$i], 2, ',', '.');
+            $despesas = number_format($fluxo['despesas'][$i], 2, ',', '.');
+            $saldo = number_format($fluxo['saldo'][$i], 2, ',', '.');
+            $saldoAcumulado = number_format($fluxo['saldoAcumulado'][$i], 2, ',', '.');
+            $csv .= "{$label};{$receitas};{$despesas};{$saldo};{$saldoAcumulado}\n";
+        }
+
+        return response($csv)
+            ->header('Content-Type', 'text/csv; charset=utf-8')
+            ->header('Content-Disposition', "attachment; filename=\"fluxo-caixa-{$ano}.csv\"");
     }
 
     /**

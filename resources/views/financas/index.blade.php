@@ -430,7 +430,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('comparativo', 'Comparativo Mensal')">
                         <div class="card-header bg-light py-2">
                             <small><i class="bi bi-bar-chart-line"></i> Comparativo Mensal <i class="bi bi-arrows-fullscreen float-end"></i></small>
@@ -440,17 +440,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
-                    <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('tendencia', 'Tendencia Anual')">
-                        <div class="card-header bg-light py-2">
-                            <small><i class="bi bi-graph-up"></i> Tendência 12 Meses <i class="bi bi-arrows-fullscreen float-end"></i></small>
-                        </div>
-                        <div class="card-body p-2">
-                            <canvas id="chartTendencia" height="160" role="img" aria-label="Gráfico de linha: tendência financeira dos últimos 12 meses"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('diasSemana', 'Gastos por Dia da Semana')">
                         <div class="card-header bg-light py-2">
                             <small><i class="bi bi-calendar-week"></i> Gastos por Dia da Semana <i class="bi bi-arrows-fullscreen float-end"></i></small>
@@ -1284,34 +1274,6 @@
                 };
                 break;
 
-            case 'tendencia':
-                const tendMeses = @json($tendenciaMeses);
-                const tendReceitas = @json($tendenciaReceitas);
-                const tendDespesas = @json($tendenciaDespesas);
-                const tendSaldo = @json($tendenciaSaldo);
-                detalhes = '<div class="col-12"><div class="table-responsive" style="max-height: 200px; overflow-y: auto;"><table class="table table-sm"><thead><tr><th>Mes</th><th class="text-end">Receitas</th><th class="text-end">Despesas</th><th class="text-end">Saldo</th></tr></thead><tbody>';
-                tendMeses.forEach((mes, i) => {
-                    detalhes += `<tr><td>${mes}</td><td class="text-end valor-positivo">R$ ${tendReceitas[i].toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td><td class="text-end valor-negativo">R$ ${tendDespesas[i].toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td><td class="text-end ${tendSaldo[i] >= 0 ? 'valor-positivo' : 'valor-negativo'}">R$ ${tendSaldo[i].toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td></tr>`;
-                });
-                detalhes += '</tbody></table></div></div>';
-                config = {
-                    type: 'line',
-                    data: {
-                        labels: tendMeses,
-                        datasets: [
-                            { label: 'Receitas', data: tendReceitas, borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.2)', fill: true, tension: 0.4 },
-                            { label: 'Despesas', data: tendDespesas, borderColor: '#ff4757', backgroundColor: 'rgba(255,71,87,0.2)', fill: true, tension: 0.4 },
-                            { label: 'Saldo', data: tendSaldo, borderColor: '#3742fa', borderWidth: 2, fill: false, tension: 0.4, borderDash: [5, 5] }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { position: 'bottom' } },
-                        scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } }
-                    }
-                };
-                break;
-
             case 'diasSemana':
                 const dias = @json($diasSemana);
                 const gastosDia = @json($gastosPorDiaSemana);
@@ -1431,7 +1393,7 @@
     // calcula o tamanho a partir de um canvas com display:none = 0px)
     let chartDespesasCategoriaInstance, chartReceitasCategoriaInstance,
         chartProjecaoInstance, chartComparativoInstance,
-        chartTendenciaInstance, chartDiasSemanaInstance;
+        chartDiasSemanaInstance;
 
     document.querySelectorAll('#dashboardTabs button[data-bs-toggle="tab"]').forEach(btn => {
         btn.addEventListener('shown.bs.tab', function (e) {
@@ -1439,7 +1401,7 @@
             const toResize = target === '#tab-categorias'
                 ? [chartDespesasCategoriaInstance, chartReceitasCategoriaInstance]
                 : target === '#tab-tendencias'
-                    ? [chartProjecaoInstance, chartComparativoInstance, chartTendenciaInstance, chartDiasSemanaInstance]
+                    ? [chartProjecaoInstance, chartComparativoInstance, chartDiasSemanaInstance]
                     : [];
             toResize.forEach(c => c && c.resize());
         });
@@ -1575,31 +1537,6 @@
                 interaction: { mode: 'index', intersect: false },
                 plugins: { legend: _legend(), tooltip: _tooltip },
                 scales: { y: _yScale(), x: _xScale() }
-            }
-        });
-
-        // Grafico Tendencia Anual
-        const tendenciaMeses = @json($tendenciaMeses);
-        const tendenciaReceitas = @json($tendenciaReceitas);
-        const tendenciaDespesas = @json($tendenciaDespesas);
-        const tendenciaSaldo = @json($tendenciaSaldo);
-
-        chartTendenciaInstance = new Chart(document.getElementById('chartTendencia'), {
-            type: 'line',
-            data: {
-                labels: tendenciaMeses,
-                datasets: [
-                    { label: 'Receitas', data: tendenciaReceitas, borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.1)', fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 2, pointHoverRadius: 5 },
-                    { label: 'Despesas', data: tendenciaDespesas, borderColor: '#ff4757', backgroundColor: 'rgba(255,71,87,0.1)', fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 2, pointHoverRadius: 5 },
-                    { label: 'Saldo', data: tendenciaSaldo, borderColor: '#3742fa', borderWidth: 2, tension: 0.4, fill: false, pointRadius: 2, pointHoverRadius: 5, borderDash: [5, 5] }
-                ]
-            },
-            options: {
-                responsive: true,
-                animation: { duration: _noAnim ? 0 : 1000 },
-                interaction: { mode: 'index', intersect: false },
-                plugins: { legend: _legend(), tooltip: _tooltip },
-                scales: { y: _yScale({ beginAtZero: false }), x: _xScale() }
             }
         });
 

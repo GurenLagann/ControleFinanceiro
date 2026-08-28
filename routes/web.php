@@ -80,11 +80,16 @@ Route::post('/importar/cancelar', [ImportacaoController::class, 'cancelar'])->na
 // Exportacao PDF
 Route::get('/exportar/pdf/relatorio', [ExportController::class, 'relatorioPdf'])->name('exportar.pdf.relatorio');
 Route::get('/exportar/pdf/extrato', [ExportController::class, 'extratoPdf'])->name('exportar.pdf.extrato');
+Route::get('/exportar/pdf/fluxo-caixa', [ExportController::class, 'fluxoCaixaPdf'])->name('exportar.pdf.fluxoCaixa');
 
 // Exportacao CSV
 Route::get('/exportar/csv/receitas', [ExportController::class, 'receitasCsv'])->name('exportar.csv.receitas');
 Route::get('/exportar/csv/despesas', [ExportController::class, 'despesasCsv'])->name('exportar.csv.despesas');
 Route::get('/exportar/csv/transacoes', [ExportController::class, 'transacoesCsv'])->name('exportar.csv.transacoes');
+Route::get('/exportar/csv/fluxo-caixa', [ExportController::class, 'fluxoCaixaCsv'])->name('exportar.csv.fluxoCaixa');
+
+// Relatorios
+Route::get('/relatorios/fluxo-caixa', [ExportController::class, 'fluxoCaixaIndex'])->name('relatorios.fluxoCaixa');
 
 // Backup e Restauracao
 Route::get('/backup', [ExportController::class, 'backupIndex'])->name('backup.index');

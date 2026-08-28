@@ -747,6 +747,11 @@
                     <span class="nav-text">Cartões</span>
                 </a>
 
+                <a href="{{ route('relatorios.fluxoCaixa') }}" class="nav-link {{ request()->routeIs('relatorios.*') ? 'active' : '' }}">
+                    <i class="bi bi-graph-up" aria-hidden="true"></i>
+                    <span class="nav-text">Relatórios</span>
+                </a>
+
                 <div class="nav-section">Configuracoes</div>
                 <a href="{{ route('categorias.index') }}" class="nav-link {{ request()->routeIs('categorias.index') ? 'active' : '' }}">
                     <i class="bi bi-tags" aria-hidden="true"></i>

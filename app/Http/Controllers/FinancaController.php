@@ -282,43 +282,6 @@ class FinancaController extends Controller
         ];
         $comparativoLabels = [$mesAnteriorCarbon->translatedFormat('M/Y'), $mesAtualCarbon->translatedFormat('M/Y')];
 
-        // Tendencia Anual (ultimos 12 meses)
-        $tendenciaMeses = [];
-        $tendenciaReceitas = [];
-        $tendenciaDespesas = [];
-        $tendenciaSaldo = [];
-
-        for ($i = 11; $i >= 0; $i--) {
-            $mes = Carbon::now()->startOfMonth()->subMonths($i);
-            $tendenciaMeses[] = $mes->translatedFormat('M/y');
-
-            // Transações pontuais (não recorrentes) lançadas neste mês
-            $recMes = $receitas->filter(fn($r) =>
-                $r->data && !$r->recorrente &&
-                $r->data->format('Y-m') === $mes->format('Y-m')
-            )->sum('valor');
-
-            // Receitas recorrentes ativas desde antes ou neste mês
-            $recMes += $receitasRecorrentes->filter(fn($r) =>
-                $r->data && $r->data->startOfMonth()->lte($mes)
-            )->sum('valor');
-
-            // Despesas pontuais (não recorrentes, não parceladas) lançadas neste mês
-            $desMes = $despesas->filter(fn($d) =>
-                $d->data && !$d->recorrente &&
-                $d->data->format('Y-m') === $mes->format('Y-m')
-            )->sum('valor');
-
-            // Despesas recorrentes ativas desde antes ou neste mês
-            $desMes += $despesasRecorrentes->filter(fn($d) =>
-                $d->data && $d->data->startOfMonth()->lte($mes)
-            )->sum('valor');
-
-            $tendenciaReceitas[] = $recMes;
-            $tendenciaDespesas[] = $desMes;
-            $tendenciaSaldo[] = $recMes - $desMes;
-        }
-
         // Distribuicao de Gastos por Dia da Semana
         $diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
         $gastosPorDiaSemana = array_fill(0, 7, 0);
@@ -387,10 +350,6 @@ class FinancaController extends Controller
             'comparativoMesAtual',
             'comparativoMesAnterior',
             'comparativoLabels',
-            'tendenciaMeses',
-            'tendenciaReceitas',
-            'tendenciaDespesas',
-            'tendenciaSaldo',
             'diasSemana',
             'gastosPorDiaSemana',
             'categoriasReceita',
