@@ -34,8 +34,9 @@
             $vencimentos = $alertasAtivos->where('tipo', 'vencimento')->count();
             $limites = $alertasAtivos->where('tipo', 'limite')->count();
             $metasAlertas = $alertasAtivos->where('tipo', 'meta')->count();
+            $conquistas = $alertasAtivos->where('tipo', 'conquista')->count();
         @endphp
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md">
             <div class="card glow-red" style="opacity: 1 !important; border-left: 4px solid #ff4757;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bell"></i> Nao Lidos</h6>
@@ -43,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md">
             <div class="card glow-purple" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-calendar-event"></i> Vencimentos</h6>
@@ -51,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md">
             <div class="card" style="opacity: 1 !important; border-left: 4px solid #ffc107;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-shield-exclamation"></i> Limites</h6>
@@ -59,11 +60,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md">
             <div class="card glow-blue" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
                 <div class="card-body text-center py-3">
                     <h6 class="text-muted mb-1"><i class="bi bi-bullseye"></i> Metas</h6>
                     <h3 class="mb-0" style="color: #3742fa;">{{ $metasAlertas }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md">
+            <div class="card glow-green" style="opacity: 1 !important; border-left: 4px solid #00ff88;">
+                <div class="card-body text-center py-3">
+                    <h6 class="text-muted mb-1"><i class="bi bi-trophy"></i> Conquistas</h6>
+                    <h3 class="mb-0" style="color: #00ff88;">{{ $conquistas }}</h3>
                 </div>
             </div>
         </div>
@@ -89,6 +98,8 @@
                                     <span class="badge bg-primary p-2"><i class="bi bi-bullseye"></i></span>
                                 @elseif($alerta->tipo === 'lembrete')
                                     <span class="badge bg-secondary p-2"><i class="bi bi-sticky"></i></span>
+                                @elseif($alerta->tipo === 'conquista')
+                                    <span class="badge p-2" style="background-color: #00ff88; color: #0f0f1a;"><i class="bi bi-trophy"></i></span>
                                 @else
                                     <span class="badge bg-info p-2"><i class="bi bi-info-circle"></i></span>
                                 @endif
@@ -143,9 +154,10 @@
                 <h6><i class="bi bi-info-circle"></i> Como funcionam os alertas?</h6>
                 <ul class="mb-0 small">
                     <li><strong>Vencimentos:</strong> Alertas automaticos para despesas recorrentes com vencimento nos proximos 7 dias</li>
-                    <li><strong>Limites:</strong> Alertas quando uma meta de limite de gasto e ultrapassada</li>
+                    <li><strong>Limites:</strong> Alertas quando uma meta de limite de gasto ou o orçamento mensal de uma categoria e ultrapassado</li>
                     <li><strong>Metas:</strong> Alertas quando uma meta esta proxima do prazo (menos de 7 dias)</li>
                     <li><strong>Lembretes:</strong> Alertas personalizados criados por voce</li>
+                    <li><strong>Conquistas:</strong> Gerados automaticamente ao concluir uma meta ou quitar todas as parcelas de uma despesa parcelada</li>
                 </ul>
             </div>
         </div>

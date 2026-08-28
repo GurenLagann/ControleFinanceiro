@@ -3,6 +3,17 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
+    @if($streakDias >= 1)
+    <!-- Streak de uso -->
+    <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-2 rounded-pill glow-green"
+         style="background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.3);">
+        <span aria-hidden="true">🔥</span>
+        <span class="small">
+            <strong>{{ $streakDias }}</strong> {{ $streakDias > 1 ? 'dias seguidos' : 'dia seguido' }} registrando lançamentos
+        </span>
+    </div>
+    @endif
+
     <!-- Cards de Resumo -->
     <div class="row mb-4 g-2 g-md-3">
         <!-- Card Receitas -->
@@ -93,6 +104,42 @@
             </div>
         </div>
     </div>
+
+    @if(count($orcamentos) > 0)
+    <!-- Orcamento por Categoria -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card" style="opacity: 1 !important;">
+                <div class="card-header bg-light py-2">
+                    <span><i class="bi bi-piggy-bank"></i> Orçamento do Mês por Categoria</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @foreach($orcamentos as $item)
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="small">
+                                    <span class="d-inline-block rounded-circle me-1" style="width: 10px; height: 10px; background-color: {{ $item['cor'] }};"></span>
+                                    {{ $item['categoria'] }}
+                                </span>
+                                <span class="small {{ $item['status'] === 'excedido' ? 'valor-negativo' : ($item['status'] === 'atencao' ? 'valor-atencao' : 'valor-positivo') }}">
+                                    R$ {{ number_format($item['gasto'], 2, ',', '.') }} / R$ {{ number_format($item['orcamento'], 2, ',', '.') }}
+                                </span>
+                            </div>
+                            <div class="progress" style="height: 8px;" role="progressbar"
+                                 aria-valuenow="{{ min(100, $item['percentual']) }}" aria-valuemin="0" aria-valuemax="100"
+                                 aria-label="Orçamento de {{ $item['categoria'] }}: {{ $item['percentual'] }}% utilizado">
+                                <div class="progress-bar {{ $item['status'] === 'excedido' ? 'bg-danger' : ($item['status'] === 'atencao' ? 'bg-warning' : 'bg-success') }}"
+                                     style="width: {{ min(100, $item['percentual']) }}%"></div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Graficos principais: Pizza + Evolucao -->
     <div class="row mb-4 g-2 g-md-3">

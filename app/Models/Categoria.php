@@ -17,10 +17,12 @@ class Categoria extends Model
         'icone',
         'tipo', // 'receita', 'despesa', 'ambos'
         'ativo',
+        'orcamento_mensal',
     ];
 
     protected $casts = [
         'ativo' => 'boolean',
+        'orcamento_mensal' => 'float',
     ];
 
     protected $attributes = [

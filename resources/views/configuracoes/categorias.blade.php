@@ -25,6 +25,7 @@
                                     <th>Nome</th>
                                     <th class="d-none d-sm-table-cell">Icone</th>
                                     <th>Tipo</th>
+                                    <th class="d-none d-sm-table-cell">Orcamento Mensal</th>
                                     <th class="d-none d-sm-table-cell">Status</th>
                                     <th class="text-center">Acoes</th>
                                 </tr>
@@ -53,6 +54,13 @@
                                             @endif
                                         </td>
                                         <td class="d-none d-sm-table-cell">
+                                            @if($categoria->orcamento_mensal)
+                                                R$ {{ number_format($categoria->orcamento_mensal, 2, ',', '.') }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
                                             @if($categoria->ativo)
                                                 <span class="badge bg-success">Ativa</span>
                                             @else
@@ -61,7 +69,7 @@
                                         </td>
                                         <td class="text-center">
                                             <button type="button" class="btn btn-outline-warning btn-sm"
-                                                onclick="editarCategoria('{{ $categoria->_id }}', '{{ addslashes($categoria->nome) }}', '{{ $categoria->cor }}', '{{ $categoria->icone }}', '{{ $categoria->tipo }}')">
+                                                onclick="editarCategoria('{{ $categoria->_id }}', '{{ addslashes($categoria->nome) }}', '{{ $categoria->cor }}', '{{ $categoria->icone }}', '{{ $categoria->tipo }}', '{{ $categoria->orcamento_mensal }}')">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
                                             <form action="{{ route('categorias.toggle', $categoria->_id) }}" method="POST" class="d-inline">
@@ -80,7 +88,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-4 text-muted">
+                                        <td colspan="7" class="text-center py-4 text-muted">
                                             <i class="bi bi-inbox" style="font-size: 2rem;"></i><br>
                                             Nenhuma categoria cadastrada
                                         </td>
@@ -170,6 +178,10 @@
                                 <option value="despesa">Apenas Despesa</option>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Orçamento Mensal (R$) <span class="text-muted">— opcional, para despesas</span></label>
+                            <input type="number" name="orcamento_mensal" id="categoriaOrcamento" class="form-control" step="0.01" min="0.01" placeholder="Ex: 500.00">
+                        </div>
                     </div>
                     <div class="modal-footer py-2">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
@@ -228,7 +240,7 @@
         document.getElementById('iconePicker').style.display = 'none';
     }
 
-    function editarCategoria(id, nome, cor, icone, tipo) {
+    function editarCategoria(id, nome, cor, icone, tipo, orcamentoMensal) {
         document.getElementById('modalCategoriaTitle').innerHTML = '<i class="bi bi-pencil"></i> Editar Categoria';
         document.getElementById('formCategoria').action = '/categorias/' + id;
         document.getElementById('methodField').innerHTML = '@method("PUT")';
@@ -237,6 +249,7 @@
         document.getElementById('categoriaCor').value = cor;
         document.getElementById('categoriaCorTexto').value = cor;
         document.getElementById('categoriaIcone').value = icone || '';
+        document.getElementById('categoriaOrcamento').value = (orcamentoMensal && orcamentoMensal !== '0') ? orcamentoMensal : '';
 
         const preview = document.getElementById('iconePreview');
         preview.className = 'bi bi-' + (icone || '');
@@ -267,6 +280,7 @@
         document.getElementById('categoriaCorTexto').value = '#00ff88';
         document.getElementById('iconePreview').className = 'bi';
         document.getElementById('categoriaIcone').value = '';
+        document.getElementById('categoriaOrcamento').value = '';
 
         // Resetar selecao de icones
         document.querySelectorAll('.icone-option').forEach(btn => {

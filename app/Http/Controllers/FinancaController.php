@@ -6,6 +6,8 @@ use App\Models\Receita;
 use App\Models\Despesa;
 use App\Models\Categoria;
 use App\Services\CacheService;
+use App\Services\GamificacaoService;
+use App\Services\OrcamentoService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
@@ -336,6 +338,12 @@ class FinancaController extends Controller
             ->orderBy('nome')
             ->get(['nome', 'cor', 'icone']);
 
+        // Streak: dias consecutivos com pelo menos um lancamento
+        $streakDias = (new GamificacaoService())->streakAtual($receitas, $despesas);
+
+        // Orcamento mensal por categoria
+        $orcamentos = (new OrcamentoService())->progressoPorCategoria();
+
         return view('financas.index', compact(
             'receitas',
             'despesas',
@@ -371,7 +379,9 @@ class FinancaController extends Controller
             'diasSemana',
             'gastosPorDiaSemana',
             'categoriasReceita',
-            'categoriasDespesa'
+            'categoriasDespesa',
+            'streakDias',
+            'orcamentos'
         ));
     }
 

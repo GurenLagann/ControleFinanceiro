@@ -8,6 +8,7 @@ use App\Models\Alerta;
 use App\Models\AuditLog;
 use App\Models\Despesa;
 use App\Models\Receita;
+use App\Services\OrcamentoService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
@@ -29,6 +30,7 @@ class ConfiguracaoController extends Controller
             'cor' => 'required|string|max:7',
             'icone' => 'nullable|string|max:50',
             'tipo' => 'required|in:receita,despesa,ambos',
+            'orcamento_mensal' => 'nullable|numeric|min:0.01',
         ]);
 
         $validated['ativo'] = true;
@@ -48,6 +50,7 @@ class ConfiguracaoController extends Controller
             'cor' => 'required|string|max:7',
             'icone' => 'nullable|string|max:50',
             'tipo' => 'required|in:receita,despesa,ambos',
+            'orcamento_mensal' => 'nullable|numeric|min:0.01',
         ]);
 
         $categoria->update($validated);
@@ -350,6 +353,89 @@ class ConfiguracaoController extends Controller
                         'referencia_id' => $meta->_id,
                     ]);
                 }
+            }
+
+            // Conquista: meta concluida (100%)
+            if ($meta->progresso >= 100) {
+                $conquistaExistente = Alerta::where('referencia_tipo', 'meta')
+                    ->where('referencia_id', $meta->_id)
+                    ->where('tipo', 'conquista')
+                    ->first();
+
+                if (!$conquistaExistente) {
+                    Alerta::create([
+                        'titulo' => 'Meta Concluida!',
+                        'mensagem' => "Voce concluiu a meta '{$meta->titulo}'!",
+                        'tipo' => 'conquista',
+                        'data_alerta' => Carbon::now(),
+                        'referencia_tipo' => 'meta',
+                        'referencia_id' => $meta->_id,
+                    ]);
+                }
+            }
+        }
+
+        // Conquista: grupo de parcelas totalmente quitado
+        $gruposParcelados = Despesa::where('parcelado', true)
+            ->whereNotNull('grupo_parcela_id')
+            ->get()
+            ->groupBy('grupo_parcela_id');
+
+        foreach ($gruposParcelados as $grupoId => $parcelas) {
+            $temParcelaFutura = $parcelas->contains(fn ($p) => $p->data && $p->data->gt($hoje));
+
+            if ($temParcelaFutura) {
+                continue;
+            }
+
+            $conquistaExistente = Alerta::where('referencia_tipo', 'despesa_grupo')
+                ->where('referencia_id', $grupoId)
+                ->where('tipo', 'conquista')
+                ->first();
+
+            if (!$conquistaExistente) {
+                $primeira = $parcelas->first();
+                Alerta::create([
+                    'titulo' => 'Divida Quitada!',
+                    'mensagem' => "Voce quitou todas as parcelas de '{$primeira->descricao}'!",
+                    'tipo' => 'conquista',
+                    'data_alerta' => Carbon::now(),
+                    'referencia_tipo' => 'despesa_grupo',
+                    'referencia_id' => $grupoId,
+                ]);
+            }
+        }
+
+        // Alertas de orcamento mensal por categoria ultrapassado
+        $orcamentos = (new OrcamentoService())->progressoPorCategoria();
+
+        foreach ($orcamentos as $item) {
+            if ($item['status'] !== 'excedido') {
+                continue;
+            }
+
+            $categoria = Categoria::where('nome', $item['categoria'])->first();
+
+            if (!$categoria) {
+                continue;
+            }
+
+            $alertaExistente = Alerta::where('referencia_tipo', 'categoria')
+                ->where('referencia_id', $categoria->_id)
+                ->where('tipo', 'limite')
+                ->where('data_alerta', '>=', Carbon::now()->startOfMonth())
+                ->first();
+
+            if (!$alertaExistente) {
+                Alerta::create([
+                    'titulo' => 'Orcamento Ultrapassado',
+                    'mensagem' => "A categoria '{$categoria->nome}' ultrapassou o orcamento mensal! Gasto: R$ "
+                        . number_format($item['gasto'], 2, ',', '.') . ' de R$ ' . number_format($item['orcamento'], 2, ',', '.'),
+                    'tipo' => 'limite',
+                    'data_alerta' => Carbon::now(),
+                    'referencia_tipo' => 'categoria',
+                    'referencia_id' => $categoria->_id,
+                ]);
             }
         }
     }
