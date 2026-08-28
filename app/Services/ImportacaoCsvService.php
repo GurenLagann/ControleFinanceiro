@@ -61,12 +61,63 @@ class ImportacaoCsvService
     }
 
     /**
+     * Formato alternativo aceito: extrato do Nubank
+     * Data,Valor,Identificador,Descrição (separado por vírgula, sem Tipo/Categoria)
+     * Valor negativo vira despesa, valor positivo vira receita.
+     *
+     * @return array{data: Carbon, tipo: string, descricao: string, valor: float, categoria: ?string}|null
+     */
+    public static function parsearLinhaNubank(string $linha): ?array
+    {
+        $campos = str_getcsv(trim($linha), ',');
+
+        if (count($campos) < 4) {
+            return null;
+        }
+
+        [$dataStr, $valorStr, , $descricao] = $campos;
+
+        try {
+            $data = Carbon::createFromFormat('d/m/Y', trim($dataStr))->startOfDay();
+        } catch (\Throwable $e) {
+            return null;
+        }
+
+        if (! $data || $data->format('d/m/Y') !== trim($dataStr)) {
+            return null;
+        }
+
+        $valorStr = trim($valorStr);
+        if (! is_numeric($valorStr)) {
+            return null;
+        }
+
+        $descricao = trim($descricao);
+        if ($descricao === '') {
+            return null;
+        }
+
+        $valor = (float) $valorStr;
+
+        return [
+            'data' => $data,
+            'tipo' => $valor < 0 ? 'despesa' : 'receita',
+            'descricao' => $descricao,
+            'valor' => abs($valor),
+            'categoria' => null,
+        ];
+    }
+
+    /**
      * @return array{linhas: array<int, array>, erros: int}
      */
     public static function parsear(string $conteudo): array
     {
         $todasLinhas = preg_split('/\r\n|\r|\n/', trim($conteudo));
-        $linhasDados = array_slice($todasLinhas, 1); // ignora cabecalho
+        $cabecalho = array_shift($todasLinhas);
+        $linhasDados = $todasLinhas;
+
+        $formatoNubank = str_starts_with(trim($cabecalho ?? ''), 'Data,Valor,Identificador');
 
         $linhas = [];
         $erros = 0;
@@ -76,7 +127,9 @@ class ImportacaoCsvService
                 continue;
             }
 
-            $parsed = self::parsearLinha($linha);
+            $parsed = $formatoNubank
+                ? self::parsearLinhaNubank($linha)
+                : self::parsearLinha($linha);
 
             if ($parsed) {
                 $linhas[] = $parsed;

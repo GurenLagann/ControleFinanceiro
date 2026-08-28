@@ -14,6 +14,9 @@
                     Envie um arquivo CSV no formato <strong>Data;Tipo;Descricao;Valor;Categoria</strong>
                     (o mesmo formato gerado em <a href="{{ route('exportar.csv.transacoes') }}">Exportar &rarr; Transações CSV</a>).
                     Exemplo de linha: <code>28/08/2026;Receita;"Salário";3000,00;"Salário"</code>
+                    <br>
+                    Também aceitamos o extrato exportado do Nubank no formato <strong>Data,Valor,Identificador,Descrição</strong>:
+                    valores negativos viram despesa e positivos viram receita (sem categoria definida).
                 </p>
 
                 <form action="{{ route('importacao.preview') }}" method="POST" enctype="multipart/form-data">

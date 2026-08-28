@@ -75,4 +75,53 @@ class ImportacaoCsvServiceTest extends TestCase
         $this->assertCount(2, $resultado['linhas']);
         $this->assertSame(1, $resultado['erros']);
     }
+
+    public function test_parseia_linha_nubank_negativa_como_despesa(): void
+    {
+        $linha = ImportacaoCsvService::parsearLinhaNubank('01/08/2026,-15.00,6a6e518b-388f-47a7-bb77-ccf35bb61e5d,Compra no débito - GS PASTEL DE FEIRA LTD');
+
+        $this->assertNotNull($linha);
+        $this->assertSame('2026-08-01', $linha['data']->toDateString());
+        $this->assertSame('despesa', $linha['tipo']);
+        $this->assertSame('Compra no débito - GS PASTEL DE FEIRA LTD', $linha['descricao']);
+        $this->assertSame(15.0, $linha['valor']);
+        $this->assertNull($linha['categoria']);
+    }
+
+    public function test_parseia_linha_nubank_positiva_como_receita(): void
+    {
+        $linha = ImportacaoCsvService::parsearLinhaNubank('05/08/2026,83.90,6a73cabd-a96e-4b8a-a064-b1e77327d197,Crédito em conta');
+
+        $this->assertNotNull($linha);
+        $this->assertSame('receita', $linha['tipo']);
+        $this->assertSame(83.90, $linha['valor']);
+    }
+
+    public function test_parseia_linha_nubank_com_poucos_campos_retorna_null(): void
+    {
+        $linha = ImportacaoCsvService::parsearLinhaNubank('abc,def');
+
+        $this->assertNull($linha);
+    }
+
+    public function test_parseia_linha_nubank_com_valor_invalido_retorna_null(): void
+    {
+        $linha = ImportacaoCsvService::parsearLinhaNubank('01/08/2026,abc,identificador,Descricao');
+
+        $this->assertNull($linha);
+    }
+
+    public function test_parsear_detecta_formato_nubank_pelo_cabecalho(): void
+    {
+        $conteudo = "Data,Valor,Identificador,Descrição\n"
+            . "01/08/2026,-15.00,6a6e518b-388f-47a7-bb77-ccf35bb61e5d,Compra no débito - GS PASTEL DE FEIRA LTD\n"
+            . "05/08/2026,83.90,6a73cabd-a96e-4b8a-a064-b1e77327d197,Crédito em conta\n";
+
+        $resultado = ImportacaoCsvService::parsear($conteudo);
+
+        $this->assertCount(2, $resultado['linhas']);
+        $this->assertSame(0, $resultado['erros']);
+        $this->assertSame('despesa', $resultado['linhas'][0]['tipo']);
+        $this->assertSame('receita', $resultado['linhas'][1]['tipo']);
+    }
 }

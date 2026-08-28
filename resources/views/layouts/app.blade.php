@@ -658,8 +658,8 @@
         .hero-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
         .hero-label{ display:flex; align-items:center; gap:8px; color:#999; font-size:0.85rem; }
         .hero-label i{ color:#3742fa; }
-        .hero-value{ font-size:2.5rem; font-weight:600; line-height:1; margin-top:8px; }
-        .hero-trend{ font-size:0.85rem; margin-top:8px; }
+        .hero-value{ font-size:2.5rem; font-weight:600; line-height:1; margin-top:8px; color:#fff; }
+        .hero-trend{ font-size:0.85rem; margin-top:8px; color:#fff; }
         .hero-actions{ display:flex; gap:10px; flex-wrap:wrap; }
         .stat-list-card{ display:flex; flex-direction:column; justify-content:center; }
         .stat-row{ display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.08); }
@@ -674,7 +674,7 @@
         .stat-icon.n{ background: rgba(255,255,255,0.08); color:#ccc; }
         .stat-body{ flex:1; min-width:0; }
         .stat-label{ font-size:0.76rem; color:#999; }
-        .stat-value{ font-size:1.15rem; font-weight:600; margin-top:2px; }
+        .stat-value{ font-size:1.15rem; font-weight:600; margin-top:2px; color:#fff; }
         .stat-delta{ font-size:0.72rem; color:#6b6b78; margin-top:1px; }
         .dashboard-tabs{ border-bottom:none; gap:4px; background: rgba(20,20,35,0.9); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:4px; width:fit-content; max-width:100%; overflow-x:auto; flex-wrap:nowrap; }
         .dashboard-tabs .nav-link{ border:none; color:#999; border-radius:7px; padding:8px 16px; font-size:0.85rem; font-weight:500; white-space:nowrap; }
@@ -694,10 +694,10 @@
         .feed-icon.p{ background:rgba(111,66,193,0.16); color:#a97bf0; }
         .feed-icon.w{ background: rgba(255,193,7,0.14); color:#ffc107; }
         .feed-icon.n{ background: rgba(255,255,255,0.08); color:#ccc; }
-        .feed-body{ flex:1; min-width:0; }
+        .feed-body{ flex:1; min-width:0; color:#fff; }
         .feed-cat{ font-size:0.75rem; color:#999; }
         .feed-when{ font-size:0.75rem; color:#6b6b78; width:44px; text-align:right; flex:none; }
-        .feed-amt{ font-weight:600; min-width:110px; text-align:right; }
+        .feed-amt{ font-weight:600; min-width:110px; text-align:right; color:#fff; }
         .empty-state{ text-align:center; color:#999; padding:3rem 1rem; }
         .empty-state > i{ font-size:2.5rem; display:block; margin-bottom:0.75rem; opacity:0.35; }
         .empty-state p{ color:#999; margin:0 0 4px; }
