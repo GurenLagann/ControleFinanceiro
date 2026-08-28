@@ -126,12 +126,6 @@
     }
     .cat-name { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
 
-    /* ── Empty state ─────────────────────────────────────── */
-    .empty-state { padding: 48px 20px; text-align: center; }
-    .empty-state i { font-size: 3rem; color: rgba(255,255,255,0.1); }
-    .empty-state p { color: rgba(255,255,255,0.4); margin-top: 12px; margin-bottom: 4px; }
-    .empty-state small { color: rgba(255,255,255,0.25); }
-
     /* ── Mobile ──────────────────────────────────────────── */
     @media (max-width: 575px) {
         .filter-bar { padding: 12px; }
@@ -285,21 +279,21 @@
 {{-- ── Stats bar ────────────────────────────────────────────── --}}
 <div class="stats-bar" role="region" aria-label="Resumo das transações">
     <div class="stat-pill">
-        <span class="stat-label">Receitas</span>
+        <span class="stat-label"><i class="bi bi-arrow-up-circle" aria-hidden="true"></i> Receitas</span>
         <span class="stat-value valor-positivo">R$ {{ number_format($totalReceitasFiltrado, 2, ',', '.') }}</span>
     </div>
     <div class="stat-pill">
-        <span class="stat-label">Despesas</span>
+        <span class="stat-label"><i class="bi bi-arrow-down-circle" aria-hidden="true"></i> Despesas</span>
         <span class="stat-value valor-negativo">R$ {{ number_format($totalDespesasFiltrado, 2, ',', '.') }}</span>
     </div>
     <div class="stat-pill">
-        <span class="stat-label">Saldo</span>
+        <span class="stat-label"><i class="bi bi-wallet2" aria-hidden="true"></i> Saldo</span>
         <span class="stat-value {{ $saldoFiltrado >= 0 ? 'valor-positivo' : 'valor-negativo' }}">
             R$ {{ number_format($saldoFiltrado, 2, ',', '.') }}
         </span>
     </div>
     <div class="stat-pill" style="margin-left:auto;">
-        <span class="stat-label">Registros</span>
+        <span class="stat-label"><i class="bi bi-list-ul" aria-hidden="true"></i> Registros</span>
         <span class="stat-value text-white">{{ $totalTransacoes }}</span>
     </div>
 </div>

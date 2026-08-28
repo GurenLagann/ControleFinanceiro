@@ -9,47 +9,71 @@
 @endsection
 
 @section('content')
-    <!-- Cards de Resumo -->
+    <!-- Resumo -->
+    @php
+        $metasAtivas = $metas->where('ativo', true);
+        $concluidas = $metasAtivas->filter(fn($m) => $m->progresso >= 100)->count();
+        $emAndamento = $metasAtivas->filter(fn($m) => $m->progresso < 100 && $m->dias_restantes > 0)->count();
+        $vencidas = $metasAtivas->filter(fn($m) => $m->progresso < 100 && $m->dias_restantes <= 0)->count();
+    @endphp
     <div class="row mb-4">
-        @php
-            $metasAtivas = $metas->where('ativo', true);
-            $concluidas = $metasAtivas->filter(fn($m) => $m->progresso >= 100)->count();
-            $emAndamento = $metasAtivas->filter(fn($m) => $m->progresso < 100 && $m->dias_restantes > 0)->count();
-            $vencidas = $metasAtivas->filter(fn($m) => $m->progresso < 100 && $m->dias_restantes <= 0)->count();
-        @endphp
-        <div class="col-6 col-md-3">
-            <div class="card glow-blue" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-bullseye"></i> Total</h6>
-                    <h3 class="mb-0 text-white">{{ $metasAtivas->count() }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card glow-green" style="opacity: 1 !important; border-left: 4px solid #00ff88;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-check-circle"></i> Concluidas</h6>
-                    <h3 class="mb-0 valor-positivo">{{ $concluidas }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card glow-purple" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-hourglass-split"></i> Em Andamento</h6>
-                    <h3 class="mb-0" style="color: #a5b4fc;">{{ $emAndamento }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card glow-red" style="opacity: 1 !important; border-left: 4px solid #ff4757;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-exclamation-triangle"></i> Vencidas</h6>
-                    <h3 class="mb-0 valor-negativo">{{ $vencidas }}</h3>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body d-flex flex-wrap gap-4 justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon b"><i class="bi bi-bullseye" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Total de metas</div>
+                            <div class="stat-value">{{ $metasAtivas->count() }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon g"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Concluídas</div>
+                            <div class="stat-value valor-positivo">{{ $concluidas }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon p"><i class="bi bi-hourglass-split" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Em andamento</div>
+                            <div class="stat-value">{{ $emAndamento }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon r"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Vencidas</div>
+                            <div class="stat-value {{ $vencidas > 0 ? 'valor-negativo' : '' }}">{{ $vencidas }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    @if($reservaEmergencia['gasto_mensal_medio'] > 0)
+    <!-- Reserva de Emergencia -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-atencao" style="opacity: 1 !important;">
+                <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 py-3">
+                    <div>
+                        <h6 class="mb-1"><i class="bi bi-umbrella valor-atencao" aria-hidden="true"></i> Reserva de Emergência Recomendada</h6>
+                        <small class="text-muted">Baseado na média de gastos dos últimos meses (R$ {{ number_format($reservaEmergencia['gasto_mensal_medio'], 2, ',', '.') }}/mês)</small>
+                    </div>
+                    <div class="text-md-end">
+                        <span class="valor-atencao fw-bold">
+                            R$ {{ number_format($reservaEmergencia['minimo'], 2, ',', '.') }} — R$ {{ number_format($reservaEmergencia['ideal'], 2, ',', '.') }}
+                        </span>
+                        <div class="small text-muted">3x a 6x seus gastos mensais</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Lista de Metas -->
     <div class="row">
@@ -166,9 +190,9 @@
         @empty
             <div class="col-12">
                 <div class="card" style="opacity: 1 !important;">
-                    <div class="card-body text-center py-5 text-muted">
-                        <i class="bi bi-bullseye" style="font-size: 3rem;"></i>
-                        <p class="mt-2">Nenhuma meta cadastrada</p>
+                    <div class="empty-state">
+                        <i class="bi bi-bullseye" aria-hidden="true"></i>
+                        <p class="mb-3">Nenhuma meta cadastrada</p>
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalMeta">
                             <i class="bi bi-plus-lg"></i> Criar Primeira Meta
                         </button>

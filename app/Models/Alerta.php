@@ -2,10 +2,23 @@
 
 namespace App\Models;
 
+use App\Notifications\AlertaCriado;
+use Illuminate\Support\Facades\Notification;
 use MongoDB\Laravel\Eloquent\Model;
 
 class Alerta extends Model
 {
+    protected static function booted(): void
+    {
+        static::created(function (Alerta $alerta) {
+            $email = config('services.notificacoes.email');
+
+            if (! empty($email)) {
+                Notification::route('mail', $email)->notify(new AlertaCriado($alerta));
+            }
+        });
+    }
+
     protected $connection = 'mongodb';
     protected $collection = 'alertas';
 

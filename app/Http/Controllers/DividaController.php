@@ -6,6 +6,7 @@ use App\Models\Divida;
 use App\Models\Despesa;
 use App\Models\Categoria;
 use App\Services\CacheService;
+use App\Services\QuitacaoDividasService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -32,13 +33,17 @@ class DividaController extends Controller
 
         $categorias = Categoria::ativas()->paraDespesas()->get();
 
+        $dividasEmAberto = $dividas->whereIn('status', ['ativa', 'em_atraso']);
+        $planoQuitacao = (new QuitacaoDividasService())->planoAtual($dividasEmAberto);
+
         return view('dividas.index', compact(
             'dividas',
             'categorias',
             'totalDividas',
             'totalDevido',
             'totalPago',
-            'totalEmAtraso'
+            'totalEmAtraso',
+            'planoQuitacao'
         ));
     }
 
@@ -52,6 +57,7 @@ class DividaController extends Controller
             'data_vencimento' => 'nullable|date',
             'categoria'       => 'nullable|string|max:100',
             'observacoes'     => 'nullable|string|max:500',
+            'taxa_juros_mensal' => 'nullable|numeric|min:0',
         ]);
 
         $validated['status'] = 'ativa';
@@ -75,6 +81,7 @@ class DividaController extends Controller
             'data_vencimento' => 'nullable|date',
             'categoria'       => 'nullable|string|max:100',
             'observacoes'     => 'nullable|string|max:500',
+            'taxa_juros_mensal' => 'nullable|numeric|min:0',
         ]);
 
         // Recalculate status after editing

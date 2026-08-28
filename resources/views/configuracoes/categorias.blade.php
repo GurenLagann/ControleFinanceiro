@@ -88,9 +88,11 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center py-4 text-muted">
-                                            <i class="bi bi-inbox" style="font-size: 2rem;"></i><br>
-                                            Nenhuma categoria cadastrada
+                                        <td colspan="7">
+                                            <div class="empty-state">
+                                                <i class="bi bi-inbox" aria-hidden="true"></i>
+                                                Nenhuma categoria cadastrada
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforelse

@@ -646,6 +646,63 @@
         .form-select.is-invalid ~ .invalid-feedback {
             display: block;
         }
+
+        /* ===== Componentes de design compartilhados (hero, abas, feed) ===== */
+        .engage-bar{ display:flex; flex-wrap:wrap; align-items:center; gap:14px; background: rgba(0,255,136,0.06); border:1px solid rgba(0,255,136,0.25); border-radius:12px; padding:12px 18px; margin-bottom:1.25rem; box-shadow: 0 0 30px rgba(0,255,136,0.08); }
+        .engage-bar .streak{ display:flex; align-items:center; gap:8px; font-size:0.9rem; white-space:nowrap; }
+        .engage-sep{ width:1px; align-self:stretch; background: rgba(255,255,255,0.1); }
+        .engage-insights{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:200px; }
+        .engage-insight{ display:flex; align-items:center; gap:8px; color:#c9d1ff; font-size:0.85rem; }
+        .engage-insight i{ color:#3742fa; }
+        .hero-card{ border-left:4px solid #3742fa; padding:26px 28px; display:flex; flex-direction:column; gap:16px; justify-content:center; }
+        .hero-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+        .hero-label{ display:flex; align-items:center; gap:8px; color:#999; font-size:0.85rem; }
+        .hero-label i{ color:#3742fa; }
+        .hero-value{ font-size:2.5rem; font-weight:600; line-height:1; margin-top:8px; }
+        .hero-trend{ font-size:0.85rem; margin-top:8px; }
+        .hero-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+        .stat-list-card{ display:flex; flex-direction:column; justify-content:center; }
+        .stat-row{ display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.08); }
+        .stat-row:last-child{ border-bottom:none; }
+        .stat-row.clickable{ cursor:pointer; }
+        .stat-icon{ width:36px; height:36px; border-radius:10px; flex:none; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+        .stat-icon.g{ background: rgba(0,255,136,0.12); color:#00ff88; }
+        .stat-icon.r{ background: rgba(255,71,87,0.12); color:#ff4757; }
+        .stat-icon.p{ background: rgba(111,66,193,0.16); color:#a97bf0; }
+        .stat-icon.b{ background: rgba(55,66,250,0.14); color:#8f97ff; }
+        .stat-icon.w{ background: rgba(255,193,7,0.14); color:#ffc107; }
+        .stat-icon.n{ background: rgba(255,255,255,0.08); color:#ccc; }
+        .stat-body{ flex:1; min-width:0; }
+        .stat-label{ font-size:0.76rem; color:#999; }
+        .stat-value{ font-size:1.15rem; font-weight:600; margin-top:2px; }
+        .stat-delta{ font-size:0.72rem; color:#6b6b78; margin-top:1px; }
+        .dashboard-tabs{ border-bottom:none; gap:4px; background: rgba(20,20,35,0.9); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:4px; width:fit-content; max-width:100%; overflow-x:auto; flex-wrap:nowrap; }
+        .dashboard-tabs .nav-link{ border:none; color:#999; border-radius:7px; padding:8px 16px; font-size:0.85rem; font-weight:500; white-space:nowrap; }
+        .dashboard-tabs .nav-link.active, .dashboard-tabs .nav-link:hover{ background: rgba(0,255,136,0.12); color:#00ff88; }
+        .dashboard-tab-content{ margin-top:14px; }
+        .donut-wrap{ display:flex; flex-direction:column; align-items:center; gap:6px; max-width:230px; margin:0 auto; }
+        .donut-legend{ width:100%; max-width:220px; }
+        .donut-legend .legend-row{ display:flex; align-items:center; gap:8px; font-size:0.88rem; margin-top:8px; }
+        .donut-legend .legend-dot{ width:10px; height:10px; border-radius:2px; flex:none; }
+        .donut-legend .name{ color:#999; flex:1; }
+        .feed-row{ display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.08); }
+        .feed-row:last-child{ border-bottom:none; }
+        .feed-icon{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none; }
+        .feed-icon.g{ background:rgba(0,255,136,0.12); color:#00ff88; }
+        .feed-icon.r{ background:rgba(255,71,87,0.12); color:#ff4757; }
+        .feed-icon.b{ background:rgba(55,66,250,0.14); color:#8f97ff; }
+        .feed-icon.p{ background:rgba(111,66,193,0.16); color:#a97bf0; }
+        .feed-icon.w{ background: rgba(255,193,7,0.14); color:#ffc107; }
+        .feed-icon.n{ background: rgba(255,255,255,0.08); color:#ccc; }
+        .feed-body{ flex:1; min-width:0; }
+        .feed-cat{ font-size:0.75rem; color:#999; }
+        .feed-when{ font-size:0.75rem; color:#6b6b78; width:44px; text-align:right; flex:none; }
+        .feed-amt{ font-weight:600; min-width:110px; text-align:right; }
+        .empty-state{ text-align:center; color:#999; padding:3rem 1rem; }
+        .empty-state > i{ font-size:2.5rem; display:block; margin-bottom:0.75rem; opacity:0.35; }
+        .empty-state p{ color:#999; margin:0 0 4px; }
+        .empty-state small{ color:#6b6b78; }
+        @media (max-width: 767px){ .hero-value{ font-size:2rem; } }
     </style>
 </head>
 <body>
@@ -685,6 +742,11 @@
                     @endif
                 </a>
 
+                <a href="{{ route('cartoes.index') }}" class="nav-link {{ request()->routeIs('cartoes.*') ? 'active' : '' }}">
+                    <i class="bi bi-credit-card-2-front" aria-hidden="true"></i>
+                    <span class="nav-text">Cartões</span>
+                </a>
+
                 <div class="nav-section">Configuracoes</div>
                 <a href="{{ route('categorias.index') }}" class="nav-link {{ request()->routeIs('categorias.index') ? 'active' : '' }}">
                     <i class="bi bi-tags" aria-hidden="true"></i>
@@ -713,6 +775,10 @@
                 <a href="{{ route('backup.index') }}" class="nav-link {{ request()->routeIs('backup.*') ? 'active' : '' }}">
                     <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
                     <span class="nav-text">Backup / Exportar</span>
+                </a>
+                <a href="{{ route('importacao.index') }}" class="nav-link {{ request()->routeIs('importacao.*') ? 'active' : '' }}">
+                    <i class="bi bi-cloud-arrow-up" aria-hidden="true"></i>
+                    <span class="nav-text">Importar Extrato</span>
                 </a>
             </nav>
 

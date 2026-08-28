@@ -27,52 +27,53 @@
 @endsection
 
 @section('content')
-    <!-- Cards de Resumo -->
+    <!-- Resumo -->
+    @php
+        $alertasAtivos = $alertas->where('ativo', true);
+        $vencimentos = $alertasAtivos->where('tipo', 'vencimento')->count();
+        $limites = $alertasAtivos->where('tipo', 'limite')->count();
+        $metasAlertas = $alertasAtivos->where('tipo', 'meta')->count();
+        $conquistas = $alertasAtivos->where('tipo', 'conquista')->count();
+    @endphp
     <div class="row mb-4">
-        @php
-            $alertasAtivos = $alertas->where('ativo', true);
-            $vencimentos = $alertasAtivos->where('tipo', 'vencimento')->count();
-            $limites = $alertasAtivos->where('tipo', 'limite')->count();
-            $metasAlertas = $alertasAtivos->where('tipo', 'meta')->count();
-            $conquistas = $alertasAtivos->where('tipo', 'conquista')->count();
-        @endphp
-        <div class="col-6 col-md">
-            <div class="card glow-red" style="opacity: 1 !important; border-left: 4px solid #ff4757;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-bell"></i> Nao Lidos</h6>
-                    <h3 class="mb-0 valor-negativo">{{ $alertasNaoLidos }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md">
-            <div class="card glow-purple" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-calendar-event"></i> Vencimentos</h6>
-                    <h3 class="mb-0" style="color: #a5b4fc;">{{ $vencimentos }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md">
-            <div class="card" style="opacity: 1 !important; border-left: 4px solid #ffc107;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-shield-exclamation"></i> Limites</h6>
-                    <h3 class="mb-0" style="color: #ffc107;">{{ $limites }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md">
-            <div class="card glow-blue" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-bullseye"></i> Metas</h6>
-                    <h3 class="mb-0" style="color: #3742fa;">{{ $metasAlertas }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md">
-            <div class="card glow-green" style="opacity: 1 !important; border-left: 4px solid #00ff88;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-trophy"></i> Conquistas</h6>
-                    <h3 class="mb-0" style="color: #00ff88;">{{ $conquistas }}</h3>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body d-flex flex-wrap gap-4 justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon r"><i class="bi bi-bell" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Não lidos</div>
+                            <div class="stat-value {{ $alertasNaoLidos > 0 ? 'valor-negativo' : '' }}">{{ $alertasNaoLidos }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon p"><i class="bi bi-calendar-event" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Vencimentos</div>
+                            <div class="stat-value">{{ $vencimentos }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon w"><i class="bi bi-shield-exclamation" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Limites</div>
+                            <div class="stat-value">{{ $limites }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon b"><i class="bi bi-bullseye" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Metas</div>
+                            <div class="stat-value">{{ $metasAlertas }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon g"><i class="bi bi-trophy" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Conquistas</div>
+                            <div class="stat-value">{{ $conquistas }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -88,58 +89,54 @@
                 </div>
                 <div class="card-body p-0">
                     @forelse($alertas as $alerta)
-                        <div class="border-bottom p-3 d-flex align-items-center {{ $alerta->lido ? 'bg-dark bg-opacity-25' : '' }}">
-                            <div class="me-3">
-                                @if($alerta->tipo === 'vencimento')
-                                    <span class="badge bg-danger p-2"><i class="bi bi-calendar-event"></i></span>
-                                @elseif($alerta->tipo === 'limite')
-                                    <span class="badge bg-warning text-dark p-2"><i class="bi bi-shield-exclamation"></i></span>
-                                @elseif($alerta->tipo === 'meta')
-                                    <span class="badge bg-primary p-2"><i class="bi bi-bullseye"></i></span>
-                                @elseif($alerta->tipo === 'lembrete')
-                                    <span class="badge bg-secondary p-2"><i class="bi bi-sticky"></i></span>
-                                @elseif($alerta->tipo === 'conquista')
-                                    <span class="badge p-2" style="background-color: #00ff88; color: #0f0f1a;"><i class="bi bi-trophy"></i></span>
-                                @else
-                                    <span class="badge bg-info p-2"><i class="bi bi-info-circle"></i></span>
-                                @endif
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start">
+                        @php
+                            $iconClass = match($alerta->tipo) {
+                                'vencimento' => 'r', 'limite' => 'w', 'meta' => 'b',
+                                'lembrete' => 'n', 'conquista' => 'g', default => 'p',
+                            };
+                            $iconBi = match($alerta->tipo) {
+                                'vencimento' => 'calendar-event', 'limite' => 'shield-exclamation', 'meta' => 'bullseye',
+                                'lembrete' => 'sticky', 'conquista' => 'trophy', default => 'info-circle',
+                            };
+                        @endphp
+                        <div class="feed-row px-3" style="{{ $alerta->lido ? 'opacity:.6;' : '' }}">
+                            <div class="feed-icon {{ $iconClass }}"><i class="bi bi-{{ $iconBi }}" aria-hidden="true"></i></div>
+                            <div class="feed-body">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
                                     <div>
-                                        <strong class="{{ $alerta->lido ? 'text-muted' : '' }}">{{ $alerta->titulo }}</strong>
+                                        <strong>{{ $alerta->titulo }}</strong>
                                         @if(!$alerta->lido)
-                                            <span class="badge bg-danger ms-2">Novo</span>
+                                            <span class="badge bg-danger ms-1">Novo</span>
                                         @endif
                                     </div>
-                                    <small class="text-muted">
+                                    <small class="text-muted text-nowrap">
                                         {{ $alerta->data_alerta ? $alerta->data_alerta->format('d/m/Y') : '-' }}
                                     </small>
                                 </div>
-                                <p class="mb-0 text-muted small">{{ $alerta->mensagem }}</p>
+                                <div class="feed-cat">{{ $alerta->mensagem }}</div>
                             </div>
-                            <div class="ms-3 d-flex gap-1">
+                            <div class="d-flex gap-1">
                                 @if(!$alerta->lido)
                                     <form action="{{ route('alertas.lido', $alerta->_id) }}" method="POST">
                                         @csrf @method('PATCH')
-                                        <button type="submit" class="btn btn-outline-success btn-sm" title="Marcar como lido">
-                                            <i class="bi bi-check"></i>
+                                        <button type="submit" class="btn btn-outline-success btn-sm btn-icon" title="Marcar como lido" aria-label="Marcar como lido">
+                                            <i class="bi bi-check" aria-hidden="true"></i>
                                         </button>
                                     </form>
                                 @endif
                                 <form action="{{ route('alertas.destroy', $alerta->_id) }}" method="POST" onsubmit="return confirm('Excluir este alerta?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Excluir">
-                                        <i class="bi bi-trash"></i>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" title="Excluir" aria-label="Excluir alerta">
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                     </button>
                                 </form>
                             </div>
                         </div>
                     @empty
-                        <div class="text-center py-5 text-muted">
-                            <i class="bi bi-bell-slash" style="font-size: 3rem;"></i>
-                            <p class="mt-2">Nenhum alerta no momento</p>
-                            <small>Alertas serao gerados automaticamente quando houver vencimentos proximos ou limites ultrapassados.</small>
+                        <div class="empty-state">
+                            <i class="bi bi-bell-slash" aria-hidden="true"></i>
+                            <p class="mb-1">Nenhum alerta no momento</p>
+                            <small>Alertas serão gerados automaticamente quando houver vencimentos próximos ou limites ultrapassados.</small>
                         </div>
                     @endforelse
                 </div>

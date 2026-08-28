@@ -10,69 +10,113 @@
 
 @section('content')
 
-{{-- Cards de Resumo --}}
-<div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
-        <div class="card glow-purple" style="border-left: 4px solid #a855f7;">
-            <div class="card-body py-3">
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <i class="bi bi-credit-card" style="color:#a855f7;"></i>
-                    <small class="text-muted">Total de Dívidas</small>
+{{-- Resumo: dívida em destaque + estatísticas --}}
+<div class="row mb-4 g-3 align-items-stretch">
+    <div class="col-12 col-lg-7">
+        <div class="card hero-card h-100" style="border-left-color:#ff4757;">
+            <div class="hero-top">
+                <div>
+                    <div class="hero-label"><i class="bi bi-exclamation-circle" style="color:#ff4757;" aria-hidden="true"></i> Total devido</div>
+                    <div class="hero-value card-title valor-negativo" data-value="{{ $totalDevido }}">R$ {{ number_format($totalDevido, 2, ',', '.') }}</div>
+                    @if($totalEmAtraso > 0)
+                    <div class="hero-trend valor-atencao"><i class="bi bi-clock" aria-hidden="true"></i> R$ {{ number_format($totalEmAtraso, 2, ',', '.') }} em atraso</div>
+                    @endif
                 </div>
-                <div class="card-title h4 mb-0">{{ $totalDividas }}</div>
+            </div>
+            <div class="hero-actions">
+                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalNovaDivida">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> Nova Dívida
+                </button>
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="card card-despesa glow-red">
-            <div class="card-body py-3">
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <i class="bi bi-exclamation-circle" style="color:#ff4757;"></i>
-                    <small class="text-muted">Total Devido</small>
-                </div>
-                <div class="card-title h4 mb-0 valor-negativo">
-                    R$ {{ number_format($totalDevido, 2, ',', '.') }}
+    <div class="col-12 col-lg-5">
+        <div class="card stat-list-card h-100">
+            <div class="stat-row">
+                <div class="stat-icon p"><i class="bi bi-credit-card" aria-hidden="true"></i></div>
+                <div class="stat-body">
+                    <div class="stat-label">Total de dívidas</div>
+                    <div class="stat-value card-title">{{ $totalDividas }}</div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card card-receita glow-green">
-            <div class="card-body py-3">
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <i class="bi bi-check-circle" style="color:#00ff88;"></i>
-                    <small class="text-muted">Total Pago</small>
-                </div>
-                <div class="card-title h4 mb-0 valor-positivo">
-                    R$ {{ number_format($totalPago, 2, ',', '.') }}
+            <div class="stat-row">
+                <div class="stat-icon g"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
+                <div class="stat-body">
+                    <div class="stat-label">Total pago</div>
+                    <div class="stat-value card-title valor-positivo" data-value="{{ $totalPago }}">R$ {{ number_format($totalPago, 2, ',', '.') }}</div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card border-atencao">
-            <div class="card-body py-3">
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <i class="bi bi-clock valor-atencao" aria-hidden="true"></i>
-                    <small class="text-muted">Em Atraso</small>
-                </div>
-                <div class="card-title h4 mb-0 valor-atencao">
-                    R$ {{ number_format($totalEmAtraso, 2, ',', '.') }}
+            <div class="stat-row">
+                <div class="stat-icon r"><i class="bi bi-clock" aria-hidden="true"></i></div>
+                <div class="stat-body">
+                    <div class="stat-label">Em atraso</div>
+                    <div class="stat-value card-title {{ $totalEmAtraso > 0 ? 'valor-atencao' : '' }}" data-value="{{ $totalEmAtraso }}">R$ {{ number_format($totalEmAtraso, 2, ',', '.') }}</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+{{-- Plano de Quitacao --}}
+@if(count($planoQuitacao['snowball']) > 1)
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-6">
+        <div class="card h-100" style="opacity: 1 !important;">
+            <div class="card-header bg-light py-2">
+                <i class="bi bi-snow2" aria-hidden="true"></i> Estratégia Bola de Neve (Snowball)
+                <div class="small text-muted fw-normal">Quite primeiro a menor dívida — motivação rápida</div>
+            </div>
+            <div class="card-body p-0">
+                <ol class="list-group list-group-numbered list-group-flush">
+                    @foreach($planoQuitacao['snowball'] as $item)
+                    <li class="list-group-item d-flex justify-content-between align-items-center" style="background: transparent;">
+                        <span>{{ $item['descricao'] }}</span>
+                        <span class="valor-negativo">R$ {{ number_format($item['valor_restante'], 2, ',', '.') }}</span>
+                    </li>
+                    @endforeach
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="card h-100" style="opacity: 1 !important;">
+            <div class="card-header bg-light py-2">
+                <i class="bi bi-graph-down-arrow" aria-hidden="true"></i> Estratégia Avalanche
+                <div class="small text-muted fw-normal">Quite primeiro o maior juros — menos juros pago no total</div>
+            </div>
+            <div class="card-body p-0">
+                <ol class="list-group list-group-numbered list-group-flush">
+                    @foreach($planoQuitacao['avalanche'] as $item)
+                    <li class="list-group-item d-flex justify-content-between align-items-center" style="background: transparent;">
+                        <span>
+                            {{ $item['descricao'] }}
+                            @if($item['taxa_juros_mensal'])
+                                <span class="badge bg-secondary">{{ number_format($item['taxa_juros_mensal'], 2, ',', '.') }}% a.m.</span>
+                            @endif
+                        </span>
+                        <span class="valor-negativo">R$ {{ number_format($item['valor_restante'], 2, ',', '.') }}</span>
+                    </li>
+                    @endforeach
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 {{-- Lista de Dividas --}}
 @if($dividas->isEmpty())
-    <div class="card">
-        <div class="card-body text-center py-5">
-            <i class="bi bi-credit-card text-muted" style="font-size: 3rem;" aria-hidden="true"></i>
-            <p class="mt-3 text-muted">Nenhuma dívida cadastrada.</p>
-            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalNovaDivida">
-                <i class="bi bi-plus-lg"></i> Cadastrar Dívida
-            </button>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="empty-state">
+                    <i class="bi bi-credit-card" aria-hidden="true"></i>
+                    <p class="mb-3">Nenhuma dívida cadastrada.</p>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalNovaDivida">
+                        <i class="bi bi-plus-lg"></i> Cadastrar Dívida
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 @else
@@ -212,7 +256,8 @@
                                     '{{ $divida->data_inicio ? \Carbon\Carbon::parse($divida->data_inicio)->format('Y-m-d') : '' }}',
                                     '{{ $divida->data_vencimento ? \Carbon\Carbon::parse($divida->data_vencimento)->format('Y-m-d') : '' }}',
                                     '{{ addslashes($divida->categoria ?? '') }}',
-                                    '{{ addslashes($divida->observacoes ?? '') }}'
+                                    '{{ addslashes($divida->observacoes ?? '') }}',
+                                    '{{ $divida->taxa_juros_mensal ?? '' }}'
                                 )"
                                 aria-label="Editar dívida {{ $divida->descricao }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
@@ -284,6 +329,10 @@
                         <div class="col-12 col-md-6">
                             <label class="form-label" for="divObservacoes">Observações</label>
                             <input type="text" id="divObservacoes" name="observacoes" class="form-control" placeholder="Notas adicionais..." maxlength="500">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="divTaxaJuros">Taxa de Juros Mensal (%) <span class="text-muted">— opcional</span></label>
+                            <input type="number" id="divTaxaJuros" name="taxa_juros_mensal" class="form-control" placeholder="Ex: 2.5" step="0.01" min="0" inputmode="decimal">
                         </div>
                     </div>
                 </div>
@@ -414,6 +463,10 @@
                             <label class="form-label" for="editObservacoes">Observações</label>
                             <input type="text" name="observacoes" id="editObservacoes" class="form-control" maxlength="500">
                         </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="editTaxaJuros">Taxa de Juros Mensal (%) <span class="text-muted">— opcional</span></label>
+                            <input type="number" name="taxa_juros_mensal" id="editTaxaJuros" class="form-control" step="0.01" min="0" inputmode="decimal">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -496,7 +549,7 @@ function abrirModalPagamentos(dividaId, descricao, pagamentos) {
     new bootstrap.Modal(document.getElementById('modalVerPagamentos')).show();
 }
 
-function abrirModalEditar(id, descricao, credor, valorTotal, dataInicio, dataVencimento, categoria, observacoes) {
+function abrirModalEditar(id, descricao, credor, valorTotal, dataInicio, dataVencimento, categoria, observacoes, taxaJurosMensal) {
     document.getElementById('formEditarDivida').action = '/dividas/' + id;
     document.getElementById('editDescricao').value = descricao;
     document.getElementById('editCredor').value = credor;
@@ -505,6 +558,7 @@ function abrirModalEditar(id, descricao, credor, valorTotal, dataInicio, dataVen
     document.getElementById('editDataVencimento').value = dataVencimento;
     document.getElementById('editCategoria').value = categoria;
     document.getElementById('editObservacoes').value = observacoes;
+    document.getElementById('editTaxaJuros').value = taxaJurosMensal || '';
 
     new bootstrap.Modal(document.getElementById('modalEditarDivida')).show();
 }

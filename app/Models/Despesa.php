@@ -27,6 +27,7 @@ class Despesa extends Model
         'total_parcelas',
         'valor_total',
         'grupo_parcela_id',
+        'cartao_id',
     ];
 
     protected $casts = [

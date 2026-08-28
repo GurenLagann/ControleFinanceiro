@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Receita;
 use App\Models\Despesa;
 use App\Models\Categoria;
+use App\Models\Cartao;
 use App\Services\CacheService;
 use App\Services\GamificacaoService;
 use App\Services\OrcamentoService;
+use App\Services\AssinaturasService;
+use App\Services\InsightsService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
@@ -204,12 +207,12 @@ class FinancaController extends Controller
             return $group->sum('valor');
         })->toArray();
 
-        // Dados para grafico de evolucao dos ultimos 7 dias
+        // Dados para grafico de evolucao dos ultimos 14 dias
         $evolucaoDias = [];
         $evolucaoReceitas = [];
         $evolucaoDespesas = [];
 
-        for ($i = 6; $i >= 0; $i--) {
+        for ($i = 13; $i >= 0; $i--) {
             $data = Carbon::now()->subDays($i);
             $evolucaoDias[] = $data->format('d/m');
             
@@ -344,6 +347,18 @@ class FinancaController extends Controller
         // Orcamento mensal por categoria
         $orcamentos = (new OrcamentoService())->progressoPorCategoria();
 
+        // Assinaturas/recorrentes: total mensal e percentual da renda
+        $totalRecorrentesMensal = $despesasRecorrentes->sum('valor');
+        $percentualRecorrentesRenda = AssinaturasService::percentualDaRenda(
+            $totalRecorrentesMensal,
+            $totalReceitasMesAtual
+        );
+
+        // Insights automaticos sobre variacao de gastos por categoria
+        $insights = (new InsightsService())->gerar();
+
+        $cartoesAtivos = Cartao::ativos()->orderBy('nome')->get();
+
         return view('financas.index', compact(
             'receitas',
             'despesas',
@@ -381,7 +396,11 @@ class FinancaController extends Controller
             'categoriasReceita',
             'categoriasDespesa',
             'streakDias',
-            'orcamentos'
+            'orcamentos',
+            'totalRecorrentesMensal',
+            'percentualRecorrentesRenda',
+            'insights',
+            'cartoesAtivos'
         ));
     }
 
@@ -423,6 +442,7 @@ class FinancaController extends Controller
             'dia_vencimento' => 'nullable|integer|min:1|max:31',
             'parcelado' => 'nullable',
             'total_parcelas' => 'nullable|integer|min:2|max:48',
+            'cartao_id' => 'nullable|string',
         ]);
 
         $validated['recorrente'] = $request->input('recorrente') == '1';
@@ -456,6 +476,7 @@ class FinancaController extends Controller
                     'parcela_atual' => $i,
                     'total_parcelas' => $totalParcelas,
                     'grupo_parcela_id' => $grupoParcela,
+                    'cartao_id' => $validated['cartao_id'] ?? null,
                     'recorrente' => false,
                     'ativo' => true,
                 ]);

@@ -3,101 +3,108 @@
 @section('page-title', 'Dashboard')
 
 @section('content')
-    @if($streakDias >= 1)
-    <!-- Streak de uso -->
-    <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-2 rounded-pill glow-green"
-         style="background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.3);">
-        <span aria-hidden="true">🔥</span>
-        <span class="small">
-            <strong>{{ $streakDias }}</strong> {{ $streakDias > 1 ? 'dias seguidos' : 'dia seguido' }} registrando lançamentos
-        </span>
+    @if($streakDias >= 1 || count($insights) > 0)
+    <!-- Barra de engajamento: streak + insights -->
+    <div class="engage-bar">
+        @if($streakDias >= 1)
+        <div class="streak">
+            <span aria-hidden="true">🔥</span>
+            <span><strong>{{ $streakDias }}</strong> {{ $streakDias > 1 ? 'dias seguidos' : 'dia seguido' }} registrando lançamentos</span>
+        </div>
+        @endif
+        @if($streakDias >= 1 && count($insights) > 0)
+        <div class="engage-sep"></div>
+        @endif
+        @if(count($insights) > 0)
+        <div class="engage-insights">
+            @foreach($insights as $insight)
+            <div class="engage-insight"><i class="bi bi-lightbulb" aria-hidden="true"></i> <span class="small">{{ $insight }}</span></div>
+            @endforeach
+        </div>
+        @endif
     </div>
     @endif
 
-    <!-- Cards de Resumo -->
-    <div class="row mb-4 g-2 g-md-3">
-        <!-- Card Receitas -->
-        <div class="col-6 col-md-3">
-            <div class="card card-receita h-100 glow-green d-flex flex-column">
-                <div class="card-body text-center d-flex flex-column">
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        <i class="bi bi-arrow-up-circle"></i> Total Receitas
-                    </h6>
-                    <h3 class="card-title valor-positivo mb-1" data-value="{{ $totalReceitas }}">
-                        R$ {{ number_format($totalReceitas, 2, ',', '.') }}
-                    </h3>
-                    <small class="text-muted">este mes</small>
-                    <div class="mt-auto pt-2">
-                        <button class="btn btn-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalReceita">
-                            <i class="bi bi-plus-lg"></i> Nova Receita
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    @php
+        $saldoAnteriorMes = ($comparativoMesAnterior['receitas'] ?? 0) - ($comparativoMesAnterior['despesas'] ?? 0);
+        $varSaldoPct = $saldoAnteriorMes != 0 ? (($saldoMesAtual - $saldoAnteriorMes) / abs($saldoAnteriorMes)) * 100 : null;
 
-        <!-- Card Despesas -->
-        <div class="col-6 col-md-3">
-            <div class="card card-despesa h-100 glow-red d-flex flex-column" style="cursor: pointer;" onclick="abrirModalDespesas(event)">
-                <div class="card-body text-center d-flex flex-column">
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        <i class="bi bi-arrow-down-circle"></i> Total Despesas <i class="bi bi-eye ms-1" title="Ver detalhes"></i>
-                    </h6>
-                    <h3 class="card-title valor-negativo mb-1" data-value="{{ $totalDespesasMesAtual }}">
-                        R$ {{ number_format($totalDespesasMesAtual, 2, ',', '.') }}
-                    </h3>
-                    <small class="text-muted">este mes</small>
-                    <div class="mt-auto pt-2">
-                        <button class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalDespesa" onclick="event.stopPropagation();">
-                            <i class="bi bi-plus-lg"></i> Nova Despesa
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        $saldoDiario = [];
+        foreach (($evolucaoReceitas ?? []) as $i => $r) {
+            $saldoDiario[] = $r - ($evolucaoDespesas[$i] ?? 0);
+        }
+        $sparkAbsMax = 0;
+        foreach ($saldoDiario as $v) { $sparkAbsMax = max($sparkAbsMax, abs($v)); }
+        $sparkAbsMax = $sparkAbsMax > 0 ? $sparkAbsMax : 1;
+        $sparkN = count($saldoDiario);
+        $sparkPts = [];
+        foreach ($saldoDiario as $i => $v) {
+            $x = $sparkN > 1 ? round(($i / ($sparkN - 1)) * 140, 1) : 70;
+            $y = round(23 - (($v / $sparkAbsMax) * 20), 1);
+            $sparkPts[] = "{$x},{$y}";
+        }
+        $sparkLine = implode(' ', $sparkPts);
+        $sparkFill = $sparkLine !== '' ? $sparkLine . ' 140,46 0,46' : '';
+    @endphp
 
-        <!-- Card Saldo -->
-        <div class="col-6 col-md-3">
-            <div class="card card-saldo h-100 glow-blue d-flex flex-column">
-                <div class="card-body text-center d-flex flex-column">
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        <i class="bi bi-wallet2"></i> Saldo Atual
-                    </h6>
-                    <h3 class="card-title {{ $saldoMesAtual >= 0 ? 'valor-positivo' : 'valor-negativo' }} mb-1" data-value="{{ $saldoMesAtual }}">
-                        R$ {{ number_format($saldoMesAtual, 2, ',', '.') }}
-                    </h3>
-                    <small class="text-muted">este mes</small>
-                    <div class="mt-auto pt-2">
-                        @php
-                            $totalMes = $totalReceitasMesAtual + $totalDespesasMesAtual;
-                            $percentReceita = $totalMes > 0 ? ($totalReceitasMesAtual / $totalMes) * 100 : 50;
-                        @endphp
-                        <div class="progress mb-2" style="height: 8px;">
-                            <div class="progress-bar bg-success progress-animated" style="width: 0%" data-width="{{ $percentReceita }}"></div>
-                            <div class="progress-bar bg-danger progress-animated" style="width: 0%" data-width="{{ 100 - $percentReceita }}"></div>
+    <!-- Hero: Saldo do mes + estatisticas -->
+    <div class="row mb-4 g-3 align-items-stretch">
+        <div class="col-12 col-lg-7">
+            <div class="card hero-card h-100">
+                <div class="hero-top">
+                    <div>
+                        <div class="hero-label"><i class="bi bi-wallet2" aria-hidden="true"></i> Saldo deste mês</div>
+                        <div class="hero-value card-title {{ $saldoMesAtual >= 0 ? 'valor-positivo' : 'valor-negativo' }}" data-value="{{ $saldoMesAtual }}">
+                            R$ {{ number_format($saldoMesAtual, 2, ',', '.') }}
                         </div>
-                        <small class="text-muted">Total: </small>
-                        <span class="{{ $saldo >= 0 ? 'valor-positivo' : 'valor-negativo' }}">R$ {{ number_format($saldo, 2, ',', '.') }}</span>
+                        @if($varSaldoPct !== null)
+                        <div class="hero-trend {{ $varSaldoPct >= 0 ? 'valor-positivo' : 'valor-negativo' }}">
+                            <i class="bi bi-arrow-{{ $varSaldoPct >= 0 ? 'up' : 'down' }}" aria-hidden="true"></i>
+                            {{ number_format(abs($varSaldoPct), 0) }}% {{ $varSaldoPct >= 0 ? 'a mais' : 'a menos' }} que o mês passado
+                        </div>
+                        @endif
                     </div>
+                    @if($sparkLine)
+                    <svg width="140" height="46" viewBox="0 0 140 46" role="img" aria-label="Tendência de saldo diário dos últimos dias">
+                        <polyline points="{{ $sparkFill }}" fill="rgba(0,255,136,0.12)" stroke="none"></polyline>
+                        <polyline points="{{ $sparkLine }}" fill="none" stroke="#00ff88" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                    </svg>
+                    @endif
+                </div>
+                <div class="hero-actions">
+                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReceita"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nova Receita</button>
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDespesa"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nova Despesa</button>
+                    <button type="button" class="btn btn-outline-light btn-sm" onclick="new bootstrap.Modal(document.getElementById('modalDespesasTotais')).show()">
+                        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> Ver histórico e projeção
+                    </button>
                 </div>
             </div>
         </div>
-
-        <!-- Card Previsao -->
-        <div class="col-6 col-md-3">
-            <div class="card h-100 glow-purple d-flex flex-column" style="border-left: 4px solid #6f42c1;">
-                <div class="card-body text-center d-flex flex-column">
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        <i class="bi bi-calendar-check"></i> Previsao Mensal
-                    </h6>
-                    <h3 class="card-title {{ $previsaoSaldo >= 0 ? 'valor-positivo' : 'valor-negativo' }} mb-1" data-value="{{ $previsaoSaldo }}">
-                        R$ {{ number_format($previsaoSaldo, 2, ',', '.') }}
-                    </h3>
-                    <small class="text-muted">fim do mes</small>
-                    <div class="mt-auto pt-2">
-                        <div class="d-flex justify-content-between small">
-                            <span class="valor-positivo"><i class="bi bi-arrow-up"></i> {{ number_format($previsaoReceitas, 2, ',', '.') }}</span>
-                            <span class="valor-negativo"><i class="bi bi-arrow-down"></i> {{ number_format($previsaoDespesas, 2, ',', '.') }}</span>
+        <div class="col-12 col-lg-5">
+            <div class="card stat-list-card h-100">
+                <div class="stat-row">
+                    <div class="stat-icon g"><i class="bi bi-arrow-up-circle" aria-hidden="true"></i></div>
+                    <div class="stat-body">
+                        <div class="stat-label">Receitas do mês</div>
+                        <div class="stat-value card-title valor-positivo" data-value="{{ $totalReceitasMesAtual }}">R$ {{ number_format($totalReceitasMesAtual, 2, ',', '.') }}</div>
+                    </div>
+                </div>
+                <div class="stat-row clickable" onclick="abrirModalDespesas(event)">
+                    <div class="stat-icon r"><i class="bi bi-arrow-down-circle" aria-hidden="true"></i></div>
+                    <div class="stat-body">
+                        <div class="stat-label">Despesas do mês <i class="bi bi-eye" title="Ver detalhes" aria-hidden="true"></i></div>
+                        <div class="stat-value card-title valor-negativo" data-value="{{ $totalDespesasMesAtual }}">R$ {{ number_format($totalDespesasMesAtual, 2, ',', '.') }}</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-icon p"><i class="bi bi-calendar-check" aria-hidden="true"></i></div>
+                    <div class="stat-body">
+                        <div class="stat-label">Previsão · fim do mês</div>
+                        <div class="stat-value card-title {{ $previsaoSaldo >= 0 ? 'valor-positivo' : 'valor-negativo' }}" data-value="{{ $previsaoSaldo }}">R$ {{ number_format($previsaoSaldo, 2, ',', '.') }}</div>
+                        <div class="stat-delta">
+                            <span class="valor-positivo"><i class="bi bi-arrow-up" aria-hidden="true"></i> {{ number_format($previsaoReceitas, 2, ',', '.') }}</span>
+                            &nbsp;·&nbsp;
+                            <span class="valor-negativo"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ number_format($previsaoDespesas, 2, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -105,16 +112,78 @@
         </div>
     </div>
 
-    @if(count($orcamentos) > 0)
-    <!-- Orcamento por Categoria -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card" style="opacity: 1 !important;">
-                <div class="card-header bg-light py-2">
-                    <span><i class="bi bi-piggy-bank"></i> Orçamento do Mês por Categoria</span>
-                </div>
+    <!-- Abas de analise -->
+    <ul class="nav dashboard-tabs" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-geral" type="button" role="tab">
+                <i class="bi bi-pie-chart" aria-hidden="true"></i> Visão geral
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-categorias" type="button" role="tab">
+                <i class="bi bi-bar-chart" aria-hidden="true"></i> Por categoria
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-compromissos" type="button" role="tab">
+                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Compromissos
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-tendencias" type="button" role="tab">
+                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> Tendências
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content dashboard-tab-content mb-4">
+        <!-- Visao Geral: Pizza + Evolucao -->
+        <div class="tab-pane fade show active" id="tab-geral" role="tabpanel">
+            <div class="row">
+            <div class="col-12">
+            <div class="card">
                 <div class="card-body">
-                    <div class="row g-3">
+                    <div class="row g-4 align-items-start">
+                        <div class="col-12 col-md-5">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted"><i class="bi bi-pie-chart" aria-hidden="true"></i> Receitas vs Despesas</small>
+                                <button type="button" class="btn btn-sm btn-icon btn-outline-light" onclick="ampliarGrafico('pizza', 'Receitas vs Despesas')" aria-label="Expandir gráfico">
+                                    <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="donut-wrap">
+                                <canvas id="chartPizza" height="220" role="img" aria-label="Gráfico de rosca: distribuição entre receitas e despesas do mês atual"></canvas>
+                                <div class="donut-legend">
+                                    <div class="legend-row"><span class="legend-dot" style="background:#00ff88"></span><span class="name">Receitas</span><span class="valor-positivo">R$ {{ number_format($totalReceitas, 2, ',', '.') }}</span></div>
+                                    <div class="legend-row"><span class="legend-dot" style="background:#ff4757"></span><span class="name">Despesas</span><span class="valor-negativo">R$ {{ number_format($totalDespesas, 2, ',', '.') }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted"><i class="bi bi-graph-up" aria-hidden="true"></i> Entradas × saídas — últimos 14 dias</small>
+                                <button type="button" class="btn btn-sm btn-icon btn-outline-light" onclick="ampliarGrafico('evolucao', 'Evolução Últimos 14 Dias')" aria-label="Expandir gráfico">
+                                    <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <canvas id="chartEvolucao" height="210" role="img" aria-label="Gráfico de linha: evolução de receitas e despesas nos últimos 14 dias"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Por Categoria: Orcamento + Despesas/Receitas por categoria -->
+        <div class="tab-pane fade" id="tab-categorias" role="tabpanel">
+            <div class="row">
+            <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    @if(count($orcamentos) > 0)
+                    <h6 class="mb-3"><i class="bi bi-piggy-bank" aria-hidden="true"></i> Orçamento do Mês por Categoria</h6>
+                    <div class="row g-3 mb-4">
                         @foreach($orcamentos as $item)
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="d-flex justify-content-between align-items-center mb-1">
@@ -135,352 +204,322 @@
                         </div>
                         @endforeach
                     </div>
+                    <hr class="border-secondary">
+                    @endif
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Despesas por Categoria</h6>
+                                <button type="button" class="btn btn-sm btn-icon btn-outline-light" onclick="ampliarGrafico('despesasCategoria', 'Despesas por Categoria')" aria-label="Expandir gráfico">
+                                    <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <canvas id="chartDespesasCategoria" height="180" role="img" aria-label="Gráfico de barras: despesas agrupadas por categoria"></canvas>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Receitas por Categoria</h6>
+                                <button type="button" class="btn btn-sm btn-icon btn-outline-light" onclick="ampliarGrafico('receitasCategoria', 'Receitas por Categoria')" aria-label="Expandir gráfico">
+                                    <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <canvas id="chartReceitasCategoria" height="180" role="img" aria-label="Gráfico de barras: receitas agrupadas por categoria"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
+            </div>
+            </div>
         </div>
-    </div>
-    @endif
 
-    <!-- Graficos principais: Pizza + Evolucao -->
-    <div class="row mb-4 g-2 g-md-3">
-        <div class="col-12 col-md-4">
-            <div class="card chart-card h-100" style="cursor: pointer;" onclick="ampliarGrafico('pizza', 'Receitas vs Despesas')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-pie-chart"></i> Receitas vs Despesas <i class="bi bi-arrows-fullscreen float-end"></i></small>
+        <!-- Compromissos: Parceladas + Recorrentes -->
+        <div class="tab-pane fade" id="tab-compromissos" role="tabpanel">
+            <div class="row g-3">
+                @if($despesasParceladas->count() > 0)
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-warning d-flex justify-content-between align-items-center py-2">
+                            <span><i class="bi bi-credit-card" aria-hidden="true"></i> Despesas Parceladas</span>
+                            <span class="badge bg-dark">{{ $despesasParceladas->count() }} compras</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Descricao</th>
+                                            <th class="d-none d-md-table-cell">Valor Total</th>
+                                            <th class="d-none d-sm-table-cell">Progresso</th>
+                                            <th>Parcela</th>
+                                            <th>Proxima</th>
+                                            <th class="d-none d-md-table-cell">Restante</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($despesasParceladas as $grupoId => $parcelas)
+                                            @php
+                                                $primeira = $parcelas->first();
+                                                $parcelasPagas = $parcelas->filter(fn($p) => $p->data <= now())->count();
+                                                $proximaParcela = $parcelas->where('data', '>', now())->first();
+                                                $restante = $parcelas->where('data', '>', now())->sum('valor');
+                                                $percent = ($parcelasPagas / $primeira->total_parcelas) * 100;
+                                            @endphp
+                                            <tr>
+                                                <td>
+                                                    {{ $primeira->descricao }}
+                                                    @if($primeira->categoria)
+                                                        <br><small class="text-muted">{{ $primeira->categoria }}</small>
+                                                    @endif
+                                                </td>
+                                                <td class="valor-negativo d-none d-md-table-cell">R$ {{ number_format($primeira->valor_total, 2, ',', '.') }}</td>
+                                                <td style="min-width: 100px;" class="d-none d-sm-table-cell">
+                                                    <div class="progress" style="height: 18px;">
+                                                        <div class="progress-bar bg-success" style="width: {{ $percent }}%">
+                                                            <small>{{ $parcelasPagas }}/{{ $primeira->total_parcelas }}</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="valor-negativo">R$ {{ number_format($primeira->valor, 2, ',', '.') }}</td>
+                                                <td>
+                                                    @if($proximaParcela)
+                                                        {{ $proximaParcela->data->format('d/m') }}
+                                                    @else
+                                                        <span class="badge bg-success"><i class="bi bi-check"></i> Quitado</span>
+                                                    @endif
+                                                </td>
+                                                <td class="valor-negativo d-none d-md-table-cell">R$ {{ number_format($restante, 2, ',', '.') }}</td>
+                                                <td class="text-end">
+                                                    @if($proximaParcela)
+                                                        @php
+                                                            $parcelasRestantes = $parcelas->where('data', '>', now())->count();
+                                                        @endphp
+                                                        <form action="{{ route('despesas.avancarParcela', $proximaParcela->_id) }}" method="POST" class="d-inline" title="Pagar 1 parcela">
+                                                            @csrf @method('PATCH')
+                                                            <button type="submit" class="btn btn-outline-success btn-sm btn-icon" aria-label="Pagar próxima parcela">
+                                                                <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                                            </button>
+                                                        </form>
+                                                        @if($parcelasRestantes > 1)
+                                                            <button type="button" class="btn btn-outline-info btn-sm btn-icon" onclick="abrirAdiantar('{{ $grupoId }}', {{ $parcelasRestantes }}, {{ $primeira->valor }})" aria-label="Adiantar parcelas">
+                                                                <i class="bi bi-fast-forward" aria-hidden="true"></i>
+                                                            </button>
+                                                        @endif
+                                                    @endif
+                                                    <form action="{{ route('despesas.destroyGrupo', $grupoId) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir TODAS as parcelas?')">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir todas as parcelas">
+                                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body p-2 d-flex align-items-center justify-content-center">
-                    <canvas id="chartPizza" height="200" role="img" aria-label="Gráfico de rosca: distribuição entre receitas e despesas do mês atual"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-8">
-            <div class="card chart-card h-100" style="cursor: pointer;" onclick="ampliarGrafico('evolucao', 'Evolucao Ultimos 7 Dias')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-graph-up"></i> Evolução – Últimos 7 Dias <i class="bi bi-arrows-fullscreen float-end"></i></small>
-                </div>
-                <div class="card-body p-2">
-                    <canvas id="chartEvolucao" height="120" role="img" aria-label="Gráfico de linha: evolução de receitas e despesas nos últimos 7 dias"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
+                @endif
 
-    <!-- Graficos por Categoria -->
-    <div class="row mb-4 g-2 g-md-3">
-        <div class="col-12 col-md-6">
-            <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('despesasCategoria', 'Despesas por Categoria')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart"></i> Despesas por Categoria <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header bg-success d-flex justify-content-between align-items-center py-2">
+                            <span><i class="bi bi-arrow-repeat" aria-hidden="true"></i> <span class="d-none d-sm-inline">Receitas Recorrentes</span><span class="d-sm-none">Rec. Recorrentes</span></span>
+                            <span class="badge bg-light text-success">{{ $receitasRecorrentes->count() }}</span>
+                        </div>
+                        <div class="card-body card-body-scroll" style="max-height: 260px; overflow-y: auto;">
+                            @if($receitasRecorrentes->count() > 0)
+                                <table class="table table-sm table-hover mb-0">
+                                    <tbody>
+                                        @foreach($receitasRecorrentes as $receita)
+                                            <tr class="{{ !$receita->ativo ? 'opacity-50' : '' }}">
+                                                <td>{{ $receita->descricao }}</td>
+                                                <td class="valor-positivo">R$ {{ number_format($receita->valor, 2, ',', '.') }}</td>
+                                                <td>Dia {{ $receita->dia_vencimento ?? '-' }}</td>
+                                                <td class="text-end">
+                                                    <form action="{{ route('receitas.toggle', $receita->_id) }}" method="POST" class="d-inline">
+                                                        @csrf @method('PATCH')
+                                                        <button type="submit" class="btn btn-outline-{{ $receita->ativo ? 'warning' : 'success' }} btn-sm btn-icon" aria-label="{{ $receita->ativo ? 'Pausar receita recorrente' : 'Ativar receita recorrente' }}">
+                                                            <i class="bi bi-{{ $receita->ativo ? 'pause' : 'play' }}" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ route('receitas.destroy', $receita->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir receita recorrente">
+                                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <p class="text-muted text-center mb-0 py-3"><i class="bi bi-inbox"></i> Nenhuma receita recorrente</p>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body p-2">
-                    <canvas id="chartDespesasCategoria" height="140" role="img" aria-label="Gráfico de barras: despesas agrupadas por categoria"></canvas>
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header bg-danger d-flex justify-content-between align-items-center py-2">
+                            <span><i class="bi bi-arrow-repeat" aria-hidden="true"></i> <span class="d-none d-sm-inline">Despesas Recorrentes</span><span class="d-sm-none">Desp. Recorrentes</span></span>
+                            <span class="badge bg-light text-danger">{{ $despesasRecorrentes->count() }}</span>
+                        </div>
+                        <div class="card-body card-body-scroll" style="max-height: 260px; overflow-y: auto;">
+                            @if($despesasRecorrentes->count() > 0)
+                                <table class="table table-sm table-hover mb-0">
+                                    <tbody>
+                                        @foreach($despesasRecorrentes as $despesa)
+                                            <tr class="{{ !$despesa->ativo ? 'opacity-50' : '' }}">
+                                                <td>{{ $despesa->descricao }}</td>
+                                                <td class="valor-negativo">R$ {{ number_format($despesa->valor, 2, ',', '.') }}</td>
+                                                <td>Dia {{ $despesa->dia_vencimento ?? '-' }}</td>
+                                                <td class="text-end">
+                                                    <form action="{{ route('despesas.toggle', $despesa->_id) }}" method="POST" class="d-inline">
+                                                        @csrf @method('PATCH')
+                                                        <button type="submit" class="btn btn-outline-{{ $despesa->ativo ? 'warning' : 'success' }} btn-sm btn-icon" aria-label="{{ $despesa->ativo ? 'Pausar despesa recorrente' : 'Ativar despesa recorrente' }}">
+                                                            <i class="bi bi-{{ $despesa->ativo ? 'pause' : 'play' }}" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ route('despesas.destroy', $despesa->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir despesa recorrente">
+                                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <p class="text-muted text-center mb-0 py-3"><i class="bi bi-inbox"></i> Nenhuma despesa recorrente</p>
+                            @endif
+                        </div>
+                        @if($totalRecorrentesMensal > 0)
+                        <div class="card-footer d-flex justify-content-between align-items-center py-2 small {{ $percentualRecorrentesRenda >= 30 ? 'valor-atencao' : 'text-muted' }}">
+                            <span>Total mensal: <strong>R$ {{ number_format($totalRecorrentesMensal, 2, ',', '.') }}</strong></span>
+                            @if($percentualRecorrentesRenda > 0)
+                                <span>
+                                    {{ $percentualRecorrentesRenda }}% da renda
+                                    @if($percentualRecorrentesRenda >= 30)
+                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                    @endif
+                                </span>
+                            @endif
+                        </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6">
-            <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('receitasCategoria', 'Receitas por Categoria')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart"></i> Receitas por Categoria <i class="bi bi-arrows-fullscreen float-end"></i></small>
-                </div>
-                <div class="card-body p-2">
-                    <canvas id="chartReceitasCategoria" height="140" role="img" aria-label="Gráfico de barras: receitas agrupadas por categoria"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Projecao Futura -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('projecao', 'Projecao 6 Meses')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-graph-up-arrow"></i> Projeção 6 Meses (recorrentes + parcelas) <i class="bi bi-arrows-fullscreen float-end"></i></small>
+        <!-- Tendencias: Projecao + Comparativo + Tendencia + Dias da Semana -->
+        <div class="tab-pane fade" id="tab-tendencias" role="tabpanel">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('projecao', 'Projecao 6 Meses')">
+                        <div class="card-header bg-light py-2">
+                            <small><i class="bi bi-graph-up-arrow"></i> Projeção 6 Meses (recorrentes + parcelas) <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                        </div>
+                        <div class="card-body p-2">
+                            <canvas id="chartProjecao" height="70" role="img" aria-label="Gráfico de barras: projeção financeira para os próximos 6 meses"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body p-2">
-                    <canvas id="chartProjecao" height="70" role="img" aria-label="Gráfico de barras: projeção financeira para os próximos 6 meses"></canvas>
+                <div class="col-12 col-md-4">
+                    <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('comparativo', 'Comparativo Mensal')">
+                        <div class="card-header bg-light py-2">
+                            <small><i class="bi bi-bar-chart-line"></i> Comparativo Mensal <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                        </div>
+                        <div class="card-body p-2">
+                            <canvas id="chartComparativo" height="160" role="img" aria-label="Gráfico de barras: comparativo entre mês atual e mês anterior"></canvas>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Graficos Secundarios -->
-    <div class="row mb-4 g-2 g-md-3">
-        <div class="col-12 col-md-4">
-            <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('comparativo', 'Comparativo Mensal')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-bar-chart-line"></i> Comparativo Mensal <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                <div class="col-12 col-md-4">
+                    <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('tendencia', 'Tendencia Anual')">
+                        <div class="card-header bg-light py-2">
+                            <small><i class="bi bi-graph-up"></i> Tendência 12 Meses <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                        </div>
+                        <div class="card-body p-2">
+                            <canvas id="chartTendencia" height="160" role="img" aria-label="Gráfico de linha: tendência financeira dos últimos 12 meses"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body p-2">
-                    <canvas id="chartComparativo" height="160" role="img" aria-label="Gráfico de barras: comparativo entre mês atual e mês anterior"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('tendencia', 'Tendencia Anual')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-graph-up"></i> Tendência 12 Meses <i class="bi bi-arrows-fullscreen float-end"></i></small>
-                </div>
-                <div class="card-body p-2">
-                    <canvas id="chartTendencia" height="160" role="img" aria-label="Gráfico de linha: tendência financeira dos últimos 12 meses"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('diasSemana', 'Gastos por Dia da Semana')">
-                <div class="card-header bg-light py-2">
-                    <small><i class="bi bi-calendar-week"></i> Gastos por Dia da Semana <i class="bi bi-arrows-fullscreen float-end"></i></small>
-                </div>
-                <div class="card-body p-2">
-                    <canvas id="chartDiasSemana" height="160" role="img" aria-label="Gráfico de barras: gastos distribuídos por dia da semana"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Despesas Parceladas -->
-    @if($despesasParceladas->count() > 0)
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-warning d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-credit-card"></i> Despesas Parceladas</span>
-                    <span class="badge bg-dark">{{ $despesasParceladas->count() }} compras</span>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Descricao</th>
-                                    <th class="d-none d-md-table-cell">Valor Total</th>
-                                    <th class="d-none d-sm-table-cell">Progresso</th>
-                                    <th>Parcela</th>
-                                    <th>Proxima</th>
-                                    <th class="d-none d-md-table-cell">Restante</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($despesasParceladas as $grupoId => $parcelas)
-                                    @php
-                                        $primeira = $parcelas->first();
-                                        $parcelasPagas = $parcelas->filter(fn($p) => $p->data <= now())->count();
-                                        $proximaParcela = $parcelas->where('data', '>', now())->first();
-                                        $restante = $parcelas->where('data', '>', now())->sum('valor');
-                                        $percent = ($parcelasPagas / $primeira->total_parcelas) * 100;
-                                    @endphp
-                                    <tr>
-                                        <td>
-                                            {{ $primeira->descricao }}
-                                            @if($primeira->categoria)
-                                                <br><small class="text-muted">{{ $primeira->categoria }}</small>
-                                            @endif
-                                        </td>
-                                        <td class="valor-negativo d-none d-md-table-cell">R$ {{ number_format($primeira->valor_total, 2, ',', '.') }}</td>
-                                        <td style="min-width: 100px;" class="d-none d-sm-table-cell">
-                                            <div class="progress" style="height: 18px;">
-                                                <div class="progress-bar bg-success" style="width: {{ $percent }}%">
-                                                    <small>{{ $parcelasPagas }}/{{ $primeira->total_parcelas }}</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="valor-negativo">R$ {{ number_format($primeira->valor, 2, ',', '.') }}</td>
-                                        <td>
-                                            @if($proximaParcela)
-                                                {{ $proximaParcela->data->format('d/m') }}
-                                            @else
-                                                <span class="badge bg-success"><i class="bi bi-check"></i> Quitado</span>
-                                            @endif
-                                        </td>
-                                        <td class="valor-negativo d-none d-md-table-cell">R$ {{ number_format($restante, 2, ',', '.') }}</td>
-                                        <td class="text-end">
-                                            @if($proximaParcela)
-                                                @php
-                                                    $parcelasRestantes = $parcelas->where('data', '>', now())->count();
-                                                @endphp
-                                                <form action="{{ route('despesas.avancarParcela', $proximaParcela->_id) }}" method="POST" class="d-inline" title="Pagar 1 parcela">
-                                                    @csrf @method('PATCH')
-                                                    <button type="submit" class="btn btn-outline-success btn-sm btn-icon" aria-label="Pagar próxima parcela">
-                                                        <i class="bi bi-check-lg" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                                @if($parcelasRestantes > 1)
-                                                    <button type="button" class="btn btn-outline-info btn-sm btn-icon" onclick="abrirAdiantar('{{ $grupoId }}', {{ $parcelasRestantes }}, {{ $primeira->valor }})" aria-label="Adiantar parcelas">
-                                                        <i class="bi bi-fast-forward" aria-hidden="true"></i>
-                                                    </button>
-                                                @endif
-                                            @endif
-                                            <form action="{{ route('despesas.destroyGrupo', $grupoId) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir TODAS as parcelas?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir todas as parcelas">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                <div class="col-12 col-md-4">
+                    <div class="card chart-card" style="cursor: pointer;" onclick="ampliarGrafico('diasSemana', 'Gastos por Dia da Semana')">
+                        <div class="card-header bg-light py-2">
+                            <small><i class="bi bi-calendar-week"></i> Gastos por Dia da Semana <i class="bi bi-arrows-fullscreen float-end"></i></small>
+                        </div>
+                        <div class="card-body p-2">
+                            <canvas id="chartDiasSemana" height="160" role="img" aria-label="Gráfico de barras: gastos distribuídos por dia da semana"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    @endif
 
-    <!-- Itens Recorrentes -->
-    <div class="row mb-4 g-2 g-md-3">
-        <div class="col-12 col-md-6">
-            <div class="card">
-                <div class="card-header bg-success d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Receitas Recorrentes</span><span class="d-sm-none">Rec. Recorrentes</span></span>
-                    <span class="badge bg-light text-success">{{ $receitasRecorrentes->count() }}</span>
-                </div>
-                <div class="card-body card-body-scroll" style="max-height: 200px; overflow-y: auto;">
-                    @if($receitasRecorrentes->count() > 0)
-                        <table class="table table-sm table-hover mb-0">
-                            <tbody>
-                                @foreach($receitasRecorrentes as $receita)
-                                    <tr class="{{ !$receita->ativo ? 'opacity-50' : '' }}">
-                                        <td>{{ $receita->descricao }}</td>
-                                        <td class="valor-positivo">R$ {{ number_format($receita->valor, 2, ',', '.') }}</td>
-                                        <td>Dia {{ $receita->dia_vencimento ?? '-' }}</td>
-                                        <td class="text-end">
-                                            <form action="{{ route('receitas.toggle', $receita->_id) }}" method="POST" class="d-inline">
-                                                @csrf @method('PATCH')
-                                                <button type="submit" class="btn btn-outline-{{ $receita->ativo ? 'warning' : 'success' }} btn-sm btn-icon" aria-label="{{ $receita->ativo ? 'Pausar receita recorrente' : 'Ativar receita recorrente' }}">
-                                                    <i class="bi bi-{{ $receita->ativo ? 'pause' : 'play' }}" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                            <form action="{{ route('receitas.destroy', $receita->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir receita recorrente">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <p class="text-muted text-center mb-0 py-3"><i class="bi bi-inbox"></i> Nenhuma receita recorrente</p>
-                    @endif
-                </div>
-            </div>
+    <!-- Lancamentos Recentes (feed unificado) -->
+    @php
+        $feedReceitas = $receitas->filter(fn($r) => !$r->recorrente)->map(function($r) {
+            return (object) ['tipo' => 'receita', 'id' => $r->_id, 'descricao' => $r->descricao, 'valor' => $r->valor, 'data' => $r->data, 'categoria' => $r->categoria];
+        });
+        $feedDespesas = $despesas->filter(fn($d) => !$d->recorrente && !$d->parcelado)->map(function($d) {
+            return (object) ['tipo' => 'despesa', 'id' => $d->_id, 'descricao' => $d->descricao, 'valor' => $d->valor, 'data' => $d->data, 'categoria' => $d->categoria];
+        });
+        $lancamentosRecentes = $feedReceitas->concat($feedDespesas)
+            ->sortByDesc(fn($item) => $item->data ?? \Carbon\Carbon::createFromTimestamp(0))
+            ->take(12)
+            ->values();
+    @endphp
+    <div class="row">
+    <div class="col-12">
+    <div class="card">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+            <span><i class="bi bi-list-ul" aria-hidden="true"></i> Lançamentos Recentes</span>
+            <a href="{{ route('financas.transacoes') }}" class="small">Ver todas <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
         </div>
-        <div class="col-12 col-md-6">
-            <div class="card">
-                <div class="card-header bg-danger d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Despesas Recorrentes</span><span class="d-sm-none">Desp. Recorrentes</span></span>
-                    <span class="badge bg-light text-danger">{{ $despesasRecorrentes->count() }}</span>
+        <div class="card-body">
+            @if($lancamentosRecentes->count() > 0)
+                @foreach($lancamentosRecentes as $item)
+                <div class="feed-row">
+                    <div class="feed-icon {{ $item->tipo === 'receita' ? 'g' : 'r' }}">
+                        <i class="bi bi-arrow-{{ $item->tipo === 'receita' ? 'up' : 'down' }}-circle" aria-hidden="true"></i>
+                    </div>
+                    <div class="feed-body">
+                        <div>{{ $item->descricao }}</div>
+                        <div class="feed-cat">{{ $item->categoria ?: 'Sem categoria' }}</div>
+                    </div>
+                    <div class="feed-when">{{ $item->data ? $item->data->format('d/m') : '-' }}</div>
+                    <div class="feed-amt {{ $item->tipo === 'receita' ? 'valor-positivo' : 'valor-negativo' }}">
+                        {{ $item->tipo === 'receita' ? '+' : '-' }} R$ {{ number_format($item->valor, 2, ',', '.') }}
+                    </div>
+                    <div class="text-end" style="min-width:64px;">
+                        @if($item->tipo === 'despesa')
+                        <button type="button" class="btn btn-outline-warning btn-sm btn-icon" onclick="editarDespesa('{{ $item->id }}', '{{ $item->descricao }}', '{{ $item->valor }}', '{{ $item->data ? $item->data->format('Y-m-d') : '' }}', '{{ $item->categoria }}')" aria-label="Editar despesa">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </button>
+                        @endif
+                        <form action="{{ route($item->tipo === 'receita' ? 'receitas.destroy' : 'despesas.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir lançamento">
+                                <i class="bi bi-trash" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div class="card-body card-body-scroll" style="max-height: 200px; overflow-y: auto;">
-                    @if($despesasRecorrentes->count() > 0)
-                        <table class="table table-sm table-hover mb-0">
-                            <tbody>
-                                @foreach($despesasRecorrentes as $despesa)
-                                    <tr class="{{ !$despesa->ativo ? 'opacity-50' : '' }}">
-                                        <td>{{ $despesa->descricao }}</td>
-                                        <td class="valor-negativo">R$ {{ number_format($despesa->valor, 2, ',', '.') }}</td>
-                                        <td>Dia {{ $despesa->dia_vencimento ?? '-' }}</td>
-                                        <td class="text-end">
-                                            <form action="{{ route('despesas.toggle', $despesa->_id) }}" method="POST" class="d-inline">
-                                                @csrf @method('PATCH')
-                                                <button type="submit" class="btn btn-outline-{{ $despesa->ativo ? 'warning' : 'success' }} btn-sm btn-icon" aria-label="{{ $despesa->ativo ? 'Pausar despesa recorrente' : 'Ativar despesa recorrente' }}">
-                                                    <i class="bi bi-{{ $despesa->ativo ? 'pause' : 'play' }}" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                            <form action="{{ route('despesas.destroy', $despesa->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir despesa recorrente">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <p class="text-muted text-center mb-0 py-3"><i class="bi bi-inbox"></i> Nenhuma despesa recorrente</p>
-                    @endif
-                </div>
-            </div>
+                @endforeach
+            @else
+                <p class="text-muted text-center mb-0 py-4"><i class="bi bi-inbox" style="font-size: 2rem;"></i><br>Nenhum lançamento recente</p>
+            @endif
         </div>
     </div>
-
-    <!-- Lancamentos Recentes -->
-    <div class="row g-2 g-md-3">
-        <div class="col-12 col-md-6 mb-2 mb-md-4">
-            <div class="card">
-                <div class="card-header bg-success d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-arrow-up-circle"></i> <span class="d-none d-sm-inline">Receitas Recentes</span><span class="d-sm-none">Rec. Recentes</span></span>
-                </div>
-                <div class="card-body card-body-scroll" style="max-height: 220px; overflow-y: auto;">
-                    @php $receitasSimples = $receitas->filter(fn($r) => !$r->recorrente)->take(10); @endphp
-                    @if($receitasSimples->count() > 0)
-                        <table class="table table-sm table-hover mb-0">
-                            <tbody>
-                                @foreach($receitasSimples as $receita)
-                                    <tr>
-                                        <td>{{ $receita->descricao }}</td>
-                                        <td class="valor-positivo">R$ {{ number_format($receita->valor, 2, ',', '.') }}</td>
-                                        <td><small class="text-muted">{{ $receita->data ? $receita->data->format('d/m') : '-' }}</small></td>
-                                        <td class="text-end">
-                                            <form action="{{ route('receitas.destroy', $receita->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir receita">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <p class="text-muted text-center mb-0 py-4"><i class="bi bi-inbox" style="font-size: 2rem;"></i><br>Nenhuma receita</p>
-                    @endif
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6 mb-2 mb-md-4">
-            <div class="card">
-                <div class="card-header bg-danger d-flex justify-content-between align-items-center py-2">
-                    <span><i class="bi bi-arrow-down-circle"></i> <span class="d-none d-sm-inline">Despesas Recentes</span><span class="d-sm-none">Desp. Recentes</span></span>
-                </div>
-                <div class="card-body card-body-scroll" style="max-height: 220px; overflow-y: auto;">
-                    @php $despesasSimples = $despesas->filter(fn($d) => !$d->recorrente && !$d->parcelado)->take(10); @endphp
-                    @if($despesasSimples->count() > 0)
-                        <table class="table table-sm table-hover mb-0">
-                            <tbody>
-                                @foreach($despesasSimples as $despesa)
-                                    <tr>
-                                        <td>{{ $despesa->descricao }}</td>
-                                        <td class="valor-negativo">R$ {{ number_format($despesa->valor, 2, ',', '.') }}</td>
-                                        <td><small class="text-muted">{{ $despesa->data ? $despesa->data->format('d/m') : '-' }}</small></td>
-                                        <td class="text-end">
-                                            <button type="button" class="btn btn-outline-warning btn-sm btn-icon" onclick="editarDespesa('{{ $despesa->_id }}', '{{ $despesa->descricao }}', '{{ $despesa->valor }}', '{{ $despesa->data ? $despesa->data->format('Y-m-d') : '' }}', '{{ $despesa->categoria }}')" aria-label="Editar despesa">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                            </button>
-                                            <form action="{{ route('despesas.destroy', $despesa->_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Excluir?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" aria-label="Excluir despesa">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <p class="text-muted text-center mb-0 py-4"><i class="bi bi-inbox" style="font-size: 2rem;"></i><br>Nenhuma despesa</p>
-                    @endif
-                </div>
-            </div>
-        </div>
+    </div>
     </div>
 
     <!-- Modal Despesas Totais por Mes -->
@@ -675,7 +714,19 @@
                             <label class="form-label small">Categoria</label>
                             @include('partials._categoria-pills', ['categorias' => $categoriasDespesa, 'inputId' => 'despCategoria'])
                         </div>
-                        
+
+                        @if($cartoesAtivos->count() > 0)
+                        <div class="mb-3">
+                            <label class="form-label small" for="despCartao">Cartão <span class="text-muted">— opcional</span></label>
+                            <select name="cartao_id" id="despCartao" class="form-select form-select-sm">
+                                <option value="">Nenhum</option>
+                                @foreach($cartoesAtivos as $cartao)
+                                    <option value="{{ $cartao->_id }}">{{ $cartao->nome }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+
                         <div class="btn-group w-100 mb-3" role="group">
                             <input type="radio" class="btn-check" name="tipoDespesa" id="tipoUnica" value="unica" checked onclick="mostrarTipo('unica')">
                             <label class="btn btn-outline-secondary btn-sm" for="tipoUnica"><i class="bi bi-1-circle"></i> Unica</label>
@@ -1375,6 +1426,25 @@
         labels: { color: 'rgba(255,255,255,0.7)', boxWidth: 10, boxHeight: 10, padding: 14, usePointStyle: true }
     });
 
+    // Instancias dos graficos que vivem em abas nao ativas por padrao
+    // (precisam de resize() manual quando a aba e exibida, pois Chart.js
+    // calcula o tamanho a partir de um canvas com display:none = 0px)
+    let chartDespesasCategoriaInstance, chartReceitasCategoriaInstance,
+        chartProjecaoInstance, chartComparativoInstance,
+        chartTendenciaInstance, chartDiasSemanaInstance;
+
+    document.querySelectorAll('#dashboardTabs button[data-bs-toggle="tab"]').forEach(btn => {
+        btn.addEventListener('shown.bs.tab', function (e) {
+            const target = e.target.getAttribute('data-bs-target');
+            const toResize = target === '#tab-categorias'
+                ? [chartDespesasCategoriaInstance, chartReceitasCategoriaInstance]
+                : target === '#tab-tendencias'
+                    ? [chartProjecaoInstance, chartComparativoInstance, chartTendenciaInstance, chartDiasSemanaInstance]
+                    : [];
+            toResize.forEach(c => c && c.resize());
+        });
+    });
+
     // Inicializar graficos com delay para animacao
     setTimeout(() => {
         new Chart(document.getElementById('chartPizza'), {
@@ -1405,7 +1475,7 @@
 
         const despLabels = Object.keys(despesasPorCategoria).length ? Object.keys(despesasPorCategoria) : ['--'];
         const despValues = Object.values(despesasPorCategoria).length ? Object.values(despesasPorCategoria) : [0];
-        new Chart(document.getElementById('chartDespesasCategoria'), {
+        chartDespesasCategoriaInstance = new Chart(document.getElementById('chartDespesasCategoria'), {
             type: 'bar',
             data: {
                 labels: despLabels,
@@ -1427,7 +1497,7 @@
 
         const recLabels = Object.keys(receitasPorCategoria).length ? Object.keys(receitasPorCategoria) : ['--'];
         const recValues = Object.values(receitasPorCategoria).length ? Object.values(receitasPorCategoria) : [0];
-        new Chart(document.getElementById('chartReceitasCategoria'), {
+        chartReceitasCategoriaInstance = new Chart(document.getElementById('chartReceitasCategoria'), {
             type: 'bar',
             data: {
                 labels: recLabels,
@@ -1458,6 +1528,7 @@
             },
             options: {
                 responsive: true,
+                aspectRatio: 2.3,
                 animation: { duration: _noAnim ? 0 : 1000 },
                 interaction: { mode: 'index', intersect: false },
                 plugins: { legend: _legend(), tooltip: _tooltip },
@@ -1465,7 +1536,7 @@
             }
         });
 
-        new Chart(document.getElementById('chartProjecao'), {
+        chartProjecaoInstance = new Chart(document.getElementById('chartProjecao'), {
             type: 'bar',
             data: {
                 labels: projecaoMeses,
@@ -1489,7 +1560,7 @@
         const comparativoMesAnterior = @json($comparativoMesAnterior);
         const comparativoMesAtual = @json($comparativoMesAtual);
 
-        new Chart(document.getElementById('chartComparativo'), {
+        chartComparativoInstance = new Chart(document.getElementById('chartComparativo'), {
             type: 'bar',
             data: {
                 labels: comparativoLabels,
@@ -1513,7 +1584,7 @@
         const tendenciaDespesas = @json($tendenciaDespesas);
         const tendenciaSaldo = @json($tendenciaSaldo);
 
-        new Chart(document.getElementById('chartTendencia'), {
+        chartTendenciaInstance = new Chart(document.getElementById('chartTendencia'), {
             type: 'line',
             data: {
                 labels: tendenciaMeses,
@@ -1538,7 +1609,7 @@
         const _maxGasto = Math.max(...gastosPorDiaSemana, 0);
         const _fimSemana = [true, false, false, false, false, false, true];
 
-        new Chart(document.getElementById('chartDiasSemana'), {
+        chartDiasSemanaInstance = new Chart(document.getElementById('chartDiasSemana'), {
             type: 'bar',
             data: {
                 labels: diasSemana,

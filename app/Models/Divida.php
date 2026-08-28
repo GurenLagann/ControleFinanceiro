@@ -21,12 +21,14 @@ class Divida extends Model
         'status', // ativa, quitada, em_atraso
         'observacoes',
         'pagamentos', // array embedded
+        'taxa_juros_mensal', // percentual ao mes, opcional
     ];
 
     protected $casts = [
         'valor_total' => 'float',
         'data_inicio' => 'date',
         'data_vencimento' => 'date',
+        'taxa_juros_mensal' => 'float',
     ];
 
     protected $attributes = [

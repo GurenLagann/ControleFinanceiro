@@ -4,6 +4,8 @@ use App\Http\Controllers\FinancaController;
 use App\Http\Controllers\ConfiguracaoController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\DividaController;
+use App\Http\Controllers\CartaoController;
+use App\Http\Controllers\ImportacaoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FinancaController::class, 'index'])->name('financas.index');
@@ -61,6 +63,19 @@ Route::put('/dividas/{id}', [DividaController::class, 'update'])->name('dividas.
 Route::delete('/dividas/{id}', [DividaController::class, 'destroy'])->name('dividas.destroy');
 Route::post('/dividas/{id}/pagamentos', [DividaController::class, 'storePagamento'])->name('dividas.pagamentos.store');
 Route::delete('/dividas/{id}/pagamentos/{pagamentoId}', [DividaController::class, 'destroyPagamento'])->name('dividas.pagamentos.destroy');
+
+// Cartoes
+Route::get('/cartoes', [CartaoController::class, 'index'])->name('cartoes.index');
+Route::post('/cartoes', [CartaoController::class, 'store'])->name('cartoes.store');
+Route::put('/cartoes/{id}', [CartaoController::class, 'update'])->name('cartoes.update');
+Route::patch('/cartoes/{id}/toggle', [CartaoController::class, 'toggle'])->name('cartoes.toggle');
+Route::delete('/cartoes/{id}', [CartaoController::class, 'destroy'])->name('cartoes.destroy');
+
+// Importacao de Extrato (CSV)
+Route::get('/importar', [ImportacaoController::class, 'index'])->name('importacao.index');
+Route::post('/importar/preview', [ImportacaoController::class, 'preview'])->name('importacao.preview');
+Route::post('/importar/confirmar', [ImportacaoController::class, 'confirmar'])->name('importacao.confirmar');
+Route::post('/importar/cancelar', [ImportacaoController::class, 'cancelar'])->name('importacao.cancelar');
 
 // Exportacao PDF
 Route::get('/exportar/pdf/relatorio', [ExportController::class, 'relatorioPdf'])->name('exportar.pdf.relatorio');

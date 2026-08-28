@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'notificacoes' => [
+        'email' => env('NOTIFICACAO_EMAIL'),
+    ],
+
 ];

@@ -9,6 +9,8 @@ use App\Models\AuditLog;
 use App\Models\Despesa;
 use App\Models\Receita;
 use App\Services\OrcamentoService;
+use App\Services\ReservaEmergenciaService;
+use App\Services\AssinaturasService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
@@ -90,7 +92,9 @@ class ConfiguracaoController extends Controller
             $this->atualizarValorMeta($meta);
         }
 
-        return view('configuracoes.metas', compact('metas'));
+        $reservaEmergencia = (new ReservaEmergenciaService())->faixaAtual();
+
+        return view('configuracoes.metas', compact('metas', 'reservaEmergencia'));
     }
 
     private function atualizarValorMeta(Meta $meta)
@@ -435,6 +439,31 @@ class ConfiguracaoController extends Controller
                     'data_alerta' => Carbon::now(),
                     'referencia_tipo' => 'categoria',
                     'referencia_id' => $categoria->_id,
+                ]);
+            }
+        }
+
+        // Alerta informativo: assinaturas/recorrentes comprometendo a renda mensal
+        $assinaturasService = new AssinaturasService();
+        $totalRecorrentes = $assinaturasService->totalMensal();
+        $rendaMensal = Receita::whereBetween('data', [$hoje->copy()->startOfMonth(), $hoje->copy()->endOfMonth()])->sum('valor');
+        $percentualRecorrentes = AssinaturasService::percentualDaRenda($totalRecorrentes, $rendaMensal);
+
+        if (AssinaturasService::comprometida($percentualRecorrentes)) {
+            $alertaExistente = Alerta::where('referencia_tipo', 'assinaturas')
+                ->where('tipo', 'info')
+                ->where('data_alerta', '>=', Carbon::now()->startOfMonth())
+                ->first();
+
+            if (!$alertaExistente) {
+                Alerta::create([
+                    'titulo' => 'Assinaturas Comprometendo a Renda',
+                    'mensagem' => "Suas despesas recorrentes somam R$ " . number_format($totalRecorrentes, 2, ',', '.')
+                        . " ({$percentualRecorrentes}% da sua renda este mes). Vale revisar suas assinaturas.",
+                    'tipo' => 'info',
+                    'data_alerta' => Carbon::now(),
+                    'referencia_tipo' => 'assinaturas',
+                    'referencia_id' => null,
                 ]);
             }
         }

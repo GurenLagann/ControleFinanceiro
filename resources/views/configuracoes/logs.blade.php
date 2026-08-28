@@ -9,45 +9,46 @@
 @endsection
 
 @section('content')
-    <!-- Cards de Estatisticas -->
+    <!-- Resumo -->
     <div class="row mb-4">
-        <div class="col-4 col-md-2">
-            <div class="card" style="opacity: 1 !important; border-left: 4px solid #6f42c1;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-database"></i> Total</h6>
-                    <h3 class="mb-0 text-white">{{ number_format($estatisticas['total']) }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 col-md-2">
-            <div class="card" style="opacity: 1 !important; border-left: 4px solid #3742fa;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-calendar-day"></i> Hoje</h6>
-                    <h3 class="mb-0 text-white">{{ number_format($estatisticas['hoje']) }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 col-md-2">
-            <div class="card" style="opacity: 1 !important; border-left: 4px solid #00ff88;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-plus-circle"></i> Criacao</h6>
-                    <h3 class="mb-0 valor-positivo">{{ number_format($estatisticas['creates']) }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 col-md-2">
-            <div class="card" style="opacity: 1 !important; border-left: 4px solid #ffc107;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-pencil"></i> Edicao</h6>
-                    <h3 class="mb-0" style="color: #ffc107;">{{ number_format($estatisticas['updates']) }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 col-md-2">
-            <div class="card" style="opacity: 1 !important; border-left: 4px solid #ff4757;">
-                <div class="card-body text-center py-3">
-                    <h6 class="text-muted mb-1"><i class="bi bi-trash"></i> Exclusao</h6>
-                    <h3 class="mb-0 valor-negativo">{{ number_format($estatisticas['deletes']) }}</h3>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body d-flex flex-wrap gap-4 justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon p"><i class="bi bi-database" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Total</div>
+                            <div class="stat-value">{{ number_format($estatisticas['total']) }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon b"><i class="bi bi-calendar-day" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Hoje</div>
+                            <div class="stat-value">{{ number_format($estatisticas['hoje']) }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon g"><i class="bi bi-plus-circle" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Criação</div>
+                            <div class="stat-value valor-positivo">{{ number_format($estatisticas['creates']) }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon w"><i class="bi bi-pencil" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Edição</div>
+                            <div class="stat-value">{{ number_format($estatisticas['updates']) }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon r"><i class="bi bi-trash" aria-hidden="true"></i></div>
+                        <div>
+                            <div class="stat-label">Exclusão</div>
+                            <div class="stat-value valor-negativo">{{ number_format($estatisticas['deletes']) }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -154,9 +155,11 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-4 text-muted">
-                                            <i class="bi bi-inbox" style="font-size: 2rem;"></i><br>
-                                            Nenhum log encontrado
+                                        <td colspan="6">
+                                            <div class="empty-state">
+                                                <i class="bi bi-inbox" aria-hidden="true"></i>
+                                                Nenhum log encontrado
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforelse

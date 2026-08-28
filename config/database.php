@@ -10,7 +10,7 @@ return [
         'mongodb' => [
             'driver' => 'mongodb',
             'dsn' => env('DB_DSN', 'mongodb://localhost:27017'),
-            'database' => env('DB_DATABASE', 'financas'),
+            'database' => env('MONGO_DATABASE', env('DB_DATABASE', 'financas')),
         ],
 
         'sqlite' => [
